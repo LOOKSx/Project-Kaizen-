@@ -66,10 +66,16 @@ func InitDB() {
 	DB.Model(&models.Category{}).Count(&catCount)
 	if catCount == 0 {
 		DBCategories = []models.Category{
-			{ID: 1, Name: "Travel & Adventure", Slug: "travel", Icon: "plane", Count: 5},
-			{ID: 2, Name: "Technology & Code", Slug: "tech", Icon: "code", Count: 3},
-			{ID: 3, Name: "Lifestyle & Kaizen", Slug: "lifestyle", Icon: "heart", Count: 2},
-			{ID: 4, Name: "Photography", Slug: "photography", Icon: "camera", Count: 2},
+			{ID: 1, Name: "Daily Life / Musings", Slug: "daily-life", Icon: "pencil", Count: 1},
+			{ID: 2, Name: "Personal Growth", Slug: "growth", Icon: "heart", Count: 1},
+			{ID: 3, Name: "Travel & Places", Slug: "travel", Icon: "plane", Count: 1},
+			{ID: 4, Name: "Relationships", Slug: "relationships", Icon: "users", Count: 0},
+			{ID: 5, Name: "Health & Wellbeing", Slug: "health", Icon: "heartbeat", Count: 0},
+			{ID: 6, Name: "Work & Career", Slug: "work", Icon: "briefcase", Count: 1},
+			{ID: 7, Name: "Books & Learning", Slug: "books", Icon: "book", Count: 0},
+			{ID: 8, Name: "Goals & Projects", Slug: "goals", Icon: "tasks", Count: 0},
+			{ID: 9, Name: "Random Thoughts / Rants", Slug: "rants", Icon: "comment", Count: 0},
+			{ID: 10, Name: "Photography / Snapshots", Slug: "photography", Icon: "camera", Count: 1},
 		}
 		DB.Create(&DBCategories)
 	} else {
@@ -85,7 +91,7 @@ func InitDB() {
 				Title:        "Bali Ultimate Travel Guide 2026: Hidden Waterfalls & Mist-Shrouded Temples",
 				Slug:         "bali-travel-guide-2026",
 				Excerpt:      "Explore the lush natural wonders of Bali, from the iconic Tegallalang rice terraces to Mount Batur sunrise hikes and secret jungle cascades...",
-				Category:     "Travel & Adventure",
+				Category:     "Travel & Places",
 				CoverImage:   "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1000&q=80",
 				ReadTime:     "7 min read",
 				Views:        1420,
@@ -120,7 +126,7 @@ Tucked away in the northern highlands, Sekumpul is a twin waterfall plunging ove
 				Title:        "The Kaizen Philosophy: Improving 1% Every Day for Compound Growth",
 				Slug:         "kaizen-philosophy-1-percent-growth",
 				Excerpt:      "The Japanese concept of Kaizen teaches us that tiny, continuous daily improvements compound into life-changing mastery over time...",
-				Category:     "Lifestyle & Kaizen",
+				Category:     "Personal Growth",
 				CoverImage:   "https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=1000&q=80",
 				ReadTime:     "5 min read",
 				Views:        980,
@@ -148,7 +154,7 @@ $$(1 - 0.01)^{365} = 0.03$$
 				Title:        "Golang + Modern Frontend Architecture: Building High-Performance Web Apps",
 				Slug:         "golang-modern-frontend-architecture",
 				Excerpt:      "Exploring full-stack design patterns combining the raw execution speed of Go REST APIs with clean SPA frontends...",
-				Category:     "Technology & Code",
+				Category:     "Work & Career",
 				CoverImage:   "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1000&q=80",
 				ReadTime:     "8 min read",
 				Views:        2150,

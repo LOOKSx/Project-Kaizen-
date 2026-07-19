@@ -116,10 +116,16 @@ export class ArticleService {
     return this.http.get<any>(`${this.apiUrl}/categories`).pipe(
       map(res => res.data),
       catchError(() => of([
-        { id: 1, name: 'Travel & Adventure', slug: 'travel', icon: 'fa-plane', count: 5 },
-        { id: 2, name: 'Technology & Code', slug: 'tech', icon: 'fa-code', count: 3 },
-        { id: 3, name: 'Lifestyle & Kaizen', slug: 'lifestyle', icon: 'fa-heart', count: 2 },
-        { id: 4, name: 'Photography', slug: 'photography', icon: 'fa-camera', count: 2 }
+        { id: 1, name: 'Daily Life / Musings', slug: 'daily-life', icon: 'fa-pencil', count: 1 },
+        { id: 2, name: 'Personal Growth', slug: 'growth', icon: 'fa-heart', count: 1 },
+        { id: 3, name: 'Travel & Places', slug: 'travel', icon: 'fa-plane', count: 1 },
+        { id: 4, name: 'Relationships', slug: 'relationships', icon: 'fa-users', count: 0 },
+        { id: 5, name: 'Health & Wellbeing', slug: 'health', icon: 'fa-heartbeat', count: 0 },
+        { id: 6, name: 'Work & Career', slug: 'work', icon: 'fa-briefcase', count: 1 },
+        { id: 7, name: 'Books & Learning', slug: 'books', icon: 'fa-book', count: 0 },
+        { id: 8, name: 'Goals & Projects', slug: 'goals', icon: 'fa-tasks', count: 0 },
+        { id: 9, name: 'Random Thoughts / Rants', slug: 'rants', icon: 'fa-comment', count: 0 },
+        { id: 10, name: 'Photography / Snapshots', slug: 'photography', icon: 'fa-camera', count: 1 }
       ]))
     );
   }
@@ -134,6 +140,12 @@ export class ArticleService {
 
   // ===== LocalStorage Persistence Helpers =====
   private initLocalStorage() {
+    // Clear old localStorage configuration if categories are outdated
+    const stored = localStorage.getItem('kaizen_articles');
+    if (stored && !stored.includes('Travel & Places')) {
+      localStorage.removeItem('kaizen_articles');
+    }
+
     if (!localStorage.getItem('kaizen_articles')) {
       const defaultArticles: Article[] = [
         {
@@ -153,7 +165,7 @@ Tucked away in the northern highlands, Sekumpul is a twin waterfall plunging ove
 * **Transportation**: Rent a scooter for local exploring or hire a private driver (approx. $35/day).
 * **Best Season**: May to October (Dry season with clear blue skies and cooler mountain breeze).
 * **Footwear**: Bring sturdy waterproof hiking shoes for river crossings.`,
-          category: 'Travel & Adventure',
+          category: 'Travel & Places',
           cover_image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1000&q=80',
           read_time: '7 min read',
           views: 1420,
@@ -192,7 +204,7 @@ $$(1 - 0.01)^{365} = 0.03$$
 1. **Shrink the Micro-Habit**: Instead of committing to read for 60 minutes, start by reading 2 pages every evening.
 2. **Remove Environmental Friction**: Keep your workspace clean and prepare your tools the night before.
 3. **Evening Reflection**: Spend 5 minutes asking yourself: "What is one small thing I can refine tomorrow?"`,
-          category: 'Lifestyle & Kaizen',
+          category: 'Personal Growth',
           cover_image: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=1000&q=80',
           read_time: '5 min read',
           views: 980,
@@ -220,7 +232,7 @@ In the Kaizen application, we decouple responsibilities cleanly:
 1. **Minimal Memory Usage**: Uses a fraction of the RAM required by Node.js or Python runtime servers.
 2. **Instant Binary Boot**: Compiles directly to native machine code for lightning-fast deployments.
 3. **Built-in Concurrency**: Goroutines handle thousands of concurrent API requests effortlessly.`,
-          category: 'Technology & Code',
+          category: 'Work & Career',
           cover_image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1000&q=80',
           read_time: '8 min read',
           views: 2150,
@@ -238,7 +250,7 @@ In the Kaizen application, we decouple responsibilities cleanly:
           slug: 'natural-light-photography-guide',
           excerpt: 'Harness the power of Golden Hour and Blue Hour to transform everyday travel snapshots into magazine-worthy art...',
           content: `Light is the soul of photography. Whether you are using a flagship mirrorless camera or the smartphone in your pocket, mastering natural light transforms ordinary scenery into captivating visual stories.`,
-          category: 'Photography',
+          category: 'Photography / Snapshots',
           cover_image: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?auto=format&fit=crop&w=1000&q=80',
           read_time: '6 min read',
           views: 1120,

@@ -321,12 +321,16 @@ export class HeaderComponent implements OnInit {
   ];
 
   navCategories = [
-    'Travel & Adventure',
-    'Technology & Code',
-    'Lifestyle & Kaizen',
-    'Photography',
-    'Nature',
-    'Culture & Food',
+    'Daily Life / Musings',
+    'Personal Growth',
+    'Travel & Places',
+    'Relationships',
+    'Health & Wellbeing',
+    'Work & Career',
+    'Books & Learning',
+    'Goals & Projects',
+    'Random Thoughts / Rants',
+    'Photography / Snapshots',
   ];
 
   // We use EventEmitter output via a custom event on window
