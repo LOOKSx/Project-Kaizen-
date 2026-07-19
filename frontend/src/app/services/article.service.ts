@@ -299,8 +299,9 @@ In the Kaizen application, we decouple responsibilities cleanly:
     const list = this.getPersistedArticles('', '');
     const idx = list.findIndex(a => a.id === articleId);
     if (idx !== -1) {
-      if (!list[idx].comments) list[idx].comments = [];
-      list[idx].comments.push(comment);
+      const comments = list[idx].comments || [];
+      comments.push(comment);
+      list[idx].comments = comments;
       localStorage.setItem('kaizen_articles', JSON.stringify(list));
     }
   }
