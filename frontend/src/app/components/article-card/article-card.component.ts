@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Article } from '../../models/article.model';
+import { ArticleService } from '../../services/article.service';
 
 @Component({
   selector: 'app-article-card',
@@ -38,11 +39,16 @@ import { Article } from '../../models/article.model';
         <!-- Excerpt -->
         <p class="post-excerpt">{{ article.excerpt }}</p>
 
-        <!-- Footer: date + read more -->
+        <!-- Footer: date + like pill + read more -->
         <div class="post-footer">
           <span class="post-meta">
             {{ article.created_at | date:'MMM d, yyyy' }}
           </span>
+          <button class="btn-like-pill" [class.liked]="article.liked" (click)="toggleLike($event)" title="Like this article">
+            <i class="fa-solid fa-heart" *ngIf="article.liked"></i>
+            <i class="fa-regular fa-heart" *ngIf="!article.liked"></i>
+            <span class="like-count">{{ article.likes || 0 }}</span>
+          </button>
           <span class="post-read-more">READ MORE →</span>
         </div>
 
@@ -175,9 +181,42 @@ import { Article } from '../../models/article.model';
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 4px;
+      margin-top: 14px;
       padding-top: 12px;
-      border-top: 1px solid #eeeeee;
+      border-top: 1px solid #f0f0f0;
+    }
+    .btn-like-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #888888;
+      background: #f8f8f8;
+      border: 1px solid #e8e8e8;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .btn-like-pill:hover {
+      color: #e8472a;
+      background: #fff5f3;
+      border-color: #ffd4cc;
+      transform: scale(1.08);
+    }
+    .btn-like-pill.liked {
+      color: #e8472a;
+      background: #fff0ed;
+      border-color: #ffc2b8;
+    }
+    .btn-like-pill.liked i {
+      animation: heartPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes heartPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+      100% { transform: scale(1); }
     }
     .post-meta {
       font-size: 11px;
@@ -269,6 +308,21 @@ export class ArticleCardComponent {
       tags.push(...extra);
     }
     return tags.slice(0, 3);
+  }
+
+  constructor(private articleService: ArticleService) {}
+
+  toggleLike(e: MouseEvent) {
+    e.stopPropagation();
+    if (!this.article) return;
+    if (this.article.liked) {
+      this.article.liked = false;
+      this.article.likes = Math.max(0, (this.article.likes || 1) - 1);
+    } else {
+      this.article.liked = true;
+      this.article.likes = (this.article.likes || 0) + 1;
+    }
+    this.articleService.updatePersistedArticle(this.article);
   }
 
   getTagClass(tag: string): string {

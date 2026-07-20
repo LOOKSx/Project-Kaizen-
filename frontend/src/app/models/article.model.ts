@@ -23,6 +23,8 @@ export interface Article {
   tags: string;
   created_at: string;
   updated_at: string;
+  likes?: number;
+  liked?: boolean;
   comments?: Comment[];
 }
 

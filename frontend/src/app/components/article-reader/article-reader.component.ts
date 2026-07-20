@@ -40,6 +40,11 @@ import { ArticleService } from '../../services/article.service';
                   <span class="meta-sub">{{ article.created_at | date:'MMM d, yyyy' }}</span>
                 </div>
               </div>
+              <button class="reader-like-btn" [class.liked]="article.liked" (click)="toggleLike()" title="Like this article">
+                <i class="fa-solid fa-heart" *ngIf="article.liked"></i>
+                <i class="fa-regular fa-heart" *ngIf="!article.liked"></i>
+                <span>{{ article.likes || 0 }} Likes</span>
+              </button>
             </div>
           </div>
         </div>
@@ -53,6 +58,16 @@ import { ArticleService } from '../../services/article.service';
           <div class="article-tags" *ngIf="article.tags">
             <span class="tags-label"><i class="fa-solid fa-tags"></i> Tags:</span>
             <span class="tag-chip" *ngFor="let tag of getTagsList(article.tags)">#{{ tag }}</span>
+          </div>
+
+          <!-- Like Appreciation Bar -->
+          <div class="reader-like-bar">
+            <button class="like-main-btn" [class.liked]="article.liked" (click)="toggleLike()">
+              <i class="fa-solid fa-heart" *ngIf="article.liked"></i>
+              <i class="fa-regular fa-heart" *ngIf="!article.liked"></i>
+              <span>{{ article.liked ? 'Thank you for liking!' : 'Like this article' }}</span>
+              <span class="like-badge">{{ article.likes || 0 }}</span>
+            </button>
           </div>
 
           <hr class="reader-divider">
@@ -240,8 +255,79 @@ import { ArticleService } from '../../services/article.service';
       font-size: 14px;
     }
     .meta-sub {
-      font-size: 11px;
-      color: #dddddd;
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+    }
+    .reader-like-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .reader-like-btn:hover {
+      background: rgba(232, 71, 42, 0.9);
+      border-color: #e8472a;
+      transform: scale(1.05);
+    }
+    .reader-like-btn.liked {
+      background: #e8472a;
+      border-color: #e8472a;
+      box-shadow: 0 4px 15px rgba(232, 71, 42, 0.4);
+    }
+    .reader-like-btn i {
+      font-size: 14px;
+    }
+
+    .reader-like-bar {
+      display: flex;
+      justify-content: center;
+      margin: 36px 0 24px;
+    }
+    .like-main-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 28px;
+      border-radius: 40px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #444444;
+      background: #f8f8f8;
+      border: 1.5px solid #e0e0e0;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+    }
+    .like-main-btn:hover {
+      color: #e8472a;
+      background: #fff5f3;
+      border-color: #ffd4cc;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(232, 71, 42, 0.15);
+    }
+    .like-main-btn.liked {
+      color: #ffffff;
+      background: linear-gradient(135deg, #e8472a, #f5782f);
+      border-color: #e8472a;
+      box-shadow: 0 8px 24px rgba(232, 71, 42, 0.35);
+    }
+    .like-badge {
+      background: rgba(0,0,0,0.08);
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+    }
+    .like-main-btn.liked .like-badge {
+      background: rgba(255,255,255,0.25);
     }
     .stats-meta {
       display: flex;
@@ -452,6 +538,18 @@ export class ArticleReaderComponent {
 
   getTagsList(tags: string): string[] {
     return tags ? tags.split(',').map(t => t.trim()) : [];
+  }
+
+  toggleLike() {
+    if (!this.article) return;
+    if (this.article.liked) {
+      this.article.liked = false;
+      this.article.likes = Math.max(0, (this.article.likes || 1) - 1);
+    } else {
+      this.article.liked = true;
+      this.article.likes = (this.article.likes || 0) + 1;
+    }
+    this.articleService.updatePersistedArticle(this.article);
   }
 
   deleteComment(index: number) {

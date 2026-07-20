@@ -111,6 +111,8 @@ export class ArticleService {
           cover_image: article.cover_image || 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80',
           read_time: article.read_time || '5 min read',
           views: 1,
+          likes: 0,
+          liked: false,
           featured: false,
           author_name: 'Kaizen Creator',
           author_avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
@@ -281,6 +283,7 @@ You might be surprised how much clarity fits into that small window of quiet.`,
           cover_image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1000&q=80',
           read_time: '4 min read',
           views: 743,
+          likes: 42,
           featured: true,
           author_name: 'Kaizen Creator',
           author_avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
@@ -645,7 +648,7 @@ For travel, the best camera is the one you have with you. A Sony A7C II for seri
     });
   }
 
-  private updatePersistedArticle(updated: Article) {
+  updatePersistedArticle(updated: Article) {
     const list = this.getPersistedArticles('', '');
     const idx = list.findIndex(a => a.id === updated.id);
     if (idx !== -1) {
