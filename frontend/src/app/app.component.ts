@@ -315,6 +315,44 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       </ng-container>
 
       <!-- ================================================ -->
+      <!-- ===== CATEGORIES PAGE ========================== -->
+      <!-- ================================================ -->
+      <ng-container *ngIf="currentPage === 'categories'">
+        <div class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1400&q=80')">
+          <div class="page-hero-overlay"></div>
+          <div class="page-hero-content">
+            <p class="page-hero-label">🏷️ BROWSE BY TOPIC</p>
+            <h1 class="page-hero-title">Categories</h1>
+            <p class="page-hero-sub">Explore all 10 core themes of Kaizen — from daily musings and travel stories to personal growth, books, and technology.</p>
+          </div>
+        </div>
+        <main class="page-body">
+          <div class="container">
+            <div class="categories-header-intro">
+              <h2>10 Core Pillars of Knowledge</h2>
+              <p>Click any category to browse all articles published under that topic.</p>
+            </div>
+            <div class="categories-full-grid">
+              <div class="cat-full-card" *ngFor="let cat of categoryPageItems" (click)="filterAndBlog(cat.name)">
+                <div class="cat-full-img-wrap">
+                  <img [src]="cat.image" [alt]="cat.name" class="cat-full-img" loading="lazy" />
+                  <div class="cat-full-badge">{{ cat.icon }} {{ cat.name }}</div>
+                </div>
+                <div class="cat-full-body">
+                  <h3>{{ cat.name }}</h3>
+                  <p>{{ cat.desc }}</p>
+                  <div class="cat-full-footer">
+                    <span class="cat-count-pill"><i class="fa-solid fa-file-lines"></i> {{ getCategoryArticleCount(cat.name) }} Articles</span>
+                    <span class="cat-explore-btn">Browse Posts →</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </ng-container>
+
+      <!-- ================================================ -->
       <!-- ===== DESTINATIONS PAGE ======================== -->
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'destinations'">
@@ -1036,6 +1074,25 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     .dest-meta i { margin-right: 4px; }
     .dest-read { margin-left: auto; color: #e8472a; font-weight: 700; font-size: 12px; }
 
+    /* ===== CATEGORIES PAGE ===== */
+    .categories-header-intro { text-align: center; margin-bottom: 40px; }
+    .categories-header-intro h2 { font-family: 'Lato', sans-serif; font-size: 28px; font-weight: 800; color: #111; margin: 0 0 8px; }
+    .categories-header-intro p { font-size: 15px; color: #777; margin: 0; }
+
+    .categories-full-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+    .cat-full-card { background: #fff; border: 1px solid #eee; border-radius: 12px; overflow: hidden; display: flex; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s; }
+    .cat-full-card:hover { transform: translateY(-5px); box-shadow: 0 16px 36px rgba(0,0,0,0.1); border-color: #e8472a; }
+    .cat-full-img-wrap { width: 40%; position: relative; flex-shrink: 0; overflow: hidden; min-height: 180px; }
+    .cat-full-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .cat-full-card:hover .cat-full-img { transform: scale(1.06); }
+    .cat-full-badge { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.65); backdrop-filter: blur(4px); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
+    .cat-full-body { padding: 22px 24px; display: flex; flex-direction: column; justify-content: space-between; flex: 1; }
+    .cat-full-body h3 { font-family: 'Lato', sans-serif; font-size: 19px; font-weight: 800; color: #111; margin: 0 0 8px; }
+    .cat-full-body p { font-size: 13px; color: #666; line-height: 1.6; margin: 0 0 16px; }
+    .cat-full-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #f2f2f2; padding-top: 14px; }
+    .cat-count-pill { font-size: 12px; color: #888; font-weight: 600; }
+    .cat-explore-btn { color: #e8472a; font-weight: 700; font-size: 12px; letter-spacing: 0.04em; }
+
     /* ===== GALLERY ===== */
     .gallery-grid { columns: 3; column-gap: 16px; }
     .gallery-item { position: relative; break-inside: avoid; margin-bottom: 16px; border-radius: 8px; overflow: hidden; cursor: pointer; }
@@ -1168,6 +1225,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     /* ===== RESPONSIVE ===== */
 
     @media (max-width: 960px) {
+      .categories-full-grid { grid-template-columns: 1fr; }
       .intro-layout { grid-template-columns: 1fr; }
       .intro-author-card { position: static; max-width: 100%; margin-top: 16px; }
       .features-grid { grid-template-columns: 1fr; }
@@ -1185,6 +1243,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       .dest-teaser-imgs { height: 300px; }
     }
     @media (max-width: 600px) {
+      .cat-full-card { flex-direction: column; }
+      .cat-full-img-wrap { width: 100%; height: 160px; }
       .features-grid { grid-template-columns: 1fr; }
       .latest-grid { grid-template-columns: 1fr; }
       .posts-grid { grid-template-columns: 1fr; }
@@ -1231,6 +1291,75 @@ export class AppComponent implements OnInit, OnDestroy {
     { icon: '💬', name: 'Random Thoughts', cat: 'Random Thoughts / Rants' },
     { icon: '📷', name: 'Photography', cat: 'Photography / Snapshots' },
   ];
+
+  // Category Page Items
+  categoryPageItems = [
+    {
+      name: 'Daily Life / Musings',
+      icon: '✏️',
+      image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80',
+      desc: 'Reflections on daily routines, slow mornings, coffee rituals, and mindful living in a fast-paced world.'
+    },
+    {
+      name: 'Personal Growth',
+      icon: '🌱',
+      image: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=600&q=80',
+      desc: 'The 1% Kaizen philosophy, micro-habits, mindset shifts, and the compound effect of daily practice.'
+    },
+    {
+      name: 'Travel & Places',
+      icon: '✈️',
+      image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=600&q=80',
+      desc: 'Journeys through 38+ countries — hidden waterfalls, ancient temples, cloud forests, and vibrant cities.'
+    },
+    {
+      name: 'Relationships',
+      icon: '❤️',
+      image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=600&q=80',
+      desc: 'Long-distance friendships, meaningful connections, empathy, and building human bonds across borders.'
+    },
+    {
+      name: 'Health & Wellbeing',
+      icon: '💪',
+      image: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=600&q=80',
+      desc: 'Zone 2 aerobic cardio, endurance science, mental health, sleep optimization, and longevity practices.'
+    },
+    {
+      name: 'Work & Career',
+      icon: '💼',
+      image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80',
+      desc: 'Golang, modern software architecture, SPA engineering, remote work patterns, and technical leadership.'
+    },
+    {
+      name: 'Books & Learning',
+      icon: '📚',
+      image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=600&q=80',
+      desc: 'Mental models, book summaries, and transformative insights from reading 150+ books over a decade.'
+    },
+    {
+      name: 'Goals & Projects',
+      icon: '🎯',
+      image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&w=600&q=80',
+      desc: 'Personal Knowledge Management (PKM), Obsidian workflows, project tracking, and building side hustles.'
+    },
+    {
+      name: 'Random Thoughts / Rants',
+      icon: '💬',
+      image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66936?auto=format&fit=crop&w=600&q=80',
+      desc: 'Unfiltered observations, hot takes on productivity culture, tech trends, and honest opinion pieces.'
+    },
+    {
+      name: 'Photography / Snapshots',
+      icon: '📷',
+      image: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?auto=format&fit=crop&w=600&q=80',
+      desc: 'Natural light photography, golden hour captures, camera gear tips, and visual storytelling from the road.'
+    }
+  ];
+
+  getCategoryArticleCount(catName: string): number {
+    return this.articles.filter(a => a.category === catName).length || 1;
+  }
+
 
   // Destinations
   destFilter = 'All';

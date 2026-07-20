@@ -47,7 +47,7 @@ import { ArticleService } from '../../services/article.service';
 
             <!-- CATEGORIES dropdown -->
             <li class="nav-item has-dropdown" (mouseenter)="openMenu('cat')" (mouseleave)="closeMenu()">
-              <a href="#" class="nav-link" [class.active]="activePage==='blog'" (click)="navigate('blog', $event)">
+              <a href="#" class="nav-link" [class.active]="activePage==='categories'" (click)="navigate('categories', $event)">
                 CATEGORIES <span class="caret">›</span>
               </a>
               <div class="simple-dropdown" [class.visible]="activeMenu === 'cat'">
