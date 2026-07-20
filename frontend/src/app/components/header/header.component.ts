@@ -117,8 +117,11 @@ import { ArticleService } from '../../services/article.service';
               <i class="fa-solid fa-magnifying-glass"></i>
             </button>
           </div>
-          <button class="write-btn" (click)="openPublisherEvent()">
+          <button class="write-btn" *ngIf="isAdmin" (click)="openPublisherEvent()">
             <i class="fa-solid fa-pen"></i> Write
+          </button>
+          <button class="admin-logout-btn" *ngIf="isAdmin" (click)="logoutAdmin()" title="Exit Admin Mode">
+            <i class="fa-solid fa-lock"></i> Exit Admin
           </button>
           <!-- Mobile hamburger -->
           <button class="hamburger" (click)="mobileOpen = !mobileOpen">
@@ -507,6 +510,20 @@ import { ArticleService } from '../../services/article.service';
       .cat-mega-preview-col { display: none; }
       .hamburger { display: flex; }
     }
+
+    .admin-logout-btn {
+      background: rgba(255,255,255,0.1);
+      color: #aaa;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-left: 8px;
+      transition: all 0.2s;
+    }
+    .admin-logout-btn:hover { background: #e8472a; color: #fff; border-color: #e8472a; }
   `],
   host: { '(document:click)': 'onDocClick($event)' }
 })
@@ -517,6 +534,7 @@ export class HeaderComponent implements OnInit {
   searchQuery = '';
   activeMenu: string | null = null;
   activePage = 'home';
+  isAdmin = false;
 
   destinations = [
     { label: 'Africa' },
@@ -619,6 +637,10 @@ export class HeaderComponent implements OnInit {
   constructor(private articleService: ArticleService) {}
 
   ngOnInit() {
+    this.checkAdmin();
+    window.addEventListener('kaizen:admin-status', (e: any) => {
+      this.isAdmin = !!e.detail?.isAdmin;
+    });
     window.addEventListener('kaizen:page-changed', (e: any) => {
       this.activePage = e.detail?.page || 'home';
     });
@@ -681,6 +703,22 @@ export class HeaderComponent implements OnInit {
 
   scrollToBlog() {
     document.getElementById('blog-section')?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  checkAdmin() {
+    if (typeof localStorage !== 'undefined') {
+      this.isAdmin = localStorage.getItem('kaizen_admin_active') === 'true';
+    } else {
+      this.isAdmin = false;
+    }
+  }
+
+  logoutAdmin() {
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('kaizen_admin_active');
+    }
+    this.isAdmin = false;
+    window.dispatchEvent(new CustomEvent('kaizen:admin-status', { detail: { isAdmin: false } }));
   }
 
   openPublisherEvent() {
