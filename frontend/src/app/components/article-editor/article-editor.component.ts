@@ -577,35 +577,50 @@ export class ArticleEditorComponent {
     }
   }
 
-  private handleFileUpload(file: File) {
-    // First show local preview immediately
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      this.coverImagePreview = e.target?.result as string;
-    };
-    reader.readAsDataURL(file);
-
-    // Upload to server
-    this.uploading = true;
-    this.coverImage = ''; // clear until upload done
-    this.articleService.uploadImage(file).subscribe({
-      next: (url: string) => {
-        this.coverImage = url;
-        this.coverImagePreview = url; // use the hosted URL as preview
-        this.coverImageUrl = '';
-        this.uploading = false;
-      },
-      error: () => {
-        // fallback: use base64
-        const reader2 = new FileReader();
-        reader2.onload = (e) => {
-          const base64 = e.target?.result as string;
-          this.coverImage = base64;
-          this.coverImagePreview = base64;
+  private compressFile(file: File): Promise<string> {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 1200;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', 0.82));
+          } else {
+            resolve(e.target?.result as string);
+          }
         };
-        reader2.readAsDataURL(file);
-        this.uploading = false;
-      }
+        img.onerror = () => resolve(e.target?.result as string);
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => resolve('');
+      reader.readAsDataURL(file);
+    });
+  }
+
+  private handleFileUpload(file: File) {
+    this.uploading = true;
+    this.compressFile(file).then(compressed => {
+      this.coverImage = compressed;
+      this.coverImagePreview = compressed;
+      this.coverImageUrl = '';
+      this.uploading = false;
     });
   }
 

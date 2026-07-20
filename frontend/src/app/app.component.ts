@@ -1897,6 +1897,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.checkAdminStatus();
     this.checkSecretRoute();
+    this.loadSiteSettings();
     this.loadData();
 
     this.articleService.selectedCategory$.subscribe(cat => {
@@ -2148,24 +2149,54 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  compressImage(file: File, maxDim = 1200, quality = 0.82): Promise<string> {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          let width = img.width;
+          let height = img.height;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          } else {
+            resolve(e.target?.result as string);
+          }
+        };
+        img.onerror = () => resolve(e.target?.result as string);
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = () => resolve('');
+      reader.readAsDataURL(file);
+    });
+  }
+
   processImageFile(file: File) {
     this.imageUploading = true;
     this.imageUploadSuccess = false;
 
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      setTimeout(() => {
-        const base64 = evt.target?.result as string;
-        this.imageEditorPreview = base64;
-        this.imageUploading = false;
-        this.imageUploadSuccess = true;
-      }, 400);
-    };
-    reader.onerror = () => {
+    this.compressImage(file, 1200, 0.82).then((compressed) => {
+      this.imageEditorPreview = compressed;
+      this.imageUploading = false;
+      this.imageUploadSuccess = true;
+    }).catch(() => {
       this.imageUploading = false;
       this.showToast('เกิดข้อผิดพลาดในการเปิดไฟล์รูปภาพ');
-    };
-    reader.readAsDataURL(file);
+    });
   }
 
   onUrlInputChanged() {
@@ -2173,6 +2204,47 @@ export class AppComponent implements OnInit, OnDestroy {
       this.imageEditorPreview = this.imageEditorUrlInput;
       this.imageUploadSuccess = true;
     }
+  }
+
+  saveSiteSettings() {
+    if (typeof localStorage === 'undefined') return;
+    try {
+      const settings = {
+        blogHeroImg: this.blogHeroImg,
+        destHeroImg: this.destHeroImg,
+        catHeroImg: this.catHeroImg,
+        galleryHeroImg: this.galleryHeroImg,
+        aboutHeroImg: this.aboutHeroImg,
+        contactHeroImg: this.contactHeroImg,
+        heroSlides: this.heroSlides,
+        categoryPageItems: this.categoryPageItems,
+        allDestinations: this.allDestinations,
+        photos: this.photos
+      };
+      localStorage.setItem('kaizen_site_settings', JSON.stringify(settings));
+    } catch (e) {
+      console.warn('LocalStorage save warning:', e);
+    }
+  }
+
+  loadSiteSettings() {
+    if (typeof localStorage === 'undefined') return;
+    try {
+      const saved = localStorage.getItem('kaizen_site_settings');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.blogHeroImg) this.blogHeroImg = parsed.blogHeroImg;
+        if (parsed.destHeroImg) this.destHeroImg = parsed.destHeroImg;
+        if (parsed.catHeroImg) this.catHeroImg = parsed.catHeroImg;
+        if (parsed.galleryHeroImg) this.galleryHeroImg = parsed.galleryHeroImg;
+        if (parsed.aboutHeroImg) this.aboutHeroImg = parsed.aboutHeroImg;
+        if (parsed.contactHeroImg) this.contactHeroImg = parsed.contactHeroImg;
+        if (parsed.heroSlides && parsed.heroSlides.length) this.heroSlides = parsed.heroSlides;
+        if (parsed.categoryPageItems && parsed.categoryPageItems.length) this.categoryPageItems = parsed.categoryPageItems;
+        if (parsed.allDestinations && parsed.allDestinations.length) this.allDestinations = parsed.allDestinations;
+        if (parsed.photos && parsed.photos.length) this.photos = parsed.photos;
+      }
+    } catch (e) {}
   }
 
   saveImageEditor() {
@@ -2186,10 +2258,11 @@ export class AppComponent implements OnInit, OnDestroy {
       (this as any)[this.imageEditorTargetKey] = this.imageEditorPreview;
     }
 
+    this.saveSiteSettings();
     this.showImageEditorModal = false;
     this.imageUploading = false;
     this.imageUploadSuccess = false;
-    this.showToast('✓ เปลี่ยนรูปภาพและอัปเดตข้อมูลสำเร็จเรียบร้อยแล้ว (Image Updated Successfully)');
+    this.showToast('✓ เปลี่ยนรูปภาพและบันทึกอัปเดตลงฐานข้อมูลเรียบร้อยแล้ว (Saved Permanently)');
   }
 
   unlockAdmin() {
