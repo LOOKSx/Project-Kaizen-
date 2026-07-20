@@ -56,3 +56,9 @@ type AuthorProfile struct {
 	Facebook         string `json:"facebook"`
 	Github           string `json:"github"`
 }
+
+// SeedVersion tracks the version of seeded data to force reseed on schema/data changes
+type SeedVersion struct {
+	ID      uint   `gorm:"primaryKey"`
+	Version string `gorm:"uniqueIndex"`
+}

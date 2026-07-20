@@ -48,6 +48,7 @@ func main() {
 		api.GET("/articles/:slug", handlers.GetArticleBySlug)
 		api.POST("/articles", handlers.CreateArticle)
 		api.POST("/articles/:id/comments", handlers.AddComment)
+		api.POST("/upload", handlers.UploadImage)
 
 		api.GET("/author", handlers.GetAuthor)
 		api.GET("/categories", handlers.GetCategories)

@@ -50,10 +50,17 @@ import { Article } from '../../models/article.model';
               </div>
 
               <!-- Upload Prompt (shown when no image) -->
-              <div class="upload-prompt" *ngIf="!coverImagePreview">
+              <div class="upload-prompt" *ngIf="!coverImagePreview && !uploading">
                 <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
                 <p class="upload-title">Drag & Drop or Click to Upload</p>
                 <p class="upload-hint">PNG, JPG, WEBP up to 10MB</p>
+              </div>
+
+              <!-- Uploading Spinner -->
+              <div class="upload-prompt" *ngIf="uploading">
+                <i class="fa-solid fa-spinner fa-spin upload-icon" style="color:#e8472a"></i>
+                <p class="upload-title">Uploading image...</p>
+                <p class="upload-hint">Please wait</p>
               </div>
 
               <input
@@ -520,9 +527,10 @@ export class ArticleEditorComponent {
   content: string = '';
   tags: string = '';
   publishing: boolean = false;
+  uploading: boolean = false;
   isDragging: boolean = false;
 
-  private fileBase64: string = '';
+  private pendingFile: File | null = null;
 
   constructor(private articleService: ArticleService) {}
 
@@ -534,7 +542,7 @@ export class ArticleEditorComponent {
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
-      this.readFileAsDataURL(input.files[0]);
+      this.handleFileUpload(input.files[0]);
     }
   }
 
@@ -555,27 +563,47 @@ export class ArticleEditorComponent {
     this.isDragging = false;
     const files = event.dataTransfer?.files;
     if (files && files[0] && files[0].type.startsWith('image/')) {
-      this.readFileAsDataURL(files[0]);
+      this.handleFileUpload(files[0]);
     }
   }
 
-  private readFileAsDataURL(file: File) {
+  private handleFileUpload(file: File) {
+    // First show local preview immediately
     const reader = new FileReader();
     reader.onload = (e) => {
-      const result = e.target?.result as string;
-      this.fileBase64 = result;
-      this.coverImagePreview = result;
-      this.coverImageUrl = '';
-      this.coverImage = result;
+      this.coverImagePreview = e.target?.result as string;
     };
     reader.readAsDataURL(file);
+
+    // Upload to server
+    this.uploading = true;
+    this.coverImage = ''; // clear until upload done
+    this.articleService.uploadImage(file).subscribe({
+      next: (url: string) => {
+        this.coverImage = url;
+        this.coverImagePreview = url; // use the hosted URL as preview
+        this.coverImageUrl = '';
+        this.uploading = false;
+      },
+      error: () => {
+        // fallback: use base64
+        const reader2 = new FileReader();
+        reader2.onload = (e) => {
+          const base64 = e.target?.result as string;
+          this.coverImage = base64;
+          this.coverImagePreview = base64;
+        };
+        reader2.readAsDataURL(file);
+        this.uploading = false;
+      }
+    });
   }
 
   onUrlInput() {
     if (this.coverImageUrl) {
       this.coverImagePreview = this.coverImageUrl;
       this.coverImage = this.coverImageUrl;
-      this.fileBase64 = '';
+      this.uploading = false;
     }
   }
 
@@ -584,7 +612,8 @@ export class ArticleEditorComponent {
     this.coverImagePreview = '';
     this.coverImage = '';
     this.coverImageUrl = '';
-    this.fileBase64 = '';
+    this.uploading = false;
+    this.pendingFile = null;
   }
 
   publishArticle() {

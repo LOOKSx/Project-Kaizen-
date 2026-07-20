@@ -70,6 +70,26 @@ export class ArticleService {
     );
   }
 
+  uploadImage(file: File): Observable<string> {
+    const formData = new FormData();
+    formData.append('image', file);
+    return this.http.post<any>(`${this.apiUrl}/upload`, formData).pipe(
+      map(res => res.url as string),
+      catchError(() => {
+        // Fallback: convert to base64 data URL for offline use
+        return new Observable<string>(observer => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            observer.next(e.target?.result as string);
+            observer.complete();
+          };
+          reader.onerror = () => observer.error('Failed to read file');
+          reader.readAsDataURL(file);
+        });
+      })
+    );
+  }
+
   addComment(articleId: number, comment: Partial<Comment>): Observable<Comment> {
     return this.http.post<any>(`${this.apiUrl}/articles/${articleId}/comments`, comment).pipe(
       map(res => res.data),

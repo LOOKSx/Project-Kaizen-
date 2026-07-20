@@ -12,7 +12,7 @@ import { ArticleService } from '../../services/article.service';
       <div class="navbar-inner">
 
         <!-- Logo -->
-        <a class="site-logo" href="#">
+        <a class="site-logo" href="#" (click)="navigate('home', $event)">
           <span class="logo-globe">🌏</span>
           <span class="logo-text">KAIZEN</span>
         </a>
@@ -20,16 +20,22 @@ import { ArticleService } from '../../services/article.service';
         <!-- Primary Navigation -->
         <nav class="primary-nav" [class.open]="mobileOpen">
           <ul class="nav-list">
-            <li class="nav-item"><a href="#" class="nav-link active">HOME</a></li>
-            <li class="nav-item"><a href="#" class="nav-link" (click)="scrollToBlog()">BLOG</a></li>
+            <li class="nav-item">
+              <a href="#" class="nav-link" [class.active]="activePage==='home'" (click)="navigate('home', $event)">HOME</a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link" [class.active]="activePage==='blog'" (click)="navigate('blog', $event)">BLOG</a>
+            </li>
 
             <!-- DESTINATIONS megamenu -->
             <li class="nav-item has-dropdown" (mouseenter)="openMenu('dest')" (mouseleave)="closeMenu()">
-              <a href="#" class="nav-link">DESTINATIONS <span class="caret">›</span></a>
+              <a href="#" class="nav-link" [class.active]="activePage==='destinations'" (click)="navigate('destinations', $event)">
+                DESTINATIONS <span class="caret">›</span>
+              </a>
               <div class="mega-dropdown" [class.visible]="activeMenu === 'dest'">
                 <ul class="mega-list">
                   <li *ngFor="let d of destinations">
-                    <a href="#" (click)="filterByTag(d.label, $event)">
+                    <a href="#" (click)="navigateDest(d.label, $event)">
                       <span class="mega-icon">{{ d.icon }}</span>
                       {{ d.label }}
                       <span class="mega-arrow">›</span>
@@ -41,7 +47,9 @@ import { ArticleService } from '../../services/article.service';
 
             <!-- CATEGORIES dropdown -->
             <li class="nav-item has-dropdown" (mouseenter)="openMenu('cat')" (mouseleave)="closeMenu()">
-              <a href="#" class="nav-link">CATEGORIES <span class="caret">›</span></a>
+              <a href="#" class="nav-link" [class.active]="activePage==='blog'" (click)="navigate('blog', $event)">
+                CATEGORIES <span class="caret">›</span>
+              </a>
               <div class="simple-dropdown" [class.visible]="activeMenu === 'cat'">
                 <ul>
                   <li *ngFor="let c of navCategories">
@@ -51,9 +59,15 @@ import { ArticleService } from '../../services/article.service';
               </div>
             </li>
 
-            <li class="nav-item"><a href="#" class="nav-link">GALLERY</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">ABOUT</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">CONTACT</a></li>
+            <li class="nav-item">
+              <a href="#" class="nav-link" [class.active]="activePage==='gallery'" (click)="navigate('gallery', $event)">GALLERY</a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link" [class.active]="activePage==='about'" (click)="navigate('about', $event)">ABOUT</a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link" [class.active]="activePage==='contact'" (click)="navigate('contact', $event)">CONTACT</a>
+            </li>
           </ul>
         </nav>
 
@@ -152,9 +166,9 @@ import { ArticleService } from '../../services/article.service';
       color: #cccccc;
       white-space: nowrap;
       transition: color 0.2s;
+      cursor: pointer;
     }
-    .nav-link:hover,
-    .nav-link.active { color: #ffffff; }
+    .nav-link:hover { color: #ffffff; }
     .nav-link.active { color: #e8472a; }
     .caret {
       font-size: 14px;
@@ -164,7 +178,7 @@ import { ArticleService } from '../../services/article.service';
     }
     .has-dropdown:hover .caret { transform: rotate(90deg); }
 
-    /* ---- Mega Dropdown (DESTINATIONS) ---- */
+    /* ---- Dropdowns ---- */
     .mega-dropdown,
     .simple-dropdown {
       position: absolute;
@@ -298,7 +312,6 @@ import { ArticleService } from '../../services/article.service';
       .nav-link { padding: 12px 24px; height: auto; }
       .mega-dropdown, .simple-dropdown { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; border: none; background: #1e1e1e; }
       .hamburger { display: flex; }
-      .write-btn span { display: none; }
     }
   `],
   host: { '(document:click)': 'onDocClick($event)' }
@@ -309,6 +322,7 @@ export class HeaderComponent implements OnInit {
   searchOpen = false;
   searchQuery = '';
   activeMenu: string | null = null;
+  activePage = 'home';
 
   destinations = [
     { icon: '🌍', label: 'Africa' },
@@ -333,10 +347,14 @@ export class HeaderComponent implements OnInit {
     'Photography / Snapshots',
   ];
 
-  // We use EventEmitter output via a custom event on window
   constructor(private articleService: ArticleService) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    // listen for page changes from app component
+    window.addEventListener('kaizen:page-changed', (e: any) => {
+      this.activePage = e.detail?.page || 'home';
+    });
+  }
 
   @HostListener('window:scroll')
   onScroll() {
@@ -345,6 +363,20 @@ export class HeaderComponent implements OnInit {
 
   openMenu(key: string) { this.activeMenu = key; }
   closeMenu() { this.activeMenu = null; }
+
+  navigate(page: string, e: Event) {
+    e.preventDefault();
+    this.activeMenu = null;
+    this.mobileOpen = false;
+    window.dispatchEvent(new CustomEvent('kaizen:navigate', { detail: { page } }));
+  }
+
+  navigateDest(dest: string, e: Event) {
+    e.preventDefault();
+    this.activeMenu = null;
+    this.mobileOpen = false;
+    window.dispatchEvent(new CustomEvent('kaizen:navigate', { detail: { page: 'destinations', dest } }));
+  }
 
   toggleSearch() {
     this.searchOpen = !this.searchOpen;
@@ -357,18 +389,15 @@ export class HeaderComponent implements OnInit {
   doSearch() {
     this.articleService.setSearchQuery(this.searchQuery);
     this.searchOpen = false;
+    window.dispatchEvent(new CustomEvent('kaizen:navigate', { detail: { page: 'blog' } }));
   }
 
   filterByCategory(cat: string, e: Event) {
     e.preventDefault();
     this.articleService.setCategory(cat);
     this.activeMenu = null;
-  }
-
-  filterByTag(tag: string, e: Event) {
-    e.preventDefault();
-    this.articleService.setSearchQuery(tag);
-    this.activeMenu = null;
+    this.mobileOpen = false;
+    window.dispatchEvent(new CustomEvent('kaizen:navigate', { detail: { page: 'blog' } }));
   }
 
   scrollToBlog() {
@@ -379,7 +408,5 @@ export class HeaderComponent implements OnInit {
     window.dispatchEvent(new CustomEvent('kaizen:open-publisher'));
   }
 
-  onDocClick(e: MouseEvent) {
-    // close mobile menu on outside click handled by hamburger button
-  }
+  onDocClick(e: MouseEvent) {}
 }
