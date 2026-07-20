@@ -270,16 +270,16 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       </ng-container>
 
       <!-- ================================================ -->
-      <!-- ===== SEARCH / ALL ARTICLES PAGE ================ -->
+      <!-- ===== BLOG PAGE ================================= -->
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'blog'">
-        <!-- Search Page Hero -->
+        <!-- Blog Page Hero -->
         <div class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1499750310107-5fef28a66936?auto=format&fit=crop&w=1400&q=80')">
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
-            <p class="page-hero-label">🔍 SEARCH & EXPLORE</p>
-            <h1 class="page-hero-title">{{ searchQuery ? 'Search Results' : 'All Topics & Articles' }}</h1>
-            <p class="page-hero-sub">{{ searchQuery ? 'Showing articles matching "' + searchQuery + '"' : 'Browse through all published pieces across all categories.' }}</p>
+            <p class="page-hero-label">THE JOURNAL</p>
+            <h1 class="page-hero-title">Blog</h1>
+            <p class="page-hero-sub">Travel stories, personal growth, photography, career musings, and everything in between — all written from direct experience.</p>
           </div>
         </div>
         <main class="page-body" id="blog-section">
