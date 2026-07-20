@@ -62,6 +62,23 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
             <span>SCROLL DOWN</span>
             <i class="fa-solid fa-chevron-down bounce"></i>
           </div>
+
+          <!-- INK STROKE DIVIDER: hero → intro -->
+          <div class="ink-divider ink-divider--hero">
+            <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+              <!-- Main ink brushstroke wave -->
+              <path d="M0,52 C60,28 140,64 240,48 C320,36 380,58 460,44 C540,30 600,62 700,50 C800,38 860,60 960,46 C1060,32 1140,58 1240,44 C1320,34 1390,54 1440,48 L1440,80 L0,80 Z" fill="#ffffff"/>
+              <!-- Ink drip accent left -->
+              <ellipse cx="180" cy="64" rx="6" ry="10" fill="#ffffff" opacity="0.7"/>
+              <!-- Ink drip accent center -->
+              <ellipse cx="720" cy="58" rx="5" ry="8" fill="#ffffff" opacity="0.5"/>
+              <!-- Ink drip accent right -->
+              <ellipse cx="1260" cy="62" rx="4" ry="7" fill="#ffffff" opacity="0.6"/>
+              <!-- Fine ink scratch lines -->
+              <path d="M80,72 Q120,68 160,72" stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.4"/>
+              <path d="M900,66 Q940,62 980,66" stroke="#ffffff" stroke-width="1.5" fill="none" opacity="0.4"/>
+            </svg>
+          </div>
         </section>
 
         <!-- WHAT THIS BLOG IS ABOUT -->
@@ -96,6 +113,19 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- INK RULED-LINE DIVIDER: intro → features -->
+          <div class="ink-divider ink-divider--ruled">
+            <svg viewBox="0 0 1200 32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+              <!-- Pencil/quill nib icon left -->
+              <polygon points="8,16 20,10 20,22" fill="#e8472a" opacity="0.7"/>
+              <line x1="0" y1="16" x2="22" y2="16" stroke="#e8472a" stroke-width="1.5" opacity="0.5"/>
+              <!-- Ruled line 1 (solid) -->
+              <line x1="32" y1="13" x2="1200" y2="13" stroke="#e0d8cc" stroke-width="1.5"/>
+              <!-- Ruled line 2 (dashed, like notebook) -->
+              <line x1="32" y1="20" x2="1200" y2="20" stroke="#e0d8cc" stroke-width="0.8" stroke-dasharray="4,8"/>
+            </svg>
           </div>
         </section>
 
@@ -146,6 +176,16 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
               </div>
             </div>
           </div>
+
+          <!-- INK WAVE DIVIDER: features → topics (dark bg) -->
+          <div class="ink-divider ink-divider--dark">
+            <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+              <path d="M0,20 C200,0 300,40 500,24 C650,10 750,42 950,26 C1100,14 1250,38 1440,22 L1440,60 L0,60 Z" fill="#111111"/>
+              <!-- Ink pen nib decorative mark -->
+              <path d="M710,8 L720,28 L730,8 Z" fill="#e8472a" opacity="0.8"/>
+              <line x1="700" y1="18" x2="740" y2="18" stroke="#e8472a" stroke-width="1" opacity="0.5"/>
+            </svg>
+          </div>
         </section>
 
         <!-- TOPICS COVERED -->
@@ -159,6 +199,17 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 <span class="tc-name">{{ t.name }}</span>
               </div>
             </div>
+          </div>
+
+          <!-- INK WAVE DIVIDER: topics (dark) → latest (white) -->
+          <div class="ink-divider ink-divider--light">
+            <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+              <path d="M0,40 C180,16 320,52 520,32 C680,16 820,50 1040,30 C1200,14 1340,44 1440,28 L1440,0 L0,0 Z" fill="#111111"/>
+              <!-- Dotted ink accent -->
+              <circle cx="360" cy="48" r="3" fill="#ffffff" opacity="0.3"/>
+              <circle cx="720" cy="52" r="4" fill="#ffffff" opacity="0.25"/>
+              <circle cx="1080" cy="46" r="3" fill="#ffffff" opacity="0.3"/>
+            </svg>
           </div>
         </section>
 
@@ -695,7 +746,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     /* ===== HOME INTRO SECTION ===== */
     .home-intro {
       background: #fff;
-      padding: 80px 0;
+      padding: 80px 0 0;
     }
     .intro-layout {
       display: grid;
@@ -1067,7 +1118,55 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     .footer-col ul a:hover { color: #e8472a; }
     .footer-bottom { border-top: 1px solid #222; padding: 20px; text-align: center; font-size: 12px; color: #555; }
 
+    /* ===== INK DIVIDERS (writing-themed section transitions) ===== */
+    .ink-divider {
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+      pointer-events: none;
+    }
+    .ink-divider svg {
+      display: block;
+      width: 100%;
+    }
+
+    /* Hero → Intro: white brushstroke on dark hero */
+    .ink-divider--hero {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 80px;
+      z-index: 3;
+    }
+    .ink-divider--hero svg { height: 80px; }
+
+    /* Intro → Features: notebook ruled lines with quill nib */
+    .ink-divider--ruled {
+      padding: 4px 0;
+      background: #fff;
+      margin-top: 32px;
+    }
+    .ink-divider--ruled svg { height: 32px; }
+
+    /* Features (white) → Topics (dark): wave transition into dark */
+    .ink-divider--dark {
+      background: #f8f8f8;
+      height: 60px;
+      margin-top: -1px;
+    }
+    .ink-divider--dark svg { height: 60px; }
+
+    /* Topics (dark) → Latest (white): wave back to white */
+    .ink-divider--light {
+      background: #111;
+      height: 60px;
+      margin-bottom: -1px;
+    }
+    .ink-divider--light svg { height: 60px; }
+
     /* ===== RESPONSIVE ===== */
+
     @media (max-width: 960px) {
       .intro-layout { grid-template-columns: 1fr; }
       .intro-author-card { position: static; max-width: 100%; margin-top: 16px; }
