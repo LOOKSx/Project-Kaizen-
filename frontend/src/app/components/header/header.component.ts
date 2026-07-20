@@ -23,9 +23,6 @@ import { ArticleService } from '../../services/article.service';
             <li class="nav-item">
               <a href="#" class="nav-link" [class.active]="activePage==='home'" (click)="navigate('home', $event)">HOME</a>
             </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link" [class.active]="activePage==='blog'" (click)="navigate('blog', $event)">BLOG</a>
-            </li>
 
             <!-- DESTINATIONS megamenu -->
             <li class="nav-item has-dropdown" (mouseenter)="openMenu('dest')" (mouseleave)="closeMenu()">

@@ -46,7 +46,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
               and the philosophy of becoming a little better every single day.
             </p>
             <div class="hero-btns">
-              <button class="hero-btn-primary" (click)="navTo('blog')">Start Exploring</button>
+              <button class="hero-btn-primary" (click)="navTo('categories')">Browse Categories</button>
               <button class="hero-btn-secondary" (click)="navTo('about')">About Me</button>
             </div>
           </div>
@@ -135,11 +135,11 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
             <p class="section-eyebrow">EXPLORE THE BLOG</p>
             <h2 class="section-title">What You'll Find Here</h2>
             <div class="features-grid">
-              <div class="feature-card" (click)="navTo('blog')">
+              <div class="feature-card" (click)="navTo('categories')">
                 <div class="fc-img-wrap">
-                  <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=700&q=80" alt="Blog" class="fc-img" />
+                  <img src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=700&q=80" alt="Categories" class="fc-img" />
                   <div class="fc-overlay">
-                    <span class="fc-explore">READ ARTICLES →</span>
+                    <span class="fc-explore">EXPLORE CATEGORIES →</span>
                   </div>
                 </div>
                 <div class="fc-body">
@@ -221,7 +221,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 <p class="section-eyebrow">FRESH FROM THE JOURNAL</p>
                 <h2 class="section-title">Latest Articles</h2>
               </div>
-              <button class="see-all-btn" (click)="navTo('blog')">View All Posts →</button>
+              <button class="see-all-btn" (click)="navTo('categories')">View All Topics →</button>
             </div>
             <div class="latest-grid">
               <div class="latest-card" *ngFor="let a of articles.slice(0, 6)" (click)="openReader(a)">
@@ -240,7 +240,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
               </div>
             </div>
             <div class="home-cta">
-              <button class="load-more-btn" (click)="navTo('blog')">SEE ALL ARTICLES</button>
+              <button class="load-more-btn" (click)="navTo('categories')">BROWSE ALL CATEGORIES</button>
             </div>
           </div>
         </section>
@@ -271,16 +271,16 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       </ng-container>
 
       <!-- ================================================ -->
-      <!-- ===== BLOG PAGE ================================= -->
+      <!-- ===== SEARCH / ALL ARTICLES PAGE ================ -->
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'blog'">
-        <!-- Blog Page Hero -->
+        <!-- Search Page Hero -->
         <div class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1499750310107-5fef28a66936?auto=format&fit=crop&w=1400&q=80')">
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
-            <p class="page-hero-label">✏️ THE JOURNAL</p>
-            <h1 class="page-hero-title">Blog</h1>
-            <p class="page-hero-sub">Travel stories, personal growth, photography, career musings, and everything in between — all written from direct experience.</p>
+            <p class="page-hero-label">🔍 SEARCH & EXPLORE</p>
+            <h1 class="page-hero-title">{{ searchQuery ? 'Search Results' : 'All Topics & Articles' }}</h1>
+            <p class="page-hero-sub">{{ searchQuery ? 'Showing articles matching "' + searchQuery + '"' : 'Browse through all published pieces across all categories.' }}</p>
           </div>
         </div>
         <main class="page-body" id="blog-section">
