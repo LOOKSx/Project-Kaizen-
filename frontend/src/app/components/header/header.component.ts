@@ -52,8 +52,20 @@ import { ArticleService } from '../../services/article.service';
               </a>
               <div class="simple-dropdown" [class.visible]="activeMenu === 'cat'">
                 <ul>
+                  <li class="all-cat-item">
+                    <a href="#" (click)="navigate('categories', $event)" class="all-cat-link">
+                      <span class="mega-icon">🏷️</span>
+                      <span>ALL CATEGORIES</span>
+                      <span class="mega-arrow">›</span>
+                    </a>
+                  </li>
+                  <li class="cat-divider"></li>
                   <li *ngFor="let c of navCategories">
-                    <a href="#" (click)="filterByCategory(c, $event)">{{ c }}</a>
+                    <a href="#" (click)="filterByCategory(c.label, $event)">
+                      <span class="mega-icon">{{ c.icon }}</span>
+                      {{ c.label }}
+                      <span class="mega-arrow">›</span>
+                    </a>
                   </li>
                 </ul>
               </div>
@@ -227,6 +239,21 @@ import { ArticleService } from '../../services/article.service';
     .mega-icon { font-size: 14px; }
     .mega-arrow { margin-left: auto; font-size: 12px; opacity: 0.5; }
 
+    .all-cat-item a {
+      color: #e8472a !important;
+      font-weight: 800 !important;
+      background: rgba(232, 71, 42, 0.08);
+    }
+    .all-cat-item a:hover {
+      background: rgba(232, 71, 42, 0.18) !important;
+      color: #fff !important;
+    }
+    .cat-divider {
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      margin: 4px 0;
+    }
+
     /* ---- Right side ---- */
     .nav-right {
       display: flex;
@@ -335,16 +362,16 @@ export class HeaderComponent implements OnInit {
   ];
 
   navCategories = [
-    'Daily Life / Musings',
-    'Personal Growth',
-    'Travel & Places',
-    'Relationships',
-    'Health & Wellbeing',
-    'Work & Career',
-    'Books & Learning',
-    'Goals & Projects',
-    'Random Thoughts / Rants',
-    'Photography / Snapshots',
+    { icon: '✏️', label: 'Daily Life / Musings' },
+    { icon: '🌱', label: 'Personal Growth' },
+    { icon: '✈️', label: 'Travel & Places' },
+    { icon: '❤️', label: 'Relationships' },
+    { icon: '💪', label: 'Health & Wellbeing' },
+    { icon: '💼', label: 'Work & Career' },
+    { icon: '📚', label: 'Books & Learning' },
+    { icon: '🎯', label: 'Goals & Projects' },
+    { icon: '💬', label: 'Random Thoughts / Rants' },
+    { icon: '📷', label: 'Photography / Snapshots' },
   ];
 
   constructor(private articleService: ArticleService) {}
