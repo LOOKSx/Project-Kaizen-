@@ -116,6 +116,10 @@ import { ArticleService } from '../../services/article.service';
               <i class="fa-solid fa-magnifying-glass"></i>
             </button>
           </div>
+          <!-- Dark / Light Theme Toggle -->
+          <button class="icon-btn theme-btn" (click)="toggleTheme()" [title]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+            <i class="fa-solid" [class.fa-sun]="isDarkMode" [class.fa-moon]="!isDarkMode"></i>
+          </button>
           <button class="write-btn" *ngIf="isAdmin" (click)="openPublisherEvent()">
             <i class="fa-solid fa-pen"></i> Write
           </button>
@@ -441,6 +445,9 @@ import { ArticleService } from '../../services/article.service';
       transition: all 0.2s;
     }
     .icon-btn:hover { color: #ffffff; background: rgba(255,255,255,0.1); }
+    .theme-btn { font-size: 15px; }
+    .theme-btn .fa-sun { color: #f59e0b; }
+    .theme-btn .fa-moon { color: #94a3b8; }
 
     .search-wrap {
       display: flex;
@@ -534,6 +541,7 @@ export class HeaderComponent implements OnInit {
   activeMenu: string | null = null;
   activePage = 'home';
   isAdmin = false;
+  isDarkMode = false;
 
   destinations = [
     { label: 'Africa' },
@@ -637,6 +645,7 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.checkAdmin();
+    this.initTheme();
     window.addEventListener('kaizen:admin-status', (e: any) => {
       this.isAdmin = !!e.detail?.isAdmin;
     });
@@ -725,6 +734,38 @@ export class HeaderComponent implements OnInit {
 
   openPublisherEvent() {
     window.dispatchEvent(new CustomEvent('kaizen:open-publisher'));
+  }
+
+  initTheme() {
+    if (typeof localStorage !== 'undefined') {
+      const savedTheme = localStorage.getItem('kaizen_theme');
+      if (savedTheme === 'dark') {
+        this.isDarkMode = true;
+      } else if (savedTheme === 'light') {
+        this.isDarkMode = false;
+      } else if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        this.isDarkMode = true;
+      }
+    }
+    this.applyTheme();
+  }
+
+  applyTheme() {
+    if (typeof document !== 'undefined') {
+      if (this.isDarkMode) {
+        document.body.classList.add('dark-theme');
+      } else {
+        document.body.classList.remove('dark-theme');
+      }
+    }
+  }
+
+  toggleTheme() {
+    this.isDarkMode = !this.isDarkMode;
+    this.applyTheme();
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('kaizen_theme', this.isDarkMode ? 'dark' : 'light');
+    }
   }
 
   onDocClick(e: MouseEvent) {}

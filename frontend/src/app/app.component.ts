@@ -2007,6 +2007,7 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(private articleService: ArticleService) {}
 
   ngOnInit() {
+    this.initTheme();
     this.checkAdminStatus();
     this.checkSecretRoute();
     this.loadSiteSettings();
@@ -2168,6 +2169,17 @@ export class AppComponent implements OnInit, OnDestroy {
     }
     this.editingArticle = null;
     this.openReader(newArticle);
+  }
+
+  initTheme() {
+    if (typeof localStorage !== 'undefined') {
+      const savedTheme = localStorage.getItem('kaizen_theme');
+      if (savedTheme === 'dark' || (!savedTheme && typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        if (typeof document !== 'undefined') document.body.classList.add('dark-theme');
+      } else {
+        if (typeof document !== 'undefined') document.body.classList.remove('dark-theme');
+      }
+    }
   }
 
   checkAdminStatus() {

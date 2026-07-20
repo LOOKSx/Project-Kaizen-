@@ -41,6 +41,97 @@
   --transition: all 0.25s ease;
 }
 
+/* --- Dark Theme Variables --- */
+body.dark-theme {
+  --color-bg: #121212;
+  --color-body: #e2e8f0;
+  --color-muted: #94a3b8;
+  --color-light: #1e1e1e;
+  --color-border: #262626;
+
+  --color-navbar: #0a0a0a;
+  --color-navbar-text: #ffffff;
+
+  --shadow-card: 0 4px 20px rgba(0,0,0,0.45);
+  --shadow-card-hover: 0 10px 35px rgba(0,0,0,0.65);
+}
+
+/* --- Dark Theme Component Overrides --- */
+body.dark-theme .page-body {
+  background-color: #121212;
+  color: #e2e8f0;
+}
+body.dark-theme .post-card,
+body.dark-theme .intro-section,
+body.dark-theme .intro-author-card,
+body.dark-theme .sidebar-widget,
+body.dark-theme .cat-full-card,
+body.dark-theme .dest-card,
+body.dark-theme .about-content-card,
+body.dark-theme .contact-card {
+  background-color: #1a1a1a !important;
+  border-color: #2a2a2a !important;
+  color: #e2e8f0 !important;
+}
+body.dark-theme .post-title,
+body.dark-theme .section-heading,
+body.dark-theme .page-hero-title,
+body.dark-theme h1, body.dark-theme h2, body.dark-theme h3, body.dark-theme h4 {
+  color: #f8fafc !important;
+}
+body.dark-theme .post-excerpt,
+body.dark-theme .meta-sub,
+body.dark-theme p {
+  color: #a0aec0;
+}
+body.dark-theme .editor-modal-card,
+body.dark-theme .img-editor-card,
+body.dark-theme .admin-modal-card {
+  background: #181818 !important;
+  color: #f1f5f9 !important;
+  border: 1px solid #333333 !important;
+}
+body.dark-theme .editor-header h2,
+body.dark-theme .img-editor-header h2 {
+  color: #ffffff !important;
+}
+body.dark-theme .form-group input,
+body.dark-theme .form-group select,
+body.dark-theme .form-group textarea,
+body.dark-theme .img-editor-url-input,
+body.dark-theme .url-input {
+  background: #111111 !important;
+  color: #f8fafc !important;
+  border-color: #333333 !important;
+}
+body.dark-theme .image-upload-area,
+body.dark-theme .img-editor-dropzone {
+  background: #141414 !important;
+  border-color: #333333 !important;
+}
+body.dark-theme .reader-body {
+  background: #121212 !important;
+}
+body.dark-theme .article-text-content {
+  color: #cbd5e1 !important;
+}
+body.dark-theme .article-text-content h2,
+body.dark-theme .article-text-content h3 {
+  color: #ffffff !important;
+}
+body.dark-theme .comment-item {
+  background: #1a1a1a !important;
+  border-color: #2a2a2a !important;
+}
+body.dark-theme .btn-secondary {
+  background: #222222;
+  color: #e2e8f0;
+  border-color: #333333;
+}
+body.dark-theme .btn-secondary:hover {
+  background: #333333;
+}
+
 /* --- Reset & Base --- */
 *, *::before, *::after {
   box-sizing: border-box;
