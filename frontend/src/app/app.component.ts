@@ -333,7 +333,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
               <p>Click any category to browse all articles published under that topic.</p>
             </div>
             <div class="categories-full-grid">
-              <div class="cat-full-card" *ngFor="let cat of categoryPageItems" (click)="filterAndBlog(cat.name)">
+              <div class="cat-full-card" *ngFor="let cat of categoryPageItems" (click)="openCategoryDetail(cat.name)">
                 <div class="cat-full-img-wrap">
                   <img [src]="cat.image" [alt]="cat.name" class="cat-full-img" loading="lazy" />
                   <div class="cat-full-badge">{{ cat.icon }} {{ cat.name }}</div>
@@ -343,11 +343,85 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                   <p>{{ cat.desc }}</p>
                   <div class="cat-full-footer">
                     <span class="cat-count-pill"><i class="fa-solid fa-file-lines"></i> {{ getCategoryArticleCount(cat.name) }} Articles</span>
-                    <span class="cat-explore-btn">Browse Posts →</span>
+                    <span class="cat-explore-btn">Browse Hub →</span>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+        </main>
+      </ng-container>
+
+      <!-- ================================================ -->
+      <!-- ===== DEDICATED SINGLE CATEGORY HUB PAGE ======= -->
+      <!-- ================================================ -->
+      <ng-container *ngIf="currentPage === 'category'">
+        <!-- Hero for the specific category -->
+        <div class="page-hero" [style.background-image]="'url(' + activeCategoryMeta.image + ')'">
+          <div class="page-hero-overlay"></div>
+          <div class="page-hero-content">
+            <p class="page-hero-label">{{ activeCategoryMeta.icon }} CATEGORY HUB</p>
+            <h1 class="page-hero-title">{{ activeCategoryMeta.name }}</h1>
+            <p class="page-hero-sub">{{ activeCategoryMeta.desc }}</p>
+          </div>
+        </div>
+
+        <main class="page-body">
+          <div class="container">
+
+            <!-- Breadcrumbs & Category Bar -->
+            <div class="cat-detail-bar">
+              <div class="cat-breadcrumbs">
+                <a href="#" (click)="navTo('home', $event)">Home</a>
+                <span class="crumb-sep">/</span>
+                <a href="#" (click)="navTo('categories', $event)">Categories</a>
+                <span class="crumb-sep">/</span>
+                <span class="active-crumb">{{ activeCategoryMeta.name }}</span>
+              </div>
+              <div class="cat-meta-stats">
+                <span class="cms-pill"><i class="fa-solid fa-file-lines"></i> {{ categoryArticles.length }} Published Posts</span>
+                <span class="cms-pill"><i class="fa-solid fa-pen-nib"></i> Curated Insights</span>
+              </div>
+            </div>
+
+            <!-- Articles Grid for this specific Category -->
+            <div class="category-posts-section">
+              <div class="section-header">
+                <h2 class="section-heading">ARTICLES IN {{ activeCategoryMeta.name | uppercase }}</h2>
+              </div>
+
+              <div class="posts-grid" *ngIf="categoryArticles.length > 0">
+                <app-article-card
+                  *ngFor="let item of categoryArticles"
+                  [article]="item"
+                  (onSelect)="openReader($event)"
+                ></app-article-card>
+              </div>
+
+              <!-- Fallback if no specific articles exist yet -->
+              <div class="empty-state" *ngIf="categoryArticles.length === 0">
+                <i class="fa-solid fa-book-open empty-icon"></i>
+                <h3>No Articles in {{ activeCategoryMeta.name }} Yet</h3>
+                <p>Check back soon or explore other curated categories below.</p>
+                <button class="btn btn-secondary" (click)="navTo('categories', $event)">Browse All Categories</button>
+              </div>
+            </div>
+
+            <!-- Related Categories Switcher at Bottom -->
+            <div class="other-categories-bar">
+              <h3 class="other-cat-title">Explore Other Categories</h3>
+              <div class="other-cat-chips">
+                <button
+                  *ngFor="let c of categoryPageItems"
+                  class="other-cat-chip"
+                  [class.active]="c.name === activeCategoryMeta.name"
+                  (click)="openCategoryDetail(c.name)"
+                >
+                  <span>{{ c.icon }} {{ c.name }}</span>
+                </button>
+              </div>
+            </div>
+
           </div>
         </main>
       </ng-container>
@@ -1093,6 +1167,97 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     .cat-count-pill { font-size: 12px; color: #888; font-weight: 600; }
     .cat-explore-btn { color: #e8472a; font-weight: 700; font-size: 12px; letter-spacing: 0.04em; }
 
+    /* ===== DEDICATED CATEGORY HUB PAGE ===== */
+    .cat-detail-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      background: #f9f9f9;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .cat-breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #666;
+    }
+    .cat-breadcrumbs a {
+      color: #333;
+      transition: color 0.2s;
+    }
+    .cat-breadcrumbs a:hover {
+      color: #e8472a;
+    }
+    .crumb-sep {
+      color: #ccc;
+    }
+    .active-crumb {
+      color: #e8472a;
+      font-weight: 700;
+    }
+    .cat-meta-stats {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .cms-pill {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #444;
+    }
+    .cms-pill i {
+      color: #e8472a;
+      margin-right: 4px;
+    }
+    .category-posts-section {
+      margin-bottom: 60px;
+    }
+    .other-categories-bar {
+      border-top: 2px solid #f0f0f0;
+      padding-top: 40px;
+      margin-top: 40px;
+    }
+    .other-cat-title {
+      font-family: 'Lato', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #111;
+      margin: 0 0 20px;
+    }
+    .other-cat-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .other-cat-chip {
+      padding: 8px 18px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 30px;
+      background: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      color: #555;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .other-cat-chip:hover,
+    .other-cat-chip.active {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+    }
+
     /* ===== GALLERY ===== */
     .gallery-grid { columns: 3; column-gap: 16px; }
     .gallery-item { position: relative; break-inside: avoid; margin-bottom: 16px; border-radius: 8px; overflow: hidden; cursor: pointer; }
@@ -1451,6 +1616,10 @@ export class AppComponent implements OnInit, OnDestroy {
     });
     window.addEventListener('kaizen:navigate', (e: any) => {
       const page = e.detail?.page || 'home';
+      if (e.detail?.cat) {
+        this.selectedCatName = e.detail.cat;
+        this.articleService.setCategory(e.detail.cat);
+      }
       this.navigateTo(page);
       if (e.detail?.dest) this.destFilter = e.detail.dest;
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1511,16 +1680,31 @@ export class AppComponent implements OnInit, OnDestroy {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  filterAndBlog(cat: string) {
-    this.articleService.setCategory(cat);
-    this.navigateTo('blog');
+  selectedCatName = 'Personal Growth';
+
+  get activeCategoryMeta() {
+    return this.categoryPageItems.find(c => c.name.toLowerCase() === this.selectedCatName.toLowerCase()) 
+      || this.categoryPageItems[1];
+  }
+
+  get categoryArticles() {
+    return this.articles.filter(a => a.category.toLowerCase() === this.selectedCatName.toLowerCase());
+  }
+
+  openCategoryDetail(catName: string, e?: Event) {
+    if (e) e.preventDefault();
+    this.selectedCatName = catName;
+    this.articleService.setCategory(catName);
+    this.navigateTo('category');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  filterAndBlog(cat: string) {
+    this.openCategoryDetail(cat);
+  }
+
   filterCat(cat: string, e: Event) {
-    e.preventDefault();
-    this.articleService.setCategory(cat);
-    this.navigateTo('blog');
+    this.openCategoryDetail(cat, e);
   }
 
   goDestPage(region: string, e: Event) {

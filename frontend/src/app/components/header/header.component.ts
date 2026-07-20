@@ -675,7 +675,7 @@ export class HeaderComponent implements OnInit {
     this.articleService.setCategory(cat);
     this.activeMenu = null;
     this.mobileOpen = false;
-    window.dispatchEvent(new CustomEvent('kaizen:navigate', { detail: { page: 'blog' } }));
+    window.dispatchEvent(new CustomEvent('kaizen:navigate', { detail: { page: 'category', cat } }));
   }
 
   openPreviewCategory(catName: string, e: Event) {
