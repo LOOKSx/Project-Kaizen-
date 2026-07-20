@@ -297,7 +297,10 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
               <app-article-card
                 *ngFor="let item of articles"
                 [article]="item"
+                [isAdmin]="isAdmin"
                 (onSelect)="openReader($event)"
+                (onEdit)="openEditModal($event)"
+                (onDelete)="deleteArticleFromReader($event)"
               ></app-article-card>
             </div>
             <div class="empty-state" *ngIf="articles.length === 0">
@@ -393,7 +396,10 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 <app-article-card
                   *ngFor="let item of categoryArticles"
                   [article]="item"
+                  [isAdmin]="isAdmin"
                   (onSelect)="openReader($event)"
+                  (onEdit)="openEditModal($event)"
+                  (onDelete)="deleteArticleFromReader($event)"
                 ></app-article-card>
               </div>
 
@@ -696,7 +702,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
 
       <app-article-editor
         *ngIf="showPublisherModal"
-        (onClose)="showPublisherModal = false"
+        [articleToEdit]="editingArticle"
+        (onClose)="closePublisherModal()"
         (onArticlePublished)="handleArticlePublished($event)"
       ></app-article-editor>
 
@@ -1824,8 +1831,28 @@ export class AppComponent implements OnInit, OnDestroy {
     this.articleService.setSearchQuery('');
   }
 
+  editingArticle: Article | null = null;
+
+  openEditModal(article: Article) {
+    this.editingArticle = article;
+    this.showPublisherModal = true;
+  }
+
+  closePublisherModal() {
+    this.showPublisherModal = false;
+    this.editingArticle = null;
+  }
+
   handleArticlePublished(newArticle: Article) {
-    this.articles.unshift(newArticle);
+    const idx = this.articles.findIndex(a => a.id === newArticle.id);
+    if (idx !== -1) {
+      this.articles[idx] = newArticle;
+      this.showToast('แก้ไขบทความสำเร็จเรียบร้อยแล้ว (Article Updated)');
+    } else {
+      this.articles.unshift(newArticle);
+      this.showToast('เพิ่มบทความใหม่เรียบร้อยแล้ว (New Article Created)');
+    }
+    this.editingArticle = null;
     this.openReader(newArticle);
   }
 

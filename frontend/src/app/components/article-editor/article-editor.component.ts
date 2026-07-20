@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ArticleService } from '../../services/article.service';
@@ -23,8 +23,8 @@ import { Article } from '../../models/article.model';
             <i class="fa-solid fa-feather-pointed"></i>
           </div>
           <div>
-            <h2>New Article</h2>
-            <p>Share your thoughts, stories, and discoveries with the world.</p>
+            <h2>{{ articleToEdit ? 'แก้ไขบทความ (Edit Article)' : 'เขียนบทความใหม่ (New Article)' }}</h2>
+            <p>{{ articleToEdit ? 'ปรับแต่งข้อมูลและเนื้อหาบทความได้อย่างอิสระ' : 'แชร์เรื่องราวและความรู้ของคุณสู่ผู้อ่าน' }}</p>
           </div>
         </div>
 
@@ -172,14 +172,10 @@ Your content here..."
             <button type="button" class="btn-cancel" (click)="onClose.emit()">
               Cancel
             </button>
-            <button type="submit" class="btn-publish" [disabled]="publishing || !title || !excerpt || !content">
-              <span *ngIf="!publishing">
-                <i class="fa-solid fa-paper-plane"></i> Publish Article
-              </span>
-              <span *ngIf="publishing">
-                <i class="fa-solid fa-spinner fa-spin"></i> Publishing...
-              </span>
-            </button>
+              <button type="submit" class="btn-publish" [disabled]="!title || !excerpt || !content || publishing || uploading">
+                <i class="fa-solid" [class.fa-paper-plane]="!publishing" [class.fa-spinner]="publishing" [class.fa-spin]="publishing"></i>
+                <span>{{ publishing ? 'กำลังบันทึก...' : (articleToEdit ? 'บันทึกการแก้ไข' : 'เผยแพร่บทความ') }}</span>
+              </button>
           </div>
 
         </form>
@@ -514,6 +510,7 @@ Your content here..."
   `]
 })
 export class ArticleEditorComponent {
+  @Input() articleToEdit: Article | null = null;
   @Output() onClose = new EventEmitter<void>();
   @Output() onArticlePublished = new EventEmitter<Article>();
 
@@ -533,6 +530,19 @@ export class ArticleEditorComponent {
   private pendingFile: File | null = null;
 
   constructor(private articleService: ArticleService) {}
+
+  ngOnInit() {
+    if (this.articleToEdit) {
+      this.title = this.articleToEdit.title || '';
+      this.category = this.articleToEdit.category || 'Daily Life / Musings';
+      this.readTime = this.articleToEdit.read_time || '5 min read';
+      this.coverImage = this.articleToEdit.cover_image || '';
+      this.coverImagePreview = this.articleToEdit.cover_image || '';
+      this.excerpt = this.articleToEdit.excerpt || '';
+      this.content = this.articleToEdit.content || '';
+      this.tags = this.articleToEdit.tags || '';
+    }
+  }
 
   triggerFileInput() {
     const input = document.querySelector('.file-input-hidden') as HTMLInputElement;
@@ -619,19 +629,37 @@ export class ArticleEditorComponent {
   publishArticle() {
     if (this.title && this.excerpt && this.content) {
       this.publishing = true;
-      this.articleService.createArticle({
-        title: this.title,
-        category: this.category,
-        read_time: this.readTime,
-        cover_image: this.coverImage,
-        excerpt: this.excerpt,
-        content: this.content,
-        tags: this.tags
-      }).subscribe(created => {
-        this.publishing = false;
-        this.onArticlePublished.emit(created);
-        this.onClose.emit();
-      });
+      if (this.articleToEdit) {
+        const updated: Article = {
+          ...this.articleToEdit,
+          title: this.title,
+          category: this.category,
+          read_time: this.readTime,
+          cover_image: this.coverImage || this.articleToEdit.cover_image,
+          excerpt: this.excerpt,
+          content: this.content,
+          tags: this.tags
+        };
+        this.articleService.updateArticle(updated).subscribe(res => {
+          this.publishing = false;
+          this.onArticlePublished.emit(res);
+          this.onClose.emit();
+        });
+      } else {
+        this.articleService.createArticle({
+          title: this.title,
+          category: this.category,
+          read_time: this.readTime,
+          cover_image: this.coverImage,
+          excerpt: this.excerpt,
+          content: this.content,
+          tags: this.tags
+        }).subscribe(created => {
+          this.publishing = false;
+          this.onArticlePublished.emit(created);
+          this.onClose.emit();
+        });
+      }
     }
   }
 }

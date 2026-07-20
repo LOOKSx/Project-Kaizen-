@@ -45,6 +45,16 @@ import { Article } from '../../models/article.model';
           </span>
           <span class="post-read-more">READ MORE →</span>
         </div>
+
+        <!-- Admin Quick Action Toolbar -->
+        <div class="card-admin-actions" *ngIf="isAdmin" (click)="$event.stopPropagation()">
+          <button class="btn-card-edit" (click)="onEdit.emit(article)" title="แก้ไขบทความ">
+            <i class="fa-solid fa-pen-to-square"></i> แก้ไข
+          </button>
+          <button class="btn-card-delete" (click)="onDelete.emit(article)" title="ลบบทความ">
+            <i class="fa-solid fa-trash-can"></i> ลบ
+          </button>
+        </div>
       </div>
     </article>
   `,
@@ -184,11 +194,55 @@ import { Article } from '../../models/article.model';
       transition: gap 0.2s;
     }
     .post-card:hover .post-read-more { letter-spacing: 0.12em; }
+    /* ===== CARD ADMIN ACTIONS ===== */
+    .card-admin-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed #e5e5e5;
+    }
+    .btn-card-edit {
+      flex: 1;
+      background: #111;
+      color: #fff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: background 0.2s;
+    }
+    .btn-card-edit:hover { background: #333; }
+    .btn-card-delete {
+      background: rgba(232,71,42,0.1);
+      color: #e8472a;
+      border: 1px solid #e8472a;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+    .btn-card-delete:hover { background: #e8472a; color: #fff; }
   `]
 })
 export class ArticleCardComponent {
   @Input() article!: Article;
+  @Input() isAdmin: boolean = false;
   @Output() onSelect = new EventEmitter<Article>();
+  @Output() onEdit = new EventEmitter<Article>();
+  @Output() onDelete = new EventEmitter<Article>();
 
   private defaultImages = [
     'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=600&q=80',

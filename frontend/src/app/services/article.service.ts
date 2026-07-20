@@ -138,6 +138,16 @@ export class ArticleService {
     );
   }
 
+  updateArticle(article: Article): Observable<Article> {
+    return this.http.put<any>(`${this.apiUrl}/articles/${article.id}`, article).pipe(
+      map(res => res.data || article),
+      catchError(() => {
+        this.updatePersistedArticle(article);
+        return of(article);
+      })
+    );
+  }
+
   private removePersistedArticle(id: number) {
     const list = this.getPersistedArticles('', '').filter(a => a.id !== id);
     localStorage.setItem('kaizen_articles', JSON.stringify(list));
