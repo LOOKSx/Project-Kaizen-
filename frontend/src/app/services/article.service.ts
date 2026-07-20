@@ -125,6 +125,24 @@ export class ArticleService {
     );
   }
 
+  deleteArticle(id: number): Observable<boolean> {
+    return this.http.delete<any>(`${this.apiUrl}/articles/${id}`).pipe(
+      map(() => {
+        this.removePersistedArticle(id);
+        return true;
+      }),
+      catchError(() => {
+        this.removePersistedArticle(id);
+        return of(true);
+      })
+    );
+  }
+
+  private removePersistedArticle(id: number) {
+    const list = this.getPersistedArticles('', '').filter(a => a.id !== id);
+    localStorage.setItem('kaizen_articles', JSON.stringify(list));
+  }
+
   getAuthorProfile(): Observable<AuthorProfile> {
     return this.http.get<any>(`${this.apiUrl}/author`).pipe(
       map(res => res.data),

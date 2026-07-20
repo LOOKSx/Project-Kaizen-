@@ -16,6 +16,14 @@ import { ArticleService } from '../../services/article.service';
           <i class="fa-solid fa-xmark"></i>
         </button>
 
+        <!-- Admin Bar inside Reader -->
+        <div class="admin-reader-bar" *ngIf="isAdmin">
+          <span class="arb-badge"><i class="fa-solid fa-user-shield"></i> Stealth Admin</span>
+          <button class="arb-delete-btn" (click)="onDelete.emit(article)">
+            <i class="fa-solid fa-trash-can"></i> Delete Article
+          </button>
+        </div>
+
         <!-- Article Header Banner -->
         <div class="reader-hero">
           <img [src]="article.cover_image" [alt]="article.title" class="reader-cover">
@@ -385,15 +393,36 @@ import { ArticleService } from '../../services/article.service';
       font-size: 13.5px;
       box-sizing: border-box;
     }
-    .form-row input:focus, .form-row textarea:focus {
-      outline: none;
-      border-color: #e8472a;
+    /* ===== ADMIN BAR ===== */
+    .admin-reader-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: #181818;
+      color: #fff;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
+    .arb-badge { font-size: 12px; font-weight: 700; color: #e8472a; }
+    .arb-delete-btn {
+      background: rgba(232,71,42,0.15);
+      color: #e8472a;
+      border: 1px solid #e8472a;
+      padding: 5px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .arb-delete-btn:hover { background: #e8472a; color: #fff; }
   `]
 })
 export class ArticleReaderComponent {
   @Input() article: Article | null = null;
+  @Input() isAdmin: boolean = false;
   @Output() onClose = new EventEmitter<void>();
+  @Output() onDelete = new EventEmitter<Article>();
 
   newCommentAuthor: string = '';
   newCommentText: string = '';

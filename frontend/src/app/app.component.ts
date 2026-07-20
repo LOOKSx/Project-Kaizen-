@@ -689,7 +689,9 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <app-article-reader
         *ngIf="selectedArticle"
         [article]="selectedArticle"
+        [isAdmin]="isAdmin"
         (onClose)="selectedArticle = null"
+        (onDelete)="deleteArticleFromReader($event)"
       ></app-article-reader>
 
       <app-article-editor
@@ -697,6 +699,41 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
         (onClose)="showPublisherModal = false"
         (onArticlePublished)="handleArticlePublished($event)"
       ></app-article-editor>
+
+      <!-- Stealth Admin Passcode Authorization Modal -->
+      <div class="admin-modal-backdrop" *ngIf="showAdminPassModal" (click)="showAdminPassModal = false">
+        <div class="admin-modal-card" (click)="$event.stopPropagation()">
+          <div class="admin-header">
+            <div class="admin-shield-icon"><i class="fa-solid fa-user-shield"></i></div>
+            <h2>Stealth Admin Access</h2>
+            <p>Enter secret passcode to unlock writing and editing tools.</p>
+          </div>
+          <form (ngSubmit)="unlockAdmin()">
+            <div class="admin-form-group">
+              <label>Secret Passcode</label>
+              <input
+                type="password"
+                class="admin-pass-input"
+                placeholder="Enter passcode..."
+                [(ngModel)]="adminPassInput"
+                name="adminPassInput"
+                autofocus
+                required
+              />
+              <p class="admin-error" *ngIf="adminPassError">Incorrect passcode. Access denied.</p>
+            </div>
+            <div class="admin-actions">
+              <button type="button" class="btn-cancel" (click)="showAdminPassModal = false">Cancel</button>
+              <button type="submit" class="btn-unlock"><i class="fa-solid fa-lock-open"></i> Unlock Admin</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Toast Notification -->
+      <div class="toast-notification" *ngIf="toastMsg">
+        <i class="fa-solid fa-circle-check"></i> {{ toastMsg }}
+      </div>
 
     </div>
   `,
@@ -1387,6 +1424,69 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
 
     /* ===== RESPONSIVE ===== */
 
+    /* ===== STEALTH ADMIN MODAL ===== */
+    .admin-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .admin-modal-card {
+      background: #1c1c1c;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 32px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+      animation: modalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalPop {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .admin-header { text-align: center; margin-bottom: 24px; }
+    .admin-shield-icon { font-size: 36px; color: #e8472a; margin-bottom: 12px; }
+    .admin-header h2 { font-family: 'Lato', sans-serif; font-size: 22px; font-weight: 800; margin: 0 0 6px; }
+    .admin-header p { font-size: 13px; color: #aaa; margin: 0; }
+    .admin-form-group { margin-bottom: 24px; }
+    .admin-form-group label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #ccc; margin-bottom: 8px; }
+    .admin-pass-input { width: 100%; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; padding: 12px 14px; color: #fff; font-size: 15px; outline: none; box-sizing: border-box; transition: border-color 0.2s; }
+    .admin-pass-input:focus { border-color: #e8472a; }
+    .admin-error { color: #ff5252; font-size: 12px; margin: 8px 0 0; font-weight: 600; }
+    .admin-actions { display: flex; gap: 12px; justify-content: flex-end; }
+    .btn-cancel { background: rgba(255,255,255,0.08); color: #ccc; border: none; padding: 10px 18px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .btn-cancel:hover { background: rgba(255,255,255,0.15); color: #fff; }
+    .btn-unlock { background: #e8472a; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.2s; }
+    .btn-unlock:hover { background: #d03a1e; }
+
+    /* ===== TOAST ===== */
+    .toast-notification {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #111;
+      color: #fff;
+      border-left: 4px solid #e8472a;
+      padding: 14px 20px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      z-index: 10000;
+      animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
     @media (max-width: 960px) {
       .categories-full-grid { grid-template-columns: 1fr; }
       .intro-layout { grid-template-columns: 1fr; }
@@ -1585,9 +1685,17 @@ export class AppComponent implements OnInit, OnDestroy {
     { icon: 'fa-solid fa-clock', label: 'Response Time', value: 'Usually within 24–48 hours' },
   ];
 
+  isAdmin = false;
+  showAdminPassModal = false;
+  adminPassInput = '';
+  adminPassError = false;
+  toastMsg = '';
+
   constructor(private articleService: ArticleService) {}
 
   ngOnInit() {
+    this.checkAdminStatus();
+    this.checkSecretRoute();
     this.loadData();
 
     this.articleService.selectedCategory$.subscribe(cat => {
@@ -1719,6 +1827,57 @@ export class AppComponent implements OnInit, OnDestroy {
   handleArticlePublished(newArticle: Article) {
     this.articles.unshift(newArticle);
     this.openReader(newArticle);
+  }
+
+  checkAdminStatus() {
+    if (typeof localStorage !== 'undefined') {
+      this.isAdmin = localStorage.getItem('kaizen_admin_active') === 'true';
+    }
+  }
+
+  checkSecretRoute() {
+    if (typeof window !== 'undefined') {
+      const url = window.location.href.toLowerCase();
+      if (url.includes('admin')) {
+        this.showAdminPassModal = true;
+        try {
+          history.replaceState(null, '', window.location.pathname);
+        } catch (e) {}
+      }
+    }
+  }
+
+  unlockAdmin() {
+    if (this.adminPassInput.trim() === 'kaizen2026') {
+      this.isAdmin = true;
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem('kaizen_admin_active', 'true');
+      }
+      window.dispatchEvent(new CustomEvent('kaizen:admin-status', { detail: { isAdmin: true } }));
+      this.showAdminPassModal = false;
+      this.adminPassInput = '';
+      this.adminPassError = false;
+      this.showToast('Stealth Admin Mode Unlocked! You have full Write & Delete access.');
+    } else {
+      this.adminPassError = true;
+    }
+  }
+
+  deleteArticleFromReader(article: Article) {
+    if (confirm(`Are you sure you want to delete "${article.title}"?`)) {
+      this.articleService.deleteArticle(article.id).subscribe(() => {
+        this.articles = this.articles.filter(a => a.id !== article.id);
+        this.selectedArticle = null;
+        this.showToast('Article deleted successfully.');
+      });
+    }
+  }
+
+  showToast(msg: string) {
+    this.toastMsg = msg;
+    setTimeout(() => {
+      this.toastMsg = '';
+    }, 4000);
   }
 
   submitContact() {
