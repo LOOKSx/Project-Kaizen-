@@ -1909,6 +1909,13 @@ export class AppComponent implements OnInit, OnDestroy {
       this.loadArticles();
     });
 
+    window.addEventListener('kaizen:articles-synced', () => {
+      this.loadArticles();
+    });
+    window.addEventListener('kaizen:settings-synced', () => {
+      this.loadSiteSettings();
+    });
+
     window.addEventListener('kaizen:open-publisher', () => {
       this.showPublisherModal = true;
     });
@@ -2222,6 +2229,7 @@ export class AppComponent implements OnInit, OnDestroy {
         photos: this.photos
       };
       localStorage.setItem('kaizen_site_settings', JSON.stringify(settings));
+      this.articleService.syncToCloud(this.articles, settings);
     } catch (e) {
       console.warn('LocalStorage save warning:', e);
     }

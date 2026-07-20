@@ -16,8 +16,46 @@ export class ArticleService {
   private searchQuerySubject = new BehaviorSubject<string>('');
   searchQuery$ = this.searchQuerySubject.asObservable();
 
+  private syncApiUrl = '/api/sync';
+
   constructor(private http: HttpClient) {
     this.initLocalStorage();
+    this.syncFromCloud();
+    if (typeof window !== 'undefined') {
+      setInterval(() => this.syncFromCloud(), 15000);
+    }
+  }
+
+  syncFromCloud() {
+    if (typeof localStorage === 'undefined') return;
+    this.http.get<any>(`${this.syncApiUrl}?t=${Date.now()}`).pipe(
+      catchError(() => of(null))
+    ).subscribe(res => {
+      if (res && res.success) {
+        if (res.articles && Array.isArray(res.articles) && res.articles.length > 0) {
+          localStorage.setItem('kaizen_articles', JSON.stringify(res.articles));
+          window.dispatchEvent(new CustomEvent('kaizen:articles-synced'));
+        }
+        if (res.settings) {
+          localStorage.setItem('kaizen_site_settings', JSON.stringify(res.settings));
+          window.dispatchEvent(new CustomEvent('kaizen:settings-synced'));
+        }
+      }
+    });
+  }
+
+  syncToCloud(articles?: Article[], settings?: any) {
+    const list = articles || this.getPersistedArticles('', '');
+    let setts = settings;
+    if (!setts && typeof localStorage !== 'undefined') {
+      try {
+        const saved = localStorage.getItem('kaizen_site_settings');
+        if (saved) setts = JSON.parse(saved);
+      } catch (e) {}
+    }
+    this.http.post<any>(this.syncApiUrl, { articles: list, settings: setts }).pipe(
+      catchError(() => of(null))
+    ).subscribe();
   }
 
   getArticles(category: string = '', search: string = ''): Observable<Article[]> {
@@ -613,6 +651,7 @@ For travel, the best camera is the one you have with you. A Sony A7C II for seri
     if (idx !== -1) {
       list[idx] = updated;
       localStorage.setItem('kaizen_articles', JSON.stringify(list));
+      this.syncToCloud(list);
     }
   }
 
@@ -620,6 +659,7 @@ For travel, the best camera is the one you have with you. A Sony A7C II for seri
     const list = this.getPersistedArticles('', '');
     list.unshift(art);
     localStorage.setItem('kaizen_articles', JSON.stringify(list));
+    this.syncToCloud(list);
   }
 
   private addPersistedComment(articleId: number, comment: Comment) {
@@ -630,6 +670,7 @@ For travel, the best camera is the one you have with you. A Sony A7C II for seri
       comments.push(comment);
       list[idx].comments = comments;
       localStorage.setItem('kaizen_articles', JSON.stringify(list));
+      this.syncToCloud(list);
     }
   }
 }
