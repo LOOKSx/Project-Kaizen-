@@ -38,6 +38,9 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                [style.background-image]="'url(' + slide.img + ')'">
           </div>
           <div class="hero-overlay"></div>
+          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('currentSlideImg', 'Home Hero Slide #' + (currentSlide + 1))">
+            <i class="fa-solid fa-camera"></i> เปลี่ยนรูปสไลด์นี้ (Slide {{ currentSlide + 1 }})
+          </button>
           <div class="hero-content">
             <p class="hero-eyebrow">A PERSONAL JOURNAL</p>
             <h1 class="hero-headline">EXPLORE.<br>DREAM.<br>DISCOVER.</h1>
@@ -274,7 +277,10 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'blog'">
         <!-- Blog Page Hero -->
-        <div class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1499750310107-5fef28a66936?auto=format&fit=crop&w=1400&q=80')">
+        <div class="page-hero" [style.background-image]="'url(' + blogHeroImg + ')'">
+          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('blogHeroImg', 'Blog Hero Banner')">
+            <i class="fa-solid fa-camera"></i> เปลี่ยนรูปภาพ Hero นี้
+          </button>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
             <p class="page-hero-label">THE JOURNAL</p>
@@ -320,7 +326,10 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ===== CATEGORIES PAGE ========================== -->
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'categories'">
-        <div class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1400&q=80')">
+        <div class="page-hero" [style.background-image]="'url(' + catHeroImg + ')'">
+          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('catHeroImg', 'Categories Hero Banner')">
+            <i class="fa-solid fa-camera"></i> เปลี่ยนรูปภาพ Hero นี้
+          </button>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
             <p class="page-hero-label">BROWSE BY TOPIC</p>
@@ -339,6 +348,9 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 <div class="cat-full-img-wrap">
                   <img [src]="cat.image" [alt]="cat.name" class="cat-full-img" loading="lazy" />
                   <div class="cat-full-badge">{{ cat.name }}</div>
+                  <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(cat, 'image', 'หมวดหมู่ ' + cat.name)">
+                    <i class="fa-solid fa-camera"></i> เปลี่ยนรูป
+                  </button>
                 </div>
                 <div class="cat-full-body">
                   <h3>{{ cat.name }}</h3>
@@ -435,7 +447,10 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ===== DESTINATIONS PAGE ======================== -->
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'destinations'">
-        <div class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1400&q=80')">
+        <div class="page-hero" [style.background-image]="'url(' + destHeroImg + ')'">
+          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('destHeroImg', 'Destinations Hero Banner')">
+            <i class="fa-solid fa-camera"></i> เปลี่ยนรูปภาพ Hero นี้
+          </button>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
             <p class="page-hero-label">EXPLORE THE WORLD</p>
@@ -454,6 +469,9 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 <div class="dest-img-wrap">
                   <img [src]="d.image" [alt]="d.name" class="dest-img" loading="lazy" />
                   <div class="dest-region-badge">{{ d.region }}</div>
+                  <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(d, 'image', 'สถานที่ ' + d.name)">
+                    <i class="fa-solid fa-camera"></i> เปลี่ยนรูป
+                  </button>
                 </div>
                 <div class="dest-info">
                   <h3 class="dest-name">{{ d.name }}</h3>
@@ -474,7 +492,10 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ===== GALLERY PAGE ============================= -->
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'gallery'">
-        <div class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?auto=format&fit=crop&w=1400&q=80')">
+        <div class="page-hero" [style.background-image]="'url(' + galleryHeroImg + ')'">
+          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('galleryHeroImg', 'Gallery Hero Banner')">
+            <i class="fa-solid fa-camera"></i> เปลี่ยนรูปภาพ Hero นี้
+          </button>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
             <p class="page-hero-label">VISUAL STORIES</p>
@@ -490,6 +511,9 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
             <div class="gallery-grid">
               <div class="gallery-item" *ngFor="let p of filteredPhotos" [class.tall]="p.tall">
                 <img [src]="p.url" [alt]="p.caption" class="gallery-img" loading="lazy" />
+                <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(p, 'url', 'รูปแกลเลอรี: ' + p.caption)">
+                  <i class="fa-solid fa-camera"></i> เปลี่ยนรูป
+                </button>
                 <div class="gallery-overlay">
                   <p class="gallery-caption">{{ p.caption }}</p>
                   <span class="gallery-tag">{{ p.tag }}</span>
@@ -504,7 +528,10 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ===== ABOUT PAGE =============================== -->
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'about'">
-        <div class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=80')">
+        <div class="page-hero" [style.background-image]="'url(' + aboutHeroImg + ')'">
+          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('aboutHeroImg', 'About Hero Banner')">
+            <i class="fa-solid fa-camera"></i> เปลี่ยนรูปภาพ Hero นี้
+          </button>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
             <p class="page-hero-label">HELLO THERE</p>
@@ -570,7 +597,10 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ===== CONTACT PAGE ============================= -->
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'contact'">
-        <div class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1400&q=80')">
+        <div class="page-hero" [style.background-image]="'url(' + contactHeroImg + ')'">
+          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('contactHeroImg', 'Contact Hero Banner')">
+            <i class="fa-solid fa-camera"></i> เปลี่ยนรูปภาพ Hero นี้
+          </button>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
             <p class="page-hero-label">GET IN TOUCH</p>
@@ -734,6 +764,42 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
               <button type="submit" class="btn-unlock"><i class="fa-solid fa-lock-open"></i> Unlock Admin</button>
             </div>
           </form>
+        </div>
+      </div>
+
+      <!-- Admin Image Uploader Modal -->
+      <div class="admin-modal-backdrop" *ngIf="showImageEditorModal" (click)="showImageEditorModal = false">
+        <div class="admin-modal-card" (click)="$event.stopPropagation()">
+          <div class="admin-header">
+            <div class="admin-shield-icon"><i class="fa-solid fa-image"></i></div>
+            <h2>{{ imageEditorTitle }}</h2>
+            <p>เลือกไฟล์รูปภาพจากเครื่อง หรือวาง Image URL ใหม่</p>
+          </div>
+
+          <div class="img-preview-box" *ngIf="imageEditorPreview">
+            <img [src]="imageEditorPreview" alt="Preview" class="img-preview-target" />
+          </div>
+
+          <div class="file-upload-dropzone" (click)="triggerImageFileSelect()">
+            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+            <p>คลิกเพื่อเลือกไฟล์รูปภาพจากเครื่องคอมพิวเตอร์</p>
+            <input type="file" #adminImgInput class="admin-img-file-hidden" accept="image/*" (change)="onAdminImageFileSelected($event)" style="display:none;" />
+          </div>
+
+          <div class="or-divider"><span>หรือวาง URL รูปภาพใหม่</span></div>
+
+          <input
+            type="text"
+            class="admin-pass-input"
+            placeholder="https://images.unsplash.com/..."
+            [(ngModel)]="imageEditorUrlInput"
+            (input)="imageEditorPreview = imageEditorUrlInput"
+          />
+
+          <div class="admin-actions" style="margin-top: 20px;">
+            <button type="button" class="btn-cancel" (click)="showImageEditorModal = false">ยกเลิก</button>
+            <button type="button" class="btn-unlock" (click)="saveImageEditor()"><i class="fa-solid fa-check"></i> บันทึกรูปภาพใหม่</button>
+          </div>
         </div>
       </div>
 
@@ -1494,6 +1560,63 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       to { transform: translateX(0); opacity: 1; }
     }
 
+    /* ===== HERO & CARD IMAGE EDIT BUTTONS ===== */
+    .hero-edit-img-btn {
+      position: absolute;
+      top: 90px;
+      right: 24px;
+      z-index: 20;
+      background: rgba(232, 71, 42, 0.9);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hero-edit-img-btn:hover { background: #e8472a; transform: translateY(-2px); }
+    .cat-edit-img-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 10;
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .cat-edit-img-btn:hover { background: #e8472a; }
+
+    /* ===== IMAGE UPLOADER MODAL ===== */
+    .file-upload-dropzone {
+      border: 2px dashed #444;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      background: #222;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .file-upload-dropzone:hover { border-color: #e8472a; }
+    .file-upload-dropzone i { font-size: 28px; color: #e8472a; margin-bottom: 8px; }
+    .file-upload-dropzone p { font-size: 13px; color: #ccc; margin: 0; }
+    .or-divider { text-align: center; margin: 14px 0; font-size: 12px; color: #777; position: relative; }
+    .img-preview-box { width: 100%; height: 160px; border-radius: 6px; overflow: hidden; margin-bottom: 16px; background: #000; }
+    .img-preview-target { width: 100%; height: 100%; object-fit: cover; }
+
     @media (max-width: 960px) {
       .categories-full-grid { grid-template-columns: 1fr; }
       .intro-layout { grid-template-columns: 1fr; }
@@ -1874,6 +1997,78 @@ export class AppComponent implements OnInit, OnDestroy {
         } catch (e) {}
       }
     }
+  }
+
+  // Dynamic Hero Banners
+  blogHeroImg = 'https://images.unsplash.com/photo-1499750310107-5fef28a66936?auto=format&fit=crop&w=1400&q=80';
+  destHeroImg = 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1400&q=80';
+  catHeroImg = 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1400&q=80';
+  galleryHeroImg = 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?auto=format&fit=crop&w=1400&q=80';
+  aboutHeroImg = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=80';
+  contactHeroImg = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1400&q=80';
+
+  // Image Editor Modal
+  showImageEditorModal = false;
+  imageEditorTitle = 'เปลี่ยนรูปภาพ (Change Image)';
+  imageEditorTargetKey = '';
+  imageEditorTargetItem: any = null;
+  imageEditorTargetProp = 'image';
+  imageEditorPreview = '';
+  imageEditorUrlInput = '';
+
+  openImageEditor(key: string, title: string) {
+    this.imageEditorTargetKey = key;
+    this.imageEditorTargetItem = null;
+    this.imageEditorTitle = title;
+    this.imageEditorUrlInput = '';
+    if (key === 'currentSlideImg') {
+      this.imageEditorPreview = this.heroSlides[this.currentSlide].img;
+    } else {
+      this.imageEditorPreview = (this as any)[key] || '';
+    }
+    this.showImageEditorModal = true;
+  }
+
+  openImageEditorItem(item: any, propName: string, title: string) {
+    this.imageEditorTargetKey = 'item';
+    this.imageEditorTargetItem = item;
+    this.imageEditorTargetProp = propName;
+    this.imageEditorTitle = title;
+    this.imageEditorPreview = item[propName] || '';
+    this.imageEditorUrlInput = '';
+    this.showImageEditorModal = true;
+  }
+
+  triggerImageFileSelect() {
+    const input = document.querySelector('.admin-img-file-hidden') as HTMLInputElement;
+    if (input) input.click();
+  }
+
+  onAdminImageFileSelected(e: Event) {
+    const input = e.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const base64 = evt.target?.result as string;
+        this.imageEditorPreview = base64;
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  saveImageEditor() {
+    if (!this.imageEditorPreview) return;
+
+    if (this.imageEditorTargetKey === 'item' && this.imageEditorTargetItem) {
+      this.imageEditorTargetItem[this.imageEditorTargetProp] = this.imageEditorPreview;
+    } else if (this.imageEditorTargetKey === 'currentSlideImg') {
+      this.heroSlides[this.currentSlide].img = this.imageEditorPreview;
+    } else if (this.imageEditorTargetKey) {
+      (this as any)[this.imageEditorTargetKey] = this.imageEditorPreview;
+    }
+
+    this.showImageEditorModal = false;
+    this.showToast('อัปเดตและเปลี่ยนรูปภาพเรียบร้อยแล้ว (Image Updated Successfully)');
   }
 
   unlockAdmin() {
