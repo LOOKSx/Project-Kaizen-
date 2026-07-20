@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, tap, timeout } from 'rxjs/operators';
 import { Article, Category, AuthorProfile, Comment } from '../models/article.model';
 
 @Injectable({
@@ -21,15 +21,32 @@ export class ArticleService {
   }
 
   getArticles(category: string = '', search: string = ''): Observable<Article[]> {
+    const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    if (!isLocalhost) {
+      return of(this.getPersistedArticles(category, search));
+    }
+
     let url = `${this.apiUrl}/articles?category=${encodeURIComponent(category)}&search=${encodeURIComponent(search)}`;
     return this.http.get<any>(url).pipe(
+      timeout(400),
       map(res => res.data || []),
       catchError(() => of(this.getPersistedArticles(category, search)))
     );
   }
 
   getArticleBySlug(slug: string): Observable<Article | null> {
+    const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    if (!isLocalhost) {
+      const mock = this.getPersistedArticles('', '').find(a => a.slug === slug);
+      if (mock) {
+        mock.views++;
+        this.updatePersistedArticle(mock);
+      }
+      return of(mock || null);
+    }
+
     return this.http.get<any>(`${this.apiUrl}/articles/${slug}`).pipe(
+      timeout(400),
       map(res => res.data),
       catchError(() => {
         const mock = this.getPersistedArticles('', '').find(a => a.slug === slug);

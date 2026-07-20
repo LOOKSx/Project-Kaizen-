@@ -1613,8 +1613,18 @@ export class AppComponent implements OnInit, OnDestroy {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
+    // Preload hero slide images for instant 0ms slide transitions
+    this.preloadImages();
     // Start hero auto-slide
     this.startSlideshow();
+  }
+
+  preloadImages() {
+    if (typeof window === 'undefined') return;
+    this.heroSlides.forEach(slide => {
+      const img = new Image();
+      img.src = slide.img;
+    });
   }
 
   ngOnDestroy() {
