@@ -13,7 +13,6 @@ import { ArticleService } from '../../services/article.service';
 
         <!-- Logo -->
         <a class="site-logo" href="#" (click)="navigate('home', $event)">
-          <span class="logo-globe">🌏</span>
           <span class="logo-text">KAIZEN</span>
         </a>
 
@@ -33,7 +32,6 @@ import { ArticleService } from '../../services/article.service';
                 <ul class="mega-list">
                   <li *ngFor="let d of destinations">
                     <a href="#" (click)="navigateDest(d.label, $event)">
-                      <span class="mega-icon">{{ d.icon }}</span>
                       {{ d.label }}
                       <span class="mega-arrow">›</span>
                     </a>
@@ -52,7 +50,6 @@ import { ArticleService } from '../../services/article.service';
                   <!-- Left: Categories List -->
                   <div class="cat-mega-list-col">
                     <a href="#" (click)="navigate('categories', $event)" class="cat-mega-all-btn">
-                      <span class="mega-icon">🏷️</span>
                       <span>ALL CATEGORIES PAGE</span>
                       <span class="mega-arrow">›</span>
                     </a>
@@ -60,7 +57,6 @@ import { ArticleService } from '../../services/article.service';
                     <ul class="cat-mega-list">
                       <li *ngFor="let c of navCategories" (mouseenter)="setPreview(c.label)">
                         <a href="#" (click)="filterByCategory(c.label, $event)">
-                          <span class="mega-icon">{{ c.icon }}</span>
                           <span class="cat-item-label">{{ c.label }}</span>
                           <span class="mega-arrow">›</span>
                         </a>
@@ -520,26 +516,26 @@ export class HeaderComponent implements OnInit {
   activePage = 'home';
 
   destinations = [
-    { icon: '🌍', label: 'Africa' },
-    { icon: '🌎', label: 'Americas' },
-    { icon: '🌏', label: 'Asia' },
-    { icon: '🌎', label: 'Caribbean' },
-    { icon: '🌍', label: 'Europe' },
-    { icon: '🌍', label: 'Middle East' },
-    { icon: '🌏', label: 'Oceania' },
+    { label: 'Africa' },
+    { label: 'Americas' },
+    { label: 'Asia' },
+    { label: 'Caribbean' },
+    { label: 'Europe' },
+    { label: 'Middle East' },
+    { label: 'Oceania' },
   ];
 
   navCategories = [
-    { icon: '✏️', label: 'Daily Life / Musings' },
-    { icon: '🌱', label: 'Personal Growth' },
-    { icon: '✈️', label: 'Travel & Places' },
-    { icon: '❤️', label: 'Relationships' },
-    { icon: '💪', label: 'Health & Wellbeing' },
-    { icon: '💼', label: 'Work & Career' },
-    { icon: '📚', label: 'Books & Learning' },
-    { icon: '🎯', label: 'Goals & Projects' },
-    { icon: '💬', label: 'Random Thoughts / Rants' },
-    { icon: '📷', label: 'Photography / Snapshots' },
+    { label: 'Daily Life / Musings' },
+    { label: 'Personal Growth' },
+    { label: 'Travel & Places' },
+    { label: 'Relationships' },
+    { label: 'Health & Wellbeing' },
+    { label: 'Work & Career' },
+    { label: 'Books & Learning' },
+    { label: 'Goals & Projects' },
+    { label: 'Random Thoughts / Rants' },
+    { label: 'Photography / Snapshots' },
   ];
 
   samplePreviews: { [key: string]: { catName: string; title: string; image: string; excerpt: string; readTime: string } } = {

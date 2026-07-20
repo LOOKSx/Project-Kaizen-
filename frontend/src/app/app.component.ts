@@ -39,7 +39,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
           </div>
           <div class="hero-overlay"></div>
           <div class="hero-content">
-            <p class="hero-eyebrow">🌏 A PERSONAL BLOG</p>
+            <p class="hero-eyebrow">A PERSONAL JOURNAL</p>
             <h1 class="hero-headline">EXPLORE.<br>DREAM.<br>DISCOVER.</h1>
             <p class="hero-sub">
               A journal of continuous growth — travel stories, life musings, photography,
@@ -143,7 +143,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                   </div>
                 </div>
                 <div class="fc-body">
-                  <span class="fc-tag">✏️ TRAVEL BLOG</span>
+                  <span class="fc-tag">TRAVEL STORIES</span>
                   <h3>Stories & Insights</h3>
                   <p>Personal essays on travel, growth, health, books, work, and the tiny moments that make life rich. Written from direct experience.</p>
                 </div>
@@ -156,7 +156,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                   </div>
                 </div>
                 <div class="fc-body">
-                  <span class="fc-tag">✈️ DESTINATIONS</span>
+                  <span class="fc-tag">DESTINATIONS</span>
                   <h3>Around the World</h3>
                   <p>In-depth travel guides to 38+ countries — from Bali's jungle waterfalls and Japan's ancient temples to Patagonia's granite peaks.</p>
                 </div>
@@ -169,7 +169,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                   </div>
                 </div>
                 <div class="fc-body">
-                  <span class="fc-tag">📷 PHOTOGRAPHY</span>
+                  <span class="fc-tag">PHOTOGRAPHY</span>
                   <h3>Visual Stories</h3>
                   <p>A curated collection of travel photography — golden hours, misty mountains, ancient streets, and fleeting moments captured on the road.</p>
                 </div>
@@ -195,7 +195,6 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
             <h2 class="section-title">Topics I Write About</h2>
             <div class="topics-row">
               <div class="topic-chip" *ngFor="let t of topicChips" (click)="filterAndBlog(t.cat)">
-                <span class="tc-icon">{{ t.icon }}</span>
                 <span class="tc-name">{{ t.name }}</span>
               </div>
             </div>
@@ -321,7 +320,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
         <div class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1400&q=80')">
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
-            <p class="page-hero-label">🏷️ BROWSE BY TOPIC</p>
+            <p class="page-hero-label">BROWSE BY TOPIC</p>
             <h1 class="page-hero-title">Categories</h1>
             <p class="page-hero-sub">Explore all 10 core themes of Kaizen — from daily musings and travel stories to personal growth, books, and technology.</p>
           </div>
@@ -336,7 +335,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
               <div class="cat-full-card" *ngFor="let cat of categoryPageItems" (click)="openCategoryDetail(cat.name)">
                 <div class="cat-full-img-wrap">
                   <img [src]="cat.image" [alt]="cat.name" class="cat-full-img" loading="lazy" />
-                  <div class="cat-full-badge">{{ cat.icon }} {{ cat.name }}</div>
+                  <div class="cat-full-badge">{{ cat.name }}</div>
                 </div>
                 <div class="cat-full-body">
                   <h3>{{ cat.name }}</h3>
@@ -360,7 +359,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
         <div class="page-hero" [style.background-image]="'url(' + activeCategoryMeta.image + ')'">
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
-            <p class="page-hero-label">{{ activeCategoryMeta.icon }} CATEGORY HUB</p>
+            <p class="page-hero-label">CATEGORY HUB</p>
             <h1 class="page-hero-title">{{ activeCategoryMeta.name }}</h1>
             <p class="page-hero-sub">{{ activeCategoryMeta.desc }}</p>
           </div>
@@ -417,7 +416,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                   [class.active]="c.name === activeCategoryMeta.name"
                   (click)="openCategoryDetail(c.name)"
                 >
-                  <span>{{ c.icon }} {{ c.name }}</span>
+                  <span>{{ c.name }}</span>
                 </button>
               </div>
             </div>
@@ -433,7 +432,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
         <div class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1400&q=80')">
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
-            <p class="page-hero-label">✈️ EXPLORE THE WORLD</p>
+            <p class="page-hero-label">EXPLORE THE WORLD</p>
             <h1 class="page-hero-title">Destinations</h1>
             <p class="page-hero-sub">Handpicked travel guides from across the globe — volcanic peaks, hidden waterfalls, ancient temples, and seaside villages.</p>
           </div>
@@ -472,7 +471,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
         <div class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1452587925148-ce544e77e70d?auto=format&fit=crop&w=1400&q=80')">
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
-            <p class="page-hero-label">📷 VISUAL STORIES</p>
+            <p class="page-hero-label">VISUAL STORIES</p>
             <h1 class="page-hero-title">Photo Gallery</h1>
             <p class="page-hero-sub">A curated collection of travel photography from around the world — golden hours, ancient temples, and wild landscapes.</p>
           </div>
@@ -502,7 +501,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
         <div class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=80')">
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
-            <p class="page-hero-label">👋 HELLO THERE</p>
+            <p class="page-hero-label">HELLO THERE</p>
             <h1 class="page-hero-title">About Me</h1>
             <p class="page-hero-sub">The story behind Kaizen — the philosophy, the journey, and the human writing these words.</p>
           </div>
@@ -538,7 +537,6 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                   <h2>What I Write About</h2>
                   <div class="topics-grid">
                     <div class="topic-card" *ngFor="let t of topics">
-                      <span class="topic-icon">{{ t.icon }}</span>
                       <h3>{{ t.name }}</h3>
                       <p>{{ t.desc }}</p>
                     </div>
@@ -569,7 +567,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
         <div class="page-hero" style="background-image:url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1400&q=80')">
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
-            <p class="page-hero-label">💬 GET IN TOUCH</p>
+            <p class="page-hero-label">GET IN TOUCH</p>
             <h1 class="page-hero-title">Contact</h1>
             <p class="page-hero-sub">Have a question, collaboration idea, or just want to say hello? I'd love to hear from you.</p>
           </div>
@@ -643,7 +641,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <footer class="site-footer">
         <div class="container footer-inner">
           <div class="footer-logo-area">
-            <span class="footer-logo">🌏 KAIZEN</span>
+            <span class="footer-logo">KAIZEN</span>
             <p class="footer-tagline">Explore. Dream. Discover.</p>
             <p class="footer-desc">A personal blog dedicated to continuous improvement,<br>world travel, technology, and life philosophy.</p>
             <div class="footer-social">
@@ -1445,77 +1443,67 @@ export class AppComponent implements OnInit, OnDestroy {
 
   // Topics for home page chips
   topicChips = [
-    { icon: '✏️', name: 'Daily Life', cat: 'Daily Life / Musings' },
-    { icon: '🌱', name: 'Personal Growth', cat: 'Personal Growth' },
-    { icon: '✈️', name: 'Travel & Places', cat: 'Travel & Places' },
-    { icon: '❤️', name: 'Relationships', cat: 'Relationships' },
-    { icon: '💪', name: 'Health', cat: 'Health & Wellbeing' },
-    { icon: '💼', name: 'Work & Career', cat: 'Work & Career' },
-    { icon: '📚', name: 'Books & Learning', cat: 'Books & Learning' },
-    { icon: '🎯', name: 'Goals & Projects', cat: 'Goals & Projects' },
-    { icon: '💬', name: 'Random Thoughts', cat: 'Random Thoughts / Rants' },
-    { icon: '📷', name: 'Photography', cat: 'Photography / Snapshots' },
+    { name: 'Daily Life', cat: 'Daily Life / Musings' },
+    { name: 'Personal Growth', cat: 'Personal Growth' },
+    { name: 'Travel & Places', cat: 'Travel & Places' },
+    { name: 'Relationships', cat: 'Relationships' },
+    { name: 'Health', cat: 'Health & Wellbeing' },
+    { name: 'Work & Career', cat: 'Work & Career' },
+    { name: 'Books & Learning', cat: 'Books & Learning' },
+    { name: 'Goals & Projects', cat: 'Goals & Projects' },
+    { name: 'Random Thoughts', cat: 'Random Thoughts / Rants' },
+    { name: 'Photography', cat: 'Photography / Snapshots' },
   ];
 
   // Category Page Items
   categoryPageItems = [
     {
       name: 'Daily Life / Musings',
-      icon: '✏️',
       image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=600&q=80',
       desc: 'Reflections on daily routines, slow mornings, coffee rituals, and mindful living in a fast-paced world.'
     },
     {
       name: 'Personal Growth',
-      icon: '🌱',
       image: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=600&q=80',
       desc: 'The 1% Kaizen philosophy, micro-habits, mindset shifts, and the compound effect of daily practice.'
     },
     {
       name: 'Travel & Places',
-      icon: '✈️',
       image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=600&q=80',
       desc: 'Journeys through 38+ countries — hidden waterfalls, ancient temples, cloud forests, and vibrant cities.'
     },
     {
       name: 'Relationships',
-      icon: '❤️',
       image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=600&q=80',
       desc: 'Long-distance friendships, meaningful connections, empathy, and building human bonds across borders.'
     },
     {
       name: 'Health & Wellbeing',
-      icon: '💪',
       image: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=600&q=80',
       desc: 'Zone 2 aerobic cardio, endurance science, mental health, sleep optimization, and longevity practices.'
     },
     {
       name: 'Work & Career',
-      icon: '💼',
       image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80',
       desc: 'Golang, modern software architecture, SPA engineering, remote work patterns, and technical leadership.'
     },
     {
       name: 'Books & Learning',
-      icon: '📚',
       image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=600&q=80',
       desc: 'Mental models, book summaries, and transformative insights from reading 150+ books over a decade.'
     },
     {
       name: 'Goals & Projects',
-      icon: '🎯',
       image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&w=600&q=80',
       desc: 'Personal Knowledge Management (PKM), Obsidian workflows, project tracking, and building side hustles.'
     },
     {
       name: 'Random Thoughts / Rants',
-      icon: '💬',
       image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66936?auto=format&fit=crop&w=600&q=80',
       desc: 'Unfiltered observations, hot takes on productivity culture, tech trends, and honest opinion pieces.'
     },
     {
       name: 'Photography / Snapshots',
-      icon: '📷',
       image: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?auto=format&fit=crop&w=600&q=80',
       desc: 'Natural light photography, golden hour captures, camera gear tips, and visual storytelling from the road.'
     }
@@ -1569,12 +1557,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
   // About
   topics = [
-    { icon: '✈️', name: 'Travel & Places', desc: 'In-depth guides to destinations across 38 countries.' },
-    { icon: '🌱', name: 'Personal Growth', desc: 'The philosophy and practice of continuous improvement.' },
-    { icon: '💻', name: 'Work & Career', desc: 'Engineering, software architecture, and the modern workplace.' },
-    { icon: '📷', name: 'Photography', desc: 'Visual storytelling through natural light and composition.' },
-    { icon: '📚', name: 'Books & Learning', desc: 'Reviews and lessons from 150+ books read over a decade.' },
-    { icon: '💬', name: 'Life & Musings', desc: 'Honest reflections on daily life, relationships, and ideas.' },
+    { name: 'Travel & Places', desc: 'In-depth guides to destinations across 38 countries.' },
+    { name: 'Personal Growth', desc: 'The philosophy and practice of continuous improvement.' },
+    { name: 'Work & Career', desc: 'Engineering, software architecture, and the modern workplace.' },
+    { name: 'Photography', desc: 'Visual storytelling through natural light and composition.' },
+    { name: 'Books & Learning', desc: 'Reviews and lessons from 150+ books read over a decade.' },
+    { name: 'Life & Musings', desc: 'Honest reflections on daily life, relationships, and ideas.' },
   ];
   timeline = [
     { year: '2016', title: 'First Backpacking Trip', desc: 'Three months solo through Southeast Asia changed everything about how I see the world.' },
