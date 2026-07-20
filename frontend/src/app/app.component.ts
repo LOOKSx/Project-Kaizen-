@@ -235,7 +235,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                   <h3 class="lc-title">{{ a.title }}</h3>
                   <p class="lc-excerpt">{{ a.excerpt | slice:0:100 }}...</p>
                   <div class="lc-meta">
-                    <span><i class="fa-regular fa-clock"></i> {{ a.read_time }}</span>
+                    <span><i class="fa-regular fa-calendar"></i> {{ a.created_at | date:'MMM d' }}</span>
                     <span class="lc-read">Read More →</span>
                   </div>
                 </div>

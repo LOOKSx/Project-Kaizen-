@@ -38,10 +38,10 @@ import { Article } from '../../models/article.model';
         <!-- Excerpt -->
         <p class="post-excerpt">{{ article.excerpt }}</p>
 
-        <!-- Footer: date + read time + read more -->
+        <!-- Footer: date + read more -->
         <div class="post-footer">
           <span class="post-meta">
-            <i class="fa-regular fa-clock"></i> {{ article.read_time }}
+            {{ article.created_at | date:'MMM d, yyyy' }}
           </span>
           <span class="post-read-more">READ MORE →</span>
         </div>

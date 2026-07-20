@@ -40,10 +40,6 @@ import { ArticleService } from '../../services/article.service';
                   <span class="meta-sub">{{ article.created_at | date:'MMM d, yyyy' }}</span>
                 </div>
               </div>
-              <div class="stats-meta">
-                <span><i class="fa-regular fa-clock"></i> {{ article.read_time }}</span>
-                <span><i class="fa-regular fa-eye"></i> {{ article.views }} views</span>
-              </div>
             </div>
           </div>
         </div>

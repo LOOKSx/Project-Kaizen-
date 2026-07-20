@@ -94,28 +94,21 @@ import { Article } from '../../models/article.model';
             />
           </div>
 
-          <!-- Category + Read Time -->
-          <div class="form-row">
-            <div class="form-group half">
-              <label>CATEGORY</label>
-              <select [(ngModel)]="category" name="category">
-                <option value="Daily Life / Musings">Daily Life / Musings</option>
-                <option value="Personal Growth">Personal Growth</option>
-                <option value="Travel &amp; Places">Travel &amp; Places</option>
-                <option value="Relationships">Relationships</option>
-                <option value="Health &amp; Wellbeing">Health &amp; Wellbeing</option>
-                <option value="Work &amp; Career">Work &amp; Career</option>
-                <option value="Books &amp; Learning">Books &amp; Learning</option>
-                <option value="Goals &amp; Projects">Goals &amp; Projects</option>
-                <option value="Random Thoughts / Rants">Random Thoughts / Rants</option>
-                <option value="Photography / Snapshots">Photography / Snapshots</option>
-              </select>
-            </div>
-
-            <div class="form-group half">
-              <label>READ TIME</label>
-              <input type="text" placeholder="5 min read" [(ngModel)]="readTime" name="readTime" />
-            </div>
+          <!-- Category -->
+          <div class="form-group">
+            <label>CATEGORY</label>
+            <select [(ngModel)]="category" name="category">
+              <option value="Daily Life / Musings">Daily Life / Musings</option>
+              <option value="Personal Growth">Personal Growth</option>
+              <option value="Travel &amp; Places">Travel &amp; Places</option>
+              <option value="Relationships">Relationships</option>
+              <option value="Health &amp; Wellbeing">Health &amp; Wellbeing</option>
+              <option value="Work &amp; Career">Work &amp; Career</option>
+              <option value="Books &amp; Learning">Books &amp; Learning</option>
+              <option value="Goals &amp; Projects">Goals &amp; Projects</option>
+              <option value="Random Thoughts / Rants">Random Thoughts / Rants</option>
+              <option value="Photography / Snapshots">Photography / Snapshots</option>
+            </select>
           </div>
 
           <!-- Excerpt -->

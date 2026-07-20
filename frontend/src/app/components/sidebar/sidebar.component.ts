@@ -48,7 +48,7 @@ import { Article, Category } from '../../models/article.model';
             </div>
             <div class="post-info">
               <h5 class="post-title">{{ post.title }}</h5>
-              <span class="post-views"><i class="fa-regular fa-eye"></i> {{ post.views }} views</span>
+              <span class="post-views">{{ post.created_at | date:'MMM d, yyyy' }}</span>
             </div>
           </div>
         </div>

@@ -78,7 +78,6 @@ import { ArticleService } from '../../services/article.service';
                         <h4 class="cat-preview-title">{{ activeCatPreview.title }}</h4>
                         <p class="cat-preview-excerpt">{{ activeCatPreview.excerpt }}</p>
                         <div class="cat-preview-meta">
-                          <span><i class="fa-regular fa-clock"></i> {{ activeCatPreview.readTime }}</span>
                           <span class="cat-preview-link">Read Articles →</span>
                         </div>
                       </div>
