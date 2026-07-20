@@ -769,36 +769,69 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
 
       <!-- Admin Image Uploader Modal -->
       <div class="admin-modal-backdrop" *ngIf="showImageEditorModal" (click)="showImageEditorModal = false">
-        <div class="admin-modal-card" (click)="$event.stopPropagation()">
+        <div class="admin-modal-card image-editor-modal-card" (click)="$event.stopPropagation()">
           <div class="admin-header">
-            <div class="admin-shield-icon"><i class="fa-solid fa-image"></i></div>
+            <div class="admin-shield-icon"><i class="fa-solid fa-camera-retro"></i></div>
             <h2>{{ imageEditorTitle }}</h2>
-            <p>เลือกไฟล์รูปภาพจากเครื่อง หรือวาง Image URL ใหม่</p>
+            <p>ลากไฟล์รูปภาพมาวางที่นี่ หรือคลิกเพื่อเลือกไฟล์รูปภาพจากเครื่อง</p>
           </div>
 
+          <!-- Live Image Preview -->
           <div class="img-preview-box" *ngIf="imageEditorPreview">
             <img [src]="imageEditorPreview" alt="Preview" class="img-preview-target" />
+            <span class="preview-badge" *ngIf="imageUploadSuccess">
+              <i class="fa-solid fa-circle-check"></i> อัปโหลดสำเร็จแล้ว!
+            </span>
           </div>
 
-          <div class="file-upload-dropzone" (click)="triggerImageFileSelect()">
-            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
-            <p>คลิกเพื่อเลือกไฟล์รูปภาพจากเครื่องคอมพิวเตอร์</p>
-            <input type="file" #adminImgInput class="admin-img-file-hidden" accept="image/*" (change)="onAdminImageFileSelected($event)" style="display:none;" />
+          <!-- Drag & Drop Upload Zone -->
+          <div class="file-upload-dropzone"
+               [class.drag-over]="isImageDragging"
+               [class.is-uploading]="imageUploading"
+               (click)="adminFileInputHidden.click()"
+               (dragover)="onImageDragOver($event)"
+               (dragleave)="onImageDragLeave($event)"
+               (drop)="onImageDrop($event)">
+            
+            <input type="file" #adminFileInputHidden accept="image/*" (change)="onAdminImageFileSelected($event)" style="display:none;" />
+
+            <!-- State 1: Idle -->
+            <div class="dz-content" *ngIf="!imageUploading && !imageUploadSuccess">
+              <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+              <p class="dz-title">ลากไฟล์รูปภาพมาวางที่นี่ (Drag & Drop)</p>
+              <p class="dz-sub">หรือคลิกเพื่อเลือกไฟล์จากคอมพิวเตอร์ (PNG, JPG, WEBP)</p>
+            </div>
+
+            <!-- State 2: Uploading Spinner -->
+            <div class="dz-content" *ngIf="imageUploading">
+              <i class="fa-solid fa-circle-notch fa-spin upload-icon spinner-icon"></i>
+              <p class="dz-title">กำลังอัปโหลดรูปภาพ...</p>
+              <p class="dz-sub">โปรดรอสักครู่ ระบบกำลังประมวลผลไฟล์รูปภาพ</p>
+            </div>
+
+            <!-- State 3: Upload Success -->
+            <div class="dz-content success-state" *ngIf="imageUploadSuccess && !imageUploading">
+              <i class="fa-solid fa-circle-check upload-icon success-icon"></i>
+              <p class="dz-title">อัปโหลดรูปภาพสำเร็จเรียบร้อยแล้ว!</p>
+              <p class="dz-sub">พร้อมกดปุ่ม "บันทึกรูปภาพใหม่" ด้านล่าง</p>
+            </div>
           </div>
 
-          <div class="or-divider"><span>หรือวาง URL รูปภาพใหม่</span></div>
+          <div class="or-divider"><span>หรือวาง URL รูปภาพจากอินเทอร์เน็ต</span></div>
 
           <input
             type="text"
             class="admin-pass-input"
             placeholder="https://images.unsplash.com/..."
             [(ngModel)]="imageEditorUrlInput"
-            (input)="imageEditorPreview = imageEditorUrlInput"
+            (input)="onUrlInputChanged()"
           />
 
           <div class="admin-actions" style="margin-top: 20px;">
             <button type="button" class="btn-cancel" (click)="showImageEditorModal = false">ยกเลิก</button>
-            <button type="button" class="btn-unlock" (click)="saveImageEditor()"><i class="fa-solid fa-check"></i> บันทึกรูปภาพใหม่</button>
+            <button type="button" class="btn-unlock" [disabled]="!imageEditorPreview || imageUploading" (click)="saveImageEditor()">
+              <i class="fa-solid fa-check"></i> บันทึกรูปภาพใหม่
+            </button>
           </div>
         </div>
       </div>
@@ -1601,21 +1634,59 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     .cat-edit-img-btn:hover { background: #e8472a; }
 
     /* ===== IMAGE UPLOADER MODAL ===== */
+    .image-editor-modal-card { max-width: 500px; }
     .file-upload-dropzone {
       border: 2px dashed #444;
-      border-radius: 8px;
-      padding: 20px;
+      border-radius: 10px;
+      padding: 28px 20px;
       text-align: center;
-      background: #222;
+      background: #222222;
       cursor: pointer;
-      transition: border-color 0.2s;
+      transition: all 0.25s ease;
+      position: relative;
     }
-    .file-upload-dropzone:hover { border-color: #e8472a; }
-    .file-upload-dropzone i { font-size: 28px; color: #e8472a; margin-bottom: 8px; }
-    .file-upload-dropzone p { font-size: 13px; color: #ccc; margin: 0; }
-    .or-divider { text-align: center; margin: 14px 0; font-size: 12px; color: #777; position: relative; }
-    .img-preview-box { width: 100%; height: 160px; border-radius: 6px; overflow: hidden; margin-bottom: 16px; background: #000; }
+    .file-upload-dropzone:hover, .file-upload-dropzone.drag-over {
+      border-color: #e8472a;
+      background: rgba(232, 71, 42, 0.08);
+      transform: scale(1.01);
+    }
+    .file-upload-dropzone.is-uploading {
+      border-color: #f39c12;
+      background: rgba(243, 156, 18, 0.08);
+    }
+    .file-upload-dropzone .upload-icon {
+      font-size: 32px;
+      color: #e8472a;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .file-upload-dropzone .spinner-icon { color: #f39c12; }
+    .file-upload-dropzone .success-icon { color: #2ecc71; }
+    .dz-title { font-size: 14px; font-weight: 700; color: #ffffff; margin: 0 0 4px; }
+    .dz-sub { font-size: 12px; color: #aaaaaa; margin: 0; }
+    .img-preview-box {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 18px;
+      background: #000;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
     .img-preview-target { width: 100%; height: 100%; object-fit: cover; }
+    .preview-badge {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: #2ecc71;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
 
     @media (max-width: 960px) {
       .categories-full-grid { grid-template-columns: 1fr; }
@@ -2007,7 +2078,7 @@ export class AppComponent implements OnInit, OnDestroy {
   aboutHeroImg = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=80';
   contactHeroImg = 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1400&q=80';
 
-  // Image Editor Modal
+  // Image Editor Modal State
   showImageEditorModal = false;
   imageEditorTitle = 'เปลี่ยนรูปภาพ (Change Image)';
   imageEditorTargetKey = '';
@@ -2015,12 +2086,18 @@ export class AppComponent implements OnInit, OnDestroy {
   imageEditorTargetProp = 'image';
   imageEditorPreview = '';
   imageEditorUrlInput = '';
+  isImageDragging = false;
+  imageUploading = false;
+  imageUploadSuccess = false;
 
   openImageEditor(key: string, title: string) {
     this.imageEditorTargetKey = key;
     this.imageEditorTargetItem = null;
     this.imageEditorTitle = title;
     this.imageEditorUrlInput = '';
+    this.imageUploading = false;
+    this.imageUploadSuccess = false;
+    this.isImageDragging = false;
     if (key === 'currentSlideImg') {
       this.imageEditorPreview = this.heroSlides[this.currentSlide].img;
     } else {
@@ -2036,23 +2113,65 @@ export class AppComponent implements OnInit, OnDestroy {
     this.imageEditorTitle = title;
     this.imageEditorPreview = item[propName] || '';
     this.imageEditorUrlInput = '';
+    this.imageUploading = false;
+    this.imageUploadSuccess = false;
+    this.isImageDragging = false;
     this.showImageEditorModal = true;
   }
 
-  triggerImageFileSelect() {
-    const input = document.querySelector('.admin-img-file-hidden') as HTMLInputElement;
-    if (input) input.click();
+  onImageDragOver(e: DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.isImageDragging = true;
+  }
+
+  onImageDragLeave(e: DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.isImageDragging = false;
+  }
+
+  onImageDrop(e: DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.isImageDragging = false;
+    const files = e.dataTransfer?.files;
+    if (files && files[0] && files[0].type.startsWith('image/')) {
+      this.processImageFile(files[0]);
+    }
   }
 
   onAdminImageFileSelected(e: Event) {
     const input = e.target as HTMLInputElement;
     if (input.files && input.files[0]) {
-      const reader = new FileReader();
-      reader.onload = (evt) => {
+      this.processImageFile(input.files[0]);
+    }
+  }
+
+  processImageFile(file: File) {
+    this.imageUploading = true;
+    this.imageUploadSuccess = false;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      setTimeout(() => {
         const base64 = evt.target?.result as string;
         this.imageEditorPreview = base64;
-      };
-      reader.readAsDataURL(input.files[0]);
+        this.imageUploading = false;
+        this.imageUploadSuccess = true;
+      }, 400);
+    };
+    reader.onerror = () => {
+      this.imageUploading = false;
+      this.showToast('เกิดข้อผิดพลาดในการเปิดไฟล์รูปภาพ');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  onUrlInputChanged() {
+    if (this.imageEditorUrlInput) {
+      this.imageEditorPreview = this.imageEditorUrlInput;
+      this.imageUploadSuccess = true;
     }
   }
 
@@ -2068,7 +2187,9 @@ export class AppComponent implements OnInit, OnDestroy {
     }
 
     this.showImageEditorModal = false;
-    this.showToast('อัปเดตและเปลี่ยนรูปภาพเรียบร้อยแล้ว (Image Updated Successfully)');
+    this.imageUploading = false;
+    this.imageUploadSuccess = false;
+    this.showToast('✓ เปลี่ยนรูปภาพและอัปเดตข้อมูลสำเร็จเรียบร้อยแล้ว (Image Updated Successfully)');
   }
 
   unlockAdmin() {
