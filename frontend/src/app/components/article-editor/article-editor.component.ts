@@ -19,20 +19,16 @@ import { Article } from '../../models/article.model';
 
         <!-- Header -->
         <div class="editor-header">
-          <div class="editor-header-icon">
-            <i class="fa-solid fa-feather-pointed"></i>
-          </div>
-          <div>
-            <h2>{{ articleToEdit ? 'แก้ไขบทความ (Edit Article)' : 'เขียนบทความใหม่ (New Article)' }}</h2>
-            <p>{{ articleToEdit ? 'ปรับแต่งข้อมูลและเนื้อหาบทความได้อย่างอิสระ' : 'แชร์เรื่องราวและความรู้ของคุณสู่ผู้อ่าน' }}</p>
-          </div>
+          <div class="editor-header-label">{{ articleToEdit ? 'EDIT ARTICLE' : 'NEW ARTICLE' }}</div>
+          <h2>{{ articleToEdit ? 'แก้ไขบทความ' : 'เขียนบทความใหม่' }}</h2>
+          <p>{{ articleToEdit ? 'ปรับแต่งข้อมูลและเนื้อหาบทความได้อย่างอิสระ' : 'แชร์เรื่องราวและความรู้ของคุณสู่ผู้อ่าน' }}</p>
         </div>
 
         <form class="editor-form" (ngSubmit)="publishArticle()">
 
           <!-- Cover Image Upload Area -->
           <div class="form-group">
-            <label>Cover Image</label>
+            <label>COVER IMAGE</label>
             <div class="image-upload-area"
                  [class.has-image]="coverImagePreview"
                  (click)="triggerFileInput()"
@@ -51,16 +47,16 @@ import { Article } from '../../models/article.model';
 
               <!-- Upload Prompt (shown when no image) -->
               <div class="upload-prompt" *ngIf="!coverImagePreview && !uploading">
-                <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+                <i class="fa-solid fa-arrow-up-from-bracket upload-icon"></i>
                 <p class="upload-title">Drag & Drop or Click to Upload</p>
-                <p class="upload-hint">PNG, JPG, WEBP up to 10MB</p>
+                <p class="upload-hint">PNG, JPG, WEBP &mdash; auto compressed</p>
               </div>
 
               <!-- Uploading Spinner -->
               <div class="upload-prompt" *ngIf="uploading">
-                <i class="fa-solid fa-spinner fa-spin upload-icon" style="color:#e8472a"></i>
-                <p class="upload-title">Uploading image...</p>
-                <p class="upload-hint">Please wait</p>
+                <i class="fa-solid fa-circle-notch fa-spin upload-icon loading"></i>
+                <p class="upload-title">Processing image...</p>
+                <p class="upload-hint">Compressing & optimising</p>
               </div>
 
               <input
@@ -74,7 +70,7 @@ import { Article } from '../../models/article.model';
 
             <!-- OR: paste URL -->
             <div class="url-input-row">
-              <span class="url-label">or paste URL</span>
+              <span class="url-label">or URL</span>
               <input
                 type="url"
                 placeholder="https://images.unsplash.com/..."
@@ -88,7 +84,7 @@ import { Article } from '../../models/article.model';
 
           <!-- Title -->
           <div class="form-group">
-            <label>Article Title <span class="required">*</span></label>
+            <label>ARTICLE TITLE <span class="required">*</span></label>
             <input
               type="text"
               placeholder="e.g. Hiking Doi Luang Chiang Dao: An Unforgettable Summit..."
@@ -101,33 +97,33 @@ import { Article } from '../../models/article.model';
           <!-- Category + Read Time -->
           <div class="form-row">
             <div class="form-group half">
-              <label>Category</label>
+              <label>CATEGORY</label>
               <select [(ngModel)]="category" name="category">
-                <option value="Daily Life / Musings">✏️ Daily Life / Musings</option>
-                <option value="Personal Growth">🌱 Personal Growth</option>
-                <option value="Travel & Places">✈️ Travel & Places</option>
-                <option value="Relationships">❤️ Relationships</option>
-                <option value="Health & Wellbeing">💪 Health & Wellbeing</option>
-                <option value="Work & Career">💼 Work & Career</option>
-                <option value="Books & Learning">📚 Books & Learning</option>
-                <option value="Goals & Projects">🎯 Goals & Projects</option>
-                <option value="Random Thoughts / Rants">💬 Random Thoughts / Rants</option>
-                <option value="Photography / Snapshots">📷 Photography / Snapshots</option>
+                <option value="Daily Life / Musings">Daily Life / Musings</option>
+                <option value="Personal Growth">Personal Growth</option>
+                <option value="Travel &amp; Places">Travel &amp; Places</option>
+                <option value="Relationships">Relationships</option>
+                <option value="Health &amp; Wellbeing">Health &amp; Wellbeing</option>
+                <option value="Work &amp; Career">Work &amp; Career</option>
+                <option value="Books &amp; Learning">Books &amp; Learning</option>
+                <option value="Goals &amp; Projects">Goals &amp; Projects</option>
+                <option value="Random Thoughts / Rants">Random Thoughts / Rants</option>
+                <option value="Photography / Snapshots">Photography / Snapshots</option>
               </select>
             </div>
 
             <div class="form-group half">
-              <label>Estimated Read Time</label>
-              <input type="text" placeholder="e.g. 5 min read" [(ngModel)]="readTime" name="readTime" />
+              <label>READ TIME</label>
+              <input type="text" placeholder="5 min read" [(ngModel)]="readTime" name="readTime" />
             </div>
           </div>
 
           <!-- Excerpt -->
           <div class="form-group">
-            <label>Excerpt / Summary <span class="required">*</span></label>
+            <label>EXCERPT <span class="required">*</span></label>
             <textarea
               rows="2"
-              placeholder="Brief summary of what readers will learn in this post..."
+              placeholder="A brief, compelling summary of this article..."
               [(ngModel)]="excerpt"
               name="excerpt"
               required
@@ -136,20 +132,13 @@ import { Article } from '../../models/article.model';
 
           <!-- Content -->
           <div class="form-group">
-            <label>Full Article Content <span class="required">*</span></label>
+            <label>CONTENT <span class="required">*</span></label>
             <div class="content-hint">
-              <i class="fa-solid fa-circle-info"></i>
-              Use <code>## Heading</code> for section headings, <code>**bold**</code> for bold text
+              <code>## Heading</code> &nbsp;for sections&nbsp;&nbsp;<code>**bold**</code>&nbsp;for emphasis
             </div>
             <textarea
               rows="9"
-              placeholder="Write your article content here...
-
-## Introduction
-Start with a compelling hook.
-
-## Section 1
-Your content here..."
+              placeholder="Write your article content here..."
               [(ngModel)]="content"
               name="content"
               required
@@ -158,10 +147,10 @@ Your content here..."
 
           <!-- Tags -->
           <div class="form-group">
-            <label>Tags <span class="optional">(optional, comma-separated)</span></label>
+            <label>TAGS <span class="optional">(comma-separated)</span></label>
             <input
               type="text"
-              placeholder="Travel, ChiangMai, Thailand, Hiking"
+              placeholder="Travel, ChiangMai, Hiking"
               [(ngModel)]="tags"
               name="tags"
             />
@@ -169,13 +158,11 @@ Your content here..."
 
           <!-- Actions -->
           <div class="editor-actions">
-            <button type="button" class="btn-cancel" (click)="onClose.emit()">
-              Cancel
+            <button type="button" class="btn-cancel" (click)="onClose.emit()">Cancel</button>
+            <button type="submit" class="btn-publish" [disabled]="!title || !excerpt || !content || publishing || uploading">
+              <i class="fa-solid" [class.fa-paper-plane]="!publishing" [class.fa-spinner]="publishing" [class.fa-spin]="publishing"></i>
+              <span>{{ publishing ? 'Saving...' : (articleToEdit ? 'บันทึกการแก้ไข' : 'เผยแพร่บทความ') }}</span>
             </button>
-              <button type="submit" class="btn-publish" [disabled]="!title || !excerpt || !content || publishing || uploading">
-                <i class="fa-solid" [class.fa-paper-plane]="!publishing" [class.fa-spinner]="publishing" [class.fa-spin]="publishing"></i>
-                <span>{{ publishing ? 'กำลังบันทึก...' : (articleToEdit ? 'บันทึกการแก้ไข' : 'เผยแพร่บทความ') }}</span>
-              </button>
           </div>
 
         </form>
@@ -187,14 +174,15 @@ Your content here..."
     .editor-modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.70);
-      backdrop-filter: blur(6px);
+      background: rgba(10, 10, 10, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       z-index: 1000;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 20px;
-      animation: fadeIn 0.18s ease;
+      animation: fadeIn 0.2s ease;
     }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -202,176 +190,188 @@ Your content here..."
     .editor-modal-card {
       background: #ffffff;
       width: 100%;
-      max-width: 680px;
-      border-radius: 12px;
-      padding: 32px 32px 24px;
+      max-width: 640px;
+      border-radius: 4px;
+      padding: 40px 40px 32px;
       position: relative;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.35);
       max-height: 92vh;
       overflow-y: auto;
-      animation: slideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      scrollbar-width: thin;
+      scrollbar-color: #eee transparent;
     }
+    .editor-modal-card::-webkit-scrollbar { width: 4px; }
+    .editor-modal-card::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 2px; }
     @keyframes slideUp {
-      from { transform: translateY(24px); opacity: 0; }
+      from { transform: translateY(20px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
 
     /* ===== CLOSE BTN ===== */
     .close-btn {
       position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 34px;
-      height: 34px;
+      top: 20px;
+      right: 20px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
-      background: #f5f5f5;
-      color: #666;
+      background: transparent;
+      color: #bbb;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 14px;
-      border: none;
+      border: 1px solid #e8e8e8;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.15s;
     }
-    .close-btn:hover { background: #e8472a; color: #fff; }
+    .close-btn:hover { background: #111; color: #fff; border-color: #111; }
 
     /* ===== HEADER ===== */
     .editor-header {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      margin-bottom: 24px;
-      padding-bottom: 20px;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
       border-bottom: 1px solid #f0f0f0;
     }
-    .editor-header-icon {
-      width: 44px;
-      height: 44px;
-      background: linear-gradient(135deg, #e8472a, #f5782f);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 18px;
-      flex-shrink: 0;
+    .editor-header-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: #e8472a;
+      margin-bottom: 8px;
     }
     .editor-header h2 {
       font-family: 'Lato', sans-serif;
-      font-size: 20px;
+      font-size: 24px;
       font-weight: 800;
       color: #111;
-      margin: 0 0 4px 0;
+      margin: 0 0 6px;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
     }
     .editor-header p {
       font-size: 13px;
-      color: #888;
+      color: #aaa;
       margin: 0;
+      font-weight: 400;
     }
 
     /* ===== FORM ===== */
     .editor-form {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 22px;
     }
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 7px;
+      gap: 8px;
     }
     .form-row {
       display: flex;
-      gap: 14px;
+      gap: 16px;
     }
     .form-group.half { flex: 1; }
     .form-group label {
-      font-size: 11.5px;
+      font-size: 10px;
       font-weight: 700;
-      color: #333;
+      color: #999;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.10em;
     }
     .required { color: #e8472a; }
-    .optional { font-weight: 400; text-transform: none; color: #aaa; font-size: 11px; }
+    .optional { font-weight: 400; text-transform: none; color: #ccc; font-size: 10px; }
     .form-group input,
     .form-group select,
     .form-group textarea {
-      padding: 10px 13px;
-      border: 1.5px solid #e5e5e5;
-      border-radius: 8px;
-      background: #fafafa;
-      color: #222;
+      padding: 11px 14px;
+      border: 1px solid #e8e8e8;
+      border-radius: 3px;
+      background: #fff;
+      color: #111;
       font-size: 14px;
       width: 100%;
       box-sizing: border-box;
       font-family: inherit;
-      transition: border-color 0.2s, background 0.2s;
+      transition: border-color 0.15s;
+      -webkit-appearance: none;
+      appearance: none;
     }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: #ccc; }
     .form-group input:focus,
     .form-group select:focus,
     .form-group textarea:focus {
       outline: none;
-      border-color: #e8472a;
-      background: #fff;
+      border-color: #111;
+    }
+    .form-group select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+      cursor: pointer;
     }
     .form-group textarea {
       resize: vertical;
       min-height: 80px;
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
     /* ===== IMAGE UPLOAD AREA ===== */
     .image-upload-area {
-      border: 2px dashed #d0d0d0;
-      border-radius: 10px;
-      min-height: 160px;
+      border: 1.5px dashed #ddd;
+      border-radius: 4px;
+      min-height: 140px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      transition: border-color 0.25s, background 0.25s;
+      transition: border-color 0.2s, background 0.2s;
       background: #fafafa;
     }
     .image-upload-area:hover,
     .image-upload-area.drag-over {
-      border-color: #e8472a;
-      background: #fff5f3;
+      border-color: #111;
+      background: #f7f7f7;
     }
     .image-upload-area.has-image {
       border-style: solid;
-      border-color: #e0e0e0;
+      border-color: #eee;
       min-height: 200px;
     }
 
     /* Upload prompt */
     .upload-prompt {
       text-align: center;
-      padding: 20px;
+      padding: 24px 20px;
       pointer-events: none;
     }
     .upload-icon {
-      font-size: 36px;
-      color: #ccc;
+      font-size: 24px;
+      color: #ddd;
       display: block;
       margin-bottom: 10px;
       transition: color 0.2s;
     }
-    .image-upload-area:hover .upload-icon,
-    .image-upload-area.drag-over .upload-icon { color: #e8472a; }
+    .upload-icon.loading { color: #aaa; }
+    .image-upload-area:hover .upload-icon:not(.loading),
+    .image-upload-area.drag-over .upload-icon:not(.loading) { color: #888; }
     .upload-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
-      color: #555;
+      color: #888;
       margin: 0 0 4px;
+      letter-spacing: 0.01em;
     }
     .upload-hint {
-      font-size: 12px;
-      color: #bbb;
+      font-size: 11px;
+      color: #ccc;
       margin: 0;
+      letter-spacing: 0.02em;
     }
 
     /* Image preview */
@@ -385,26 +385,26 @@ Your content here..."
       height: 200px;
       object-fit: cover;
       display: block;
-      border-radius: 8px;
     }
     .img-remove-btn {
       position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 30px;
-      height: 30px;
+      top: 10px;
+      right: 10px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
-      background: rgba(0,0,0,0.6);
-      color: #fff;
+      background: rgba(255,255,255,0.9);
+      color: #333;
       border: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
+      font-size: 12px;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.15s;
+      backdrop-filter: blur(4px);
     }
-    .img-remove-btn:hover { background: #e8472a; }
+    .img-remove-btn:hover { background: #111; color: #fff; }
 
     .file-input-hidden {
       position: absolute;
@@ -420,91 +420,90 @@ Your content here..."
     .url-input-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-top: 2px;
+      gap: 12px;
+      margin-top: 4px;
     }
     .url-label {
-      font-size: 12px;
-      color: #aaa;
+      font-size: 11px;
+      color: #bbb;
       white-space: nowrap;
-      font-weight: 600;
+      font-weight: 500;
+      letter-spacing: 0.03em;
     }
     .url-input {
       flex: 1;
-      padding: 8px 12px;
-      border: 1.5px solid #e5e5e5;
-      border-radius: 8px;
+      padding: 9px 13px;
+      border: 1px solid #e8e8e8;
+      border-radius: 3px;
       font-size: 13px;
-      background: #fafafa;
+      background: #fff;
       color: #333;
-      transition: border-color 0.2s;
+      transition: border-color 0.15s;
+      font-family: inherit;
     }
     .url-input:focus {
       outline: none;
-      border-color: #e8472a;
+      border-color: #111;
     }
 
     /* Content hint */
     .content-hint {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 12px;
-      color: #999;
-      background: #f8f8f8;
-      border-radius: 6px;
-      padding: 8px 12px;
-      margin-bottom: 2px;
-    }
-    .content-hint i { color: #bbb; }
-    .content-hint code {
-      background: #eeeeee;
-      padding: 1px 5px;
-      border-radius: 3px;
       font-size: 11.5px;
-      color: #555;
+      color: #bbb;
+      margin-bottom: 2px;
+      letter-spacing: 0.01em;
+    }
+    .content-hint code {
+      background: #f3f3f3;
+      padding: 1px 6px;
+      border-radius: 2px;
+      font-size: 11px;
+      color: #666;
+      font-family: 'SF Mono', 'Fira Code', monospace;
     }
 
     /* ===== ACTIONS ===== */
     .editor-actions {
       display: flex;
       justify-content: flex-end;
-      gap: 12px;
-      padding-top: 16px;
+      gap: 10px;
+      padding-top: 20px;
       border-top: 1px solid #f0f0f0;
       margin-top: 4px;
     }
     .btn-cancel {
       padding: 10px 22px;
-      border: 1.5px solid #ddd;
+      border: 1px solid #e0e0e0;
       background: transparent;
-      color: #666;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
+      color: #999;
+      border-radius: 3px;
+      font-size: 13px;
+      font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.15s;
+      letter-spacing: 0.01em;
     }
-    .btn-cancel:hover { border-color: #bbb; color: #333; }
+    .btn-cancel:hover { border-color: #111; color: #111; }
     .btn-publish {
       padding: 10px 26px;
-      background: linear-gradient(135deg, #e8472a, #f5782f);
+      background: #111111;
       color: #fff;
       border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 700;
+      border-radius: 3px;
+      font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 8px;
-      transition: opacity 0.2s, transform 0.15s;
+      transition: all 0.15s;
+      letter-spacing: 0.02em;
     }
-    .btn-publish:hover:not(:disabled) { opacity: 0.9; transform: translateY(-1px); }
-    .btn-publish:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-publish:hover:not(:disabled) { background: #e8472a; }
+    .btn-publish:disabled { opacity: 0.35; cursor: not-allowed; }
 
     @media (max-width: 600px) {
-      .editor-modal-card { padding: 22px 18px 18px; }
+      .editor-modal-card { padding: 28px 20px 22px; }
       .form-row { flex-direction: column; }
     }
   `]

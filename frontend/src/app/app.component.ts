@@ -38,8 +38,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                [style.background-image]="'url(' + slide.img + ')'">
           </div>
           <div class="hero-overlay"></div>
-          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('currentSlideImg', 'Home Hero Slide #' + (currentSlide + 1))">
-            <i class="fa-solid fa-camera"></i> เปลี่ยนรูปสไลด์นี้ (Slide {{ currentSlide + 1 }})
+          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('currentSlideImg', 'Home Hero Slide #' + (currentSlide + 1))" title="Change slide image">
+            <i class="fa-solid fa-camera"></i>
           </button>
           <div class="hero-content">
             <p class="hero-eyebrow">A PERSONAL JOURNAL</p>
@@ -278,8 +278,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <ng-container *ngIf="currentPage === 'blog'">
         <!-- Blog Page Hero -->
         <div class="page-hero" [style.background-image]="'url(' + blogHeroImg + ')'">
-          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('blogHeroImg', 'Blog Hero Banner')">
-            <i class="fa-solid fa-camera"></i> เปลี่ยนรูปภาพ Hero นี้
+          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('blogHeroImg', 'Blog Hero Banner')" title="Change hero image">
+            <i class="fa-solid fa-camera"></i>
           </button>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
@@ -327,8 +327,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'categories'">
         <div class="page-hero" [style.background-image]="'url(' + catHeroImg + ')'">
-          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('catHeroImg', 'Categories Hero Banner')">
-            <i class="fa-solid fa-camera"></i> เปลี่ยนรูปภาพ Hero นี้
+          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('catHeroImg', 'Categories Hero Banner')" title="Change hero image">
+            <i class="fa-solid fa-camera"></i>
           </button>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
@@ -448,8 +448,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'destinations'">
         <div class="page-hero" [style.background-image]="'url(' + destHeroImg + ')'">
-          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('destHeroImg', 'Destinations Hero Banner')">
-            <i class="fa-solid fa-camera"></i> เปลี่ยนรูปภาพ Hero นี้
+          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('destHeroImg', 'Destinations Hero Banner')" title="Change hero image">
+            <i class="fa-solid fa-camera"></i>
           </button>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
@@ -493,8 +493,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'gallery'">
         <div class="page-hero" [style.background-image]="'url(' + galleryHeroImg + ')'">
-          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('galleryHeroImg', 'Gallery Hero Banner')">
-            <i class="fa-solid fa-camera"></i> เปลี่ยนรูปภาพ Hero นี้
+          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('galleryHeroImg', 'Gallery Hero Banner')" title="Change hero image">
+            <i class="fa-solid fa-camera"></i>
           </button>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
@@ -529,8 +529,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'about'">
         <div class="page-hero" [style.background-image]="'url(' + aboutHeroImg + ')'">
-          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('aboutHeroImg', 'About Hero Banner')">
-            <i class="fa-solid fa-camera"></i> เปลี่ยนรูปภาพ Hero นี้
+          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('aboutHeroImg', 'About Hero Banner')" title="Change hero image">
+            <i class="fa-solid fa-camera"></i>
           </button>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
@@ -598,8 +598,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'contact'">
         <div class="page-hero" [style.background-image]="'url(' + contactHeroImg + ')'">
-          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('contactHeroImg', 'Contact Hero Banner')">
-            <i class="fa-solid fa-camera"></i> เปลี่ยนรูปภาพ Hero นี้
+          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('contactHeroImg', 'Contact Hero Banner')" title="Change hero image">
+            <i class="fa-solid fa-camera"></i>
           </button>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
@@ -769,68 +769,68 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
 
       <!-- Admin Image Uploader Modal -->
       <div class="admin-modal-backdrop" *ngIf="showImageEditorModal" (click)="showImageEditorModal = false">
-        <div class="admin-modal-card image-editor-modal-card" (click)="$event.stopPropagation()">
-          <div class="admin-header">
-            <div class="admin-shield-icon"><i class="fa-solid fa-camera-retro"></i></div>
-            <h2>{{ imageEditorTitle }}</h2>
-            <p>ลากไฟล์รูปภาพมาวางที่นี่ หรือคลิกเพื่อเลือกไฟล์รูปภาพจากเครื่อง</p>
+        <div class="img-editor-card" (click)="$event.stopPropagation()">
+
+          <div class="img-editor-header">
+            <div>
+              <div class="img-editor-label">ADMIN &mdash; CHANGE IMAGE</div>
+              <h2>{{ imageEditorTitle }}</h2>
+            </div>
+            <button class="img-editor-close" (click)="showImageEditorModal = false" aria-label="Close">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
           </div>
 
-          <!-- Live Image Preview -->
-          <div class="img-preview-box" *ngIf="imageEditorPreview">
+          <div class="img-editor-preview" *ngIf="imageEditorPreview">
             <img [src]="imageEditorPreview" alt="Preview" class="img-preview-target" />
-            <span class="preview-badge" *ngIf="imageUploadSuccess">
-              <i class="fa-solid fa-circle-check"></i> อัปโหลดสำเร็จแล้ว!
+            <span class="img-editor-success-badge" *ngIf="imageUploadSuccess">
+              <i class="fa-solid fa-check"></i> Uploaded
             </span>
           </div>
 
-          <!-- Drag & Drop Upload Zone -->
-          <div class="file-upload-dropzone"
+          <div class="img-editor-dropzone"
                [class.drag-over]="isImageDragging"
                [class.is-uploading]="imageUploading"
                (click)="adminFileInputHidden.click()"
                (dragover)="onImageDragOver($event)"
                (dragleave)="onImageDragLeave($event)"
                (drop)="onImageDrop($event)">
-            
+
             <input type="file" #adminFileInputHidden accept="image/*" (change)="onAdminImageFileSelected($event)" style="display:none;" />
 
-            <!-- State 1: Idle -->
             <div class="dz-content" *ngIf="!imageUploading && !imageUploadSuccess">
-              <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
-              <p class="dz-title">ลากไฟล์รูปภาพมาวางที่นี่ (Drag & Drop)</p>
-              <p class="dz-sub">หรือคลิกเพื่อเลือกไฟล์จากคอมพิวเตอร์ (PNG, JPG, WEBP)</p>
+              <i class="fa-solid fa-arrow-up-from-bracket dz-icon"></i>
+              <p class="dz-title">Drag & Drop or Click</p>
+              <p class="dz-sub">PNG, JPG, WEBP &mdash; auto optimised</p>
             </div>
 
-            <!-- State 2: Uploading Spinner -->
             <div class="dz-content" *ngIf="imageUploading">
-              <i class="fa-solid fa-circle-notch fa-spin upload-icon spinner-icon"></i>
-              <p class="dz-title">กำลังอัปโหลดรูปภาพ...</p>
-              <p class="dz-sub">โปรดรอสักครู่ ระบบกำลังประมวลผลไฟล์รูปภาพ</p>
+              <i class="fa-solid fa-circle-notch fa-spin dz-icon dz-icon--loading"></i>
+              <p class="dz-title">Uploading...</p>
+              <p class="dz-sub">Processing your image</p>
             </div>
 
-            <!-- State 3: Upload Success -->
-            <div class="dz-content success-state" *ngIf="imageUploadSuccess && !imageUploading">
-              <i class="fa-solid fa-circle-check upload-icon success-icon"></i>
-              <p class="dz-title">อัปโหลดรูปภาพสำเร็จเรียบร้อยแล้ว!</p>
-              <p class="dz-sub">พร้อมกดปุ่ม "บันทึกรูปภาพใหม่" ด้านล่าง</p>
+            <div class="dz-content" *ngIf="imageUploadSuccess && !imageUploading">
+              <i class="fa-solid fa-check dz-icon dz-icon--success"></i>
+              <p class="dz-title">Upload Complete</p>
+              <p class="dz-sub">Ready to save &mdash; click below</p>
             </div>
           </div>
 
-          <div class="or-divider"><span>หรือวาง URL รูปภาพจากอินเทอร์เน็ต</span></div>
+          <div class="img-editor-divider">or paste URL</div>
 
           <input
             type="text"
-            class="admin-pass-input"
+            class="img-editor-url-input"
             placeholder="https://images.unsplash.com/..."
             [(ngModel)]="imageEditorUrlInput"
             (input)="onUrlInputChanged()"
           />
 
-          <div class="admin-actions" style="margin-top: 20px;">
-            <button type="button" class="btn-cancel" (click)="showImageEditorModal = false">ยกเลิก</button>
-            <button type="button" class="btn-unlock" [disabled]="!imageEditorPreview || imageUploading" (click)="saveImageEditor()">
-              <i class="fa-solid fa-check"></i> บันทึกรูปภาพใหม่
+          <div class="img-editor-actions">
+            <button type="button" class="img-editor-btn-cancel" (click)="showImageEditorModal = false">Cancel</button>
+            <button type="button" class="img-editor-btn-save" [disabled]="!imageEditorPreview || imageUploading" (click)="saveImageEditor()">
+              <i class="fa-solid fa-check"></i> Save Image
             </button>
           </div>
         </div>
@@ -1593,27 +1593,32 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       to { transform: translateX(0); opacity: 1; }
     }
 
-    /* ===== HERO & CARD IMAGE EDIT BUTTONS ===== */
+    /* ===== HERO IMAGE EDIT BUTTON ===== */
     .hero-edit-img-btn {
       position: absolute;
-      top: 90px;
-      right: 24px;
+      top: 16px;
+      right: 16px;
       z-index: 20;
-      background: rgba(232, 71, 42, 0.9);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.3);
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      transition: all 0.2s ease;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.75);
+      border: 1px solid rgba(255,255,255,0.25);
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: center;
+      font-size: 13px;
+      cursor: pointer;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      transition: all 0.15s;
     }
-    .hero-edit-img-btn:hover { background: #e8472a; transform: translateY(-2px); }
+    .hero-edit-img-btn:hover {
+      background: rgba(255,255,255,0.28);
+      color: #fff;
+      border-color: rgba(255,255,255,0.45);
+    }
     .cat-edit-img-btn {
       position: absolute;
       top: 8px;
@@ -1633,60 +1638,167 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     }
     .cat-edit-img-btn:hover { background: #e8472a; }
 
-    /* ===== IMAGE UPLOADER MODAL ===== */
-    .image-editor-modal-card { max-width: 500px; }
-    .file-upload-dropzone {
-      border: 2px dashed #444;
-      border-radius: 10px;
-      padding: 28px 20px;
-      text-align: center;
-      background: #222222;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      position: relative;
-    }
-    .file-upload-dropzone:hover, .file-upload-dropzone.drag-over {
-      border-color: #e8472a;
-      background: rgba(232, 71, 42, 0.08);
-      transform: scale(1.01);
-    }
-    .file-upload-dropzone.is-uploading {
-      border-color: #f39c12;
-      background: rgba(243, 156, 18, 0.08);
-    }
-    .file-upload-dropzone .upload-icon {
-      font-size: 32px;
-      color: #e8472a;
-      margin-bottom: 10px;
-      display: block;
-    }
-    .file-upload-dropzone .spinner-icon { color: #f39c12; }
-    .file-upload-dropzone .success-icon { color: #2ecc71; }
-    .dz-title { font-size: 14px; font-weight: 700; color: #ffffff; margin: 0 0 4px; }
-    .dz-sub { font-size: 12px; color: #aaaaaa; margin: 0; }
-    .img-preview-box {
-      position: relative;
+    /* ===== IMAGE EDITOR MODAL (MINIMAL) ===== */
+    .img-editor-card {
+      background: #fff;
       width: 100%;
-      height: 180px;
-      border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 18px;
-      background: #000;
-      border: 1px solid rgba(255,255,255,0.1);
+      max-width: 460px;
+      border-radius: 4px;
+      padding: 32px 32px 28px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.35);
+      animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .img-preview-target { width: 100%; height: 100%; object-fit: cover; }
-    .preview-badge {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      background: #2ecc71;
-      color: #fff;
-      font-size: 11px;
+    .img-editor-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .img-editor-label {
+      font-size: 10px;
       font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      letter-spacing: 0.14em;
+      color: #e8472a;
+      margin-bottom: 6px;
     }
+    .img-editor-header h2 {
+      font-family: 'Lato', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: #111;
+      margin: 0;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+    }
+    .img-editor-close {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: transparent;
+      color: #bbb;
+      border: 1px solid #e8e8e8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .img-editor-close:hover { background: #111; color: #fff; border-color: #111; }
+    .img-editor-preview {
+      width: 100%;
+      height: 150px;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      background: #f5f5f5;
+      position: relative;
+    }
+    .img-editor-preview .img-preview-target { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .img-editor-success-badge {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.72);
+      color: #fff;
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      backdrop-filter: blur(4px);
+      white-space: nowrap;
+    }
+    .img-editor-dropzone {
+      border: 1.5px dashed #e0e0e0;
+      border-radius: 4px;
+      padding: 22px 16px;
+      text-align: center;
+      background: #fafafa;
+      cursor: pointer;
+      transition: all 0.18s;
+      position: relative;
+      margin-bottom: 12px;
+    }
+    .img-editor-dropzone:hover,
+    .img-editor-dropzone.drag-over { border-color: #111; background: #f5f5f5; }
+    .img-editor-dropzone.is-uploading { border-color: #ccc; pointer-events: none; }
+    .dz-content { pointer-events: none; }
+    .dz-icon {
+      font-size: 20px;
+      color: #d5d5d5;
+      display: block;
+      margin-bottom: 8px;
+      transition: color 0.18s;
+    }
+    .dz-icon--loading { color: #aaa; }
+    .dz-icon--success { color: #22c55e; }
+    .img-editor-dropzone:hover .dz-icon:not(.dz-icon--loading):not(.dz-icon--success) { color: #888; }
+    .dz-title { font-size: 13px; font-weight: 600; color: #666; margin: 0 0 3px; }
+    .dz-sub { font-size: 11px; color: #bbb; margin: 0; }
+    .img-editor-divider {
+      text-align: center;
+      font-size: 11px;
+      color: #bbb;
+      letter-spacing: 0.06em;
+      margin: 12px 0 10px;
+    }
+    .img-editor-url-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 13px;
+      border: 1px solid #e8e8e8;
+      border-radius: 3px;
+      font-size: 13px;
+      color: #333;
+      background: #fff;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+    .img-editor-url-input::placeholder { color: #ccc; }
+    .img-editor-url-input:focus { outline: none; border-color: #111; }
+    .img-editor-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding-top: 18px;
+      border-top: 1px solid #f0f0f0;
+      margin-top: 18px;
+    }
+    .img-editor-btn-cancel {
+      padding: 9px 20px;
+      border: 1px solid #e0e0e0;
+      background: transparent;
+      color: #999;
+      border-radius: 3px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .img-editor-btn-cancel:hover { border-color: #111; color: #111; }
+    .img-editor-btn-save {
+      padding: 9px 22px;
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: background 0.15s;
+    }
+    .img-editor-btn-save:hover:not(:disabled) { background: #e8472a; }
+    .img-editor-btn-save:disabled { opacity: 0.35; cursor: not-allowed; }
 
     @media (max-width: 960px) {
       .categories-full-grid { grid-template-columns: 1fr; }
