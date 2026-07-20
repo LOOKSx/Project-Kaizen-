@@ -20,8 +20,8 @@ import { Article } from '../../models/article.model';
         <!-- Header -->
         <div class="editor-header">
           <div class="editor-header-label">{{ articleToEdit ? 'EDIT ARTICLE' : 'NEW ARTICLE' }}</div>
-          <h2>{{ articleToEdit ? 'แก้ไขบทความ' : 'เขียนบทความใหม่' }}</h2>
-          <p>{{ articleToEdit ? 'ปรับแต่งข้อมูลและเนื้อหาบทความได้อย่างอิสระ' : 'แชร์เรื่องราวและความรู้ของคุณสู่ผู้อ่าน' }}</p>
+          <h2>{{ articleToEdit ? 'Edit Article' : 'Write New Article' }}</h2>
+          <p>{{ articleToEdit ? 'Customize article details and content freely.' : 'Share your stories and insights with readers.' }}</p>
         </div>
 
         <form class="editor-form" (ngSubmit)="publishArticle()">
@@ -161,7 +161,7 @@ import { Article } from '../../models/article.model';
             <button type="button" class="btn-cancel" (click)="onClose.emit()">Cancel</button>
             <button type="submit" class="btn-publish" [disabled]="!title || !excerpt || !content || publishing || uploading">
               <i class="fa-solid" [class.fa-paper-plane]="!publishing" [class.fa-spinner]="publishing" [class.fa-spin]="publishing"></i>
-              <span>{{ publishing ? 'Saving...' : (articleToEdit ? 'บันทึกการแก้ไข' : 'เผยแพร่บทความ') }}</span>
+              <span>{{ publishing ? 'Saving...' : (articleToEdit ? 'Save Changes' : 'Publish Article') }}</span>
             </button>
           </div>
 

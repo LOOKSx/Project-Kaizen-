@@ -48,11 +48,11 @@ import { Article } from '../../models/article.model';
 
         <!-- Admin Quick Action Toolbar -->
         <div class="card-admin-actions" *ngIf="isAdmin" (click)="$event.stopPropagation()">
-          <button class="btn-card-edit" (click)="onEdit.emit(article)" title="แก้ไขบทความ">
-            <i class="fa-solid fa-pen-to-square"></i> แก้ไข
+          <button class="btn-card-edit" (click)="onEdit.emit(article)" title="Edit Article">
+            <i class="fa-solid fa-pen-to-square"></i> Edit
           </button>
-          <button class="btn-card-delete" (click)="onDelete.emit(article)" title="ลบบทความ">
-            <i class="fa-solid fa-trash-can"></i> ลบ
+          <button class="btn-card-delete" (click)="onDelete.emit(article)" title="Delete Article">
+            <i class="fa-solid fa-trash-can"></i> Delete
           </button>
         </div>
       </div>

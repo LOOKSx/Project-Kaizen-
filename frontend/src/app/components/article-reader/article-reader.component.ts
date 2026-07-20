@@ -75,8 +75,8 @@ import { ArticleService } from '../../services/article.service';
                   <div class="comment-header">
                     <span class="comment-author">{{ comment.author_name }}</span>
                     <span class="comment-time">{{ comment.created_at | date:'short' }}</span>
-                    <button class="btn-delete-comment" *ngIf="isAdmin" (click)="deleteComment(i)" title="ลบคอมเมนต์นี้">
-                      <i class="fa-solid fa-trash-can"></i> ลบคอมเมนต์
+                    <button class="btn-delete-comment" *ngIf="isAdmin" (click)="deleteComment(i)" title="Delete comment">
+                      <i class="fa-solid fa-trash-can"></i> Delete Comment
                     </button>
                   </div>
                   <p class="comment-text">{{ comment.content }}</p>
@@ -459,7 +459,7 @@ export class ArticleReaderComponent {
   }
 
   deleteComment(index: number) {
-    if (this.article && this.article.comments && confirm('คุณต้องการลบคอมเมนต์นี้ใช่หรือไม่?')) {
+    if (this.article && this.article.comments && confirm('Are you sure you want to delete this comment?')) {
       this.article.comments.splice(index, 1);
       if (typeof localStorage !== 'undefined') {
         const local = localStorage.getItem('kaizen_articles');

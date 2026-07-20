@@ -348,8 +348,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 <div class="cat-full-img-wrap">
                   <img [src]="cat.image" [alt]="cat.name" class="cat-full-img" loading="lazy" />
                   <div class="cat-full-badge">{{ cat.name }}</div>
-                  <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(cat, 'image', 'หมวดหมู่ ' + cat.name)">
-                    <i class="fa-solid fa-camera"></i> เปลี่ยนรูป
+                  <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(cat, 'image', 'Category: ' + cat.name)">
+                    <i class="fa-solid fa-camera"></i>
                   </button>
                 </div>
                 <div class="cat-full-body">
@@ -469,8 +469,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 <div class="dest-img-wrap">
                   <img [src]="d.image" [alt]="d.name" class="dest-img" loading="lazy" />
                   <div class="dest-region-badge">{{ d.region }}</div>
-                  <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(d, 'image', 'สถานที่ ' + d.name)">
-                    <i class="fa-solid fa-camera"></i> เปลี่ยนรูป
+                  <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(d, 'image', 'Destination: ' + d.name)">
+                    <i class="fa-solid fa-camera"></i>
                   </button>
                 </div>
                 <div class="dest-info">
@@ -511,8 +511,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
             <div class="gallery-grid">
               <div class="gallery-item" *ngFor="let p of filteredPhotos" [class.tall]="p.tall">
                 <img [src]="p.url" [alt]="p.caption" class="gallery-img" loading="lazy" />
-                <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(p, 'url', 'รูปแกลเลอรี: ' + p.caption)">
-                  <i class="fa-solid fa-camera"></i> เปลี่ยนรูป
+                <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(p, 'url', 'Gallery Photo: ' + p.caption)">
+                  <i class="fa-solid fa-camera"></i>
                 </button>
                 <div class="gallery-overlay">
                   <p class="gallery-caption">{{ p.caption }}</p>
@@ -2161,10 +2161,10 @@ export class AppComponent implements OnInit, OnDestroy {
     const idx = this.articles.findIndex(a => a.id === newArticle.id);
     if (idx !== -1) {
       this.articles[idx] = newArticle;
-      this.showToast('แก้ไขบทความสำเร็จเรียบร้อยแล้ว (Article Updated)');
+      this.showToast('Article updated successfully');
     } else {
       this.articles.unshift(newArticle);
-      this.showToast('เพิ่มบทความใหม่เรียบร้อยแล้ว (New Article Created)');
+      this.showToast('New article created successfully');
     }
     this.editingArticle = null;
     this.openReader(newArticle);
@@ -2200,7 +2200,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   // Image Editor Modal State
   showImageEditorModal = false;
-  imageEditorTitle = 'เปลี่ยนรูปภาพ (Change Image)';
+  imageEditorTitle = 'Change Image';
   imageEditorTargetKey = '';
   imageEditorTargetItem: any = null;
   imageEditorTargetProp = 'image';
@@ -2314,7 +2314,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.imageUploadSuccess = true;
     }).catch(() => {
       this.imageUploading = false;
-      this.showToast('เกิดข้อผิดพลาดในการเปิดไฟล์รูปภาพ');
+      this.showToast('Error opening image file');
     });
   }
 
@@ -2382,7 +2382,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.showImageEditorModal = false;
     this.imageUploading = false;
     this.imageUploadSuccess = false;
-    this.showToast('✓ เปลี่ยนรูปภาพและบันทึกอัปเดตลงฐานข้อมูลเรียบร้อยแล้ว (Saved Permanently)');
+    this.showToast('Image updated and saved successfully');
   }
 
   unlockAdmin() {
