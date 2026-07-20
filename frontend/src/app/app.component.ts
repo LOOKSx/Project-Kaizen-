@@ -1857,8 +1857,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   checkAdminStatus() {
-    if (typeof localStorage !== 'undefined') {
-      this.isAdmin = localStorage.getItem('kaizen_admin_active') === 'true';
+    if (typeof sessionStorage !== 'undefined') {
+      this.isAdmin = sessionStorage.getItem('kaizen_admin_session') === 'true';
+    } else {
+      this.isAdmin = false;
     }
   }
 
@@ -1877,14 +1879,17 @@ export class AppComponent implements OnInit, OnDestroy {
   unlockAdmin() {
     if (this.adminPassInput.trim() === 'kaizen2026') {
       this.isAdmin = true;
+      if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.setItem('kaizen_admin_session', 'true');
+      }
       if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('kaizen_admin_active', 'true');
+        localStorage.removeItem('kaizen_admin_active');
       }
       window.dispatchEvent(new CustomEvent('kaizen:admin-status', { detail: { isAdmin: true } }));
       this.showAdminPassModal = false;
       this.adminPassInput = '';
       this.adminPassError = false;
-      this.showToast('Stealth Admin Mode Unlocked! You have full Write & Delete access.');
+      this.showToast('Stealth Admin Mode Unlocked! You have full Write & Edit access.');
     } else {
       this.adminPassError = true;
     }

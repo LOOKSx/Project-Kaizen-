@@ -706,8 +706,8 @@ export class HeaderComponent implements OnInit {
   }
 
   checkAdmin() {
-    if (typeof localStorage !== 'undefined') {
-      this.isAdmin = localStorage.getItem('kaizen_admin_active') === 'true';
+    if (typeof sessionStorage !== 'undefined') {
+      this.isAdmin = sessionStorage.getItem('kaizen_admin_session') === 'true';
     } else {
       this.isAdmin = false;
     }
@@ -716,6 +716,9 @@ export class HeaderComponent implements OnInit {
   logoutAdmin() {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem('kaizen_admin_active');
+    }
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.removeItem('kaizen_admin_session');
     }
     this.isAdmin = false;
     window.dispatchEvent(new CustomEvent('kaizen:admin-status', { detail: { isAdmin: false } }));
