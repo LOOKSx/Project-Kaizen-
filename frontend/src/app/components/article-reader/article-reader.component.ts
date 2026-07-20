@@ -69,12 +69,15 @@ import { ArticleService } from '../../services/article.service';
 
             <!-- Comments List -->
             <div class="comments-list" *ngIf="article.comments && article.comments.length > 0">
-              <div class="comment-item" *ngFor="let comment of article.comments">
+              <div class="comment-item" *ngFor="let comment of article.comments; let i = index">
                 <img [src]="comment.author_avatar" [alt]="comment.author_name" class="comment-avatar">
                 <div class="comment-content">
                   <div class="comment-header">
                     <span class="comment-author">{{ comment.author_name }}</span>
                     <span class="comment-time">{{ comment.created_at | date:'short' }}</span>
+                    <button class="btn-delete-comment" *ngIf="isAdmin" (click)="deleteComment(i)" title="ลบคอมเมนต์นี้">
+                      <i class="fa-solid fa-trash-can"></i> ลบคอมเมนต์
+                    </button>
                   </div>
                   <p class="comment-text">{{ comment.content }}</p>
                 </div>
@@ -416,6 +419,21 @@ import { ArticleService } from '../../services/article.service';
       transition: all 0.2s;
     }
     .arb-delete-btn:hover { background: #e8472a; color: #fff; }
+
+    /* ===== DELETE COMMENT BTN ===== */
+    .btn-delete-comment {
+      margin-left: auto;
+      background: rgba(232,71,42,0.1);
+      color: #e8472a;
+      border: 1px solid #e8472a;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-delete-comment:hover { background: #e8472a; color: #fff; }
   `]
 })
 export class ArticleReaderComponent {
@@ -438,6 +456,25 @@ export class ArticleReaderComponent {
 
   getTagsList(tags: string): string[] {
     return tags ? tags.split(',').map(t => t.trim()) : [];
+  }
+
+  deleteComment(index: number) {
+    if (this.article && this.article.comments && confirm('คุณต้องการลบคอมเมนต์นี้ใช่หรือไม่?')) {
+      this.article.comments.splice(index, 1);
+      if (typeof localStorage !== 'undefined') {
+        const local = localStorage.getItem('kaizen_articles');
+        if (local) {
+          try {
+            const list: Article[] = JSON.parse(local);
+            const idx = list.findIndex(a => a.id === this.article!.id);
+            if (idx !== -1) {
+              list[idx].comments = this.article.comments;
+              localStorage.setItem('kaizen_articles', JSON.stringify(list));
+            }
+          } catch (e) {}
+        }
+      }
+    }
   }
 
   submitComment() {
