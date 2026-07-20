@@ -103,6 +103,22 @@ import { ArticleService } from '../../services/article.service';
             <!-- Add Comment Form -->
             <form class="add-comment-form" (ngSubmit)="submitComment()">
               <h4>Leave a Comment</h4>
+
+              <!-- Honeypot Field (Invisible bot trap) -->
+              <input
+                type="text"
+                [(ngModel)]="honeypotWebsite"
+                name="website_hp"
+                class="honeypot-field"
+                tabindex="-1"
+                autocomplete="off"
+              />
+
+              <!-- Anti-Spam / Validation Alert -->
+              <div class="comment-error-alert" *ngIf="commentError">
+                <i class="fa-solid fa-circle-exclamation"></i> {{ commentError }}
+              </div>
+
               <div class="form-row">
                 <input 
                   type="text" 
@@ -115,13 +131,17 @@ import { ArticleService } from '../../services/article.service';
               <div class="form-row">
                 <textarea 
                   rows="3" 
-                  placeholder="Write your comment here..." 
+                  placeholder="Write your comment here (5 - 1,000 characters)..." 
                   [(ngModel)]="newCommentText" 
                   name="content" 
+                  maxlength="1000"
                   required
                 ></textarea>
+                <div class="char-counter" [class.near-limit]="newCommentText.length > 900">
+                  {{ newCommentText.length }}/1000
+                </div>
               </div>
-              <button type="submit" class="btn btn-primary">
+              <button type="submit" class="btn btn-primary" [disabled]="!newCommentAuthor || !newCommentText">
                 Post Comment <i class="fa-solid fa-paper-plane"></i>
               </button>
             </form>
@@ -145,6 +165,45 @@ import { ArticleService } from '../../services/article.service';
       align-items: flex-start;
       overflow-y: auto;
       padding: 40px 20px;
+    }
+
+    /* Anti-Spam & Moderation Styles */
+    .honeypot-field {
+      display: none !important;
+      visibility: hidden !important;
+      position: absolute !important;
+      left: -9999px !important;
+      width: 0 !important;
+      height: 0 !important;
+      opacity: 0 !important;
+    }
+    .comment-error-alert {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: shake 0.3s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+    .char-counter {
+      text-align: right;
+      font-size: 11px;
+      color: #aaa;
+      margin-top: 4px;
+    }
+    .char-counter.near-limit {
+      color: #e8472a;
     }
     .reader-modal-card {
       background-color: #ffffff;
@@ -526,6 +585,19 @@ export class ArticleReaderComponent {
 
   newCommentAuthor: string = '';
   newCommentText: string = '';
+  honeypotWebsite: string = '';
+  commentError: string = '';
+
+  private readonly profanityList: string[] = [
+    // Thai profanity & slurs
+    'ควย', 'ส้นตีน', 'เหี้ย', 'เชี่ย', 'เย็ด', 'มึง', 'กู', 'สัส', 'ชิปหาย', 'ชิบหาย',
+    'ไอ้สัส', 'ไอ้เหี้ย', 'ไอ้ควย', 'แม่ง', 'ดอกทอง', 'แครอท', 'เฬว', 'อีควาย', 'อีเหี้ย',
+    'อีสัตว์', 'หน้าหี', 'หี', 'แตด', 'อีดอก', 'กะหรี่', 'กะหรี่เฒ่า',
+    // English profanity & slurs
+    'fuck', 'fucking', 'fucked', 'fucker', 'shit', 'shitty', 'bitch', 'bitches',
+    'asshole', 'cunt', 'dick', 'pussy', 'bastard', 'slut', 'whore', 'nigger',
+    'nigga', 'motherfucker', 'cock', 'jackass', 'prick', 'bullshit', 'twat'
+  ];
 
   constructor(private articleService: ArticleService) {}
 
@@ -571,15 +643,86 @@ export class ArticleReaderComponent {
     }
   }
 
+  private containsProfanity(text: string): boolean {
+    if (!text) return false;
+    const normalized = text.toLowerCase()
+      .replace(/[\*\_\.\-\s\d]/g, '')
+      .replace(/0/g, 'o').replace(/1/g, 'i').replace(/3/g, 'e').replace(/4/g, 'a').replace(/5/g, 's').replace(/7/g, 't');
+    
+    const words = text.toLowerCase().split(/\s+/);
+
+    return this.profanityList.some(badWord => {
+      return words.some(w => w.replace(/[^a-z\u0E00-\u0E7F]/gi, '') === badWord) ||
+             normalized.includes(badWord);
+    });
+  }
+
+  private containsURL(text: string): boolean {
+    if (!text) return false;
+    const urlPattern = /(https?:\/\/|ftp:\/\/|www\.|[a-zA-Z0-9-]+\.(com|net|org|io|co|th|xyz|info|biz|link|site|online|club|top|ru|cn|cc)\b)/i;
+    return urlPattern.test(text);
+  }
+
   submitComment() {
-    if (this.article && this.newCommentAuthor && this.newCommentText) {
+    this.commentError = '';
+
+    // 1. Honeypot Check (Invisible bot trap)
+    if (this.honeypotWebsite && this.honeypotWebsite.trim().length > 0) {
+      this.commentError = 'Spam detected. Submission rejected.';
+      return;
+    }
+
+    const trimmedAuthor = this.newCommentAuthor.trim();
+    const trimmedContent = this.newCommentText.trim();
+
+    if (!trimmedAuthor || !trimmedContent) {
+      this.commentError = 'Please fill out both your name and comment.';
+      return;
+    }
+
+    // 2. Character Length Check (Min 5, Max 1000)
+    if (trimmedContent.length < 5) {
+      this.commentError = 'Comment must be at least 5 characters long.';
+      return;
+    }
+    if (trimmedContent.length > 1000) {
+      this.commentError = 'Comment cannot exceed 1,000 characters.';
+      return;
+    }
+
+    // 3. Block URL / Link Check
+    if (this.containsURL(trimmedContent) || this.containsURL(trimmedAuthor)) {
+      this.commentError = 'Links or URLs are not allowed in comments to prevent spam.';
+      return;
+    }
+
+    // 4. Duplicate Comment Check
+    if (this.article && this.article.comments) {
+      const isDuplicate = this.article.comments.some(c => 
+        c.content.trim().toLowerCase() === trimmedContent.toLowerCase()
+      );
+      if (isDuplicate) {
+        this.commentError = 'Duplicate comment detected. Please write a unique comment.';
+        return;
+      }
+    }
+
+    // 5. Profanity / Offensive Language Check
+    if (this.containsProfanity(trimmedContent) || this.containsProfanity(trimmedAuthor)) {
+      this.commentError = 'Inappropriate or offensive language is not allowed.';
+      return;
+    }
+
+    // All checks passed -> Submit comment
+    if (this.article) {
       this.articleService.addComment(this.article.id, {
-        author_name: this.newCommentAuthor,
-        content: this.newCommentText
+        author_name: trimmedAuthor,
+        content: trimmedContent
       }).subscribe(comment => {
         if (!this.article!.comments) this.article!.comments = [];
         this.article!.comments.push(comment);
         this.newCommentText = '';
+        this.commentError = '';
       });
     }
   }
