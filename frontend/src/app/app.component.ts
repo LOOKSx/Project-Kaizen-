@@ -1291,22 +1291,44 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     /* ===== PAGE HERO ===== */
     .page-hero {
       position: relative;
-      height: 380px;
+      height: 400px;
       background-size: cover;
       background-position: center;
       margin-top: 62px;
       display: flex;
       align-items: center;
       justify-content: center;
+      overflow: hidden;
     }
     .page-hero-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.7) 100%);
+      background: linear-gradient(160deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.82) 100%);
     }
-    .page-hero-content { position: relative; text-align: center; color: #fff; padding: 0 20px; }
-    .page-hero-label { font-size: 12px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.75); margin-bottom: 12px; }
-    .page-hero-title { font-family: 'Lato', sans-serif; font-size: clamp(36px, 6vw, 64px); font-weight: 900; letter-spacing: -1px; margin: 0 0 16px; }
-    .page-hero-sub { font-size: 16px; color: rgba(255,255,255,0.85); max-width: 600px; margin: 0 auto; line-height: 1.6; }
+    /* === Beautiful SVG Wave Bottom Divider (all pages, light mode) === */
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 80' preserveAspectRatio='none'%3E%3Cpath fill='%23ffffff' d='M0,56 C180,80 360,20 540,40 C720,60 900,80 1080,56 C1260,32 1380,48 1440,40 L1440,80 L0,80 Z'/%3E%3C/svg%3E") no-repeat bottom center;
+      background-size: 100% 100%;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .page-hero-content { position: relative; z-index: 2; text-align: center; color: #fff; padding: 0 20px; margin-bottom: 24px; }
+    .page-hero-label {
+      font-size: 11px; font-weight: 800; letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.65); margin-bottom: 14px;
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .page-hero-label::before,
+    .page-hero-label::after {
+      content: ''; display: inline-block; width: 28px; height: 1px; background: rgba(255,255,255,0.45);
+    }
+    .page-hero-title { font-family: 'Lato', sans-serif; font-size: clamp(36px, 6vw, 66px); font-weight: 900; letter-spacing: -1.5px; margin: 0 0 16px; text-shadow: 0 2px 20px rgba(0,0,0,0.35); }
+    .page-hero-sub { font-size: 15.5px; color: rgba(255,255,255,0.82); max-width: 580px; margin: 0 auto; line-height: 1.65; }
 
     /* ===== BLOG PAGE SPECIFICS ===== */
     .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }

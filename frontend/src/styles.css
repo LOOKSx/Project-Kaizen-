@@ -648,3 +648,11 @@ body.dark-theme .delete-header p strong { color: #ffffff !important; }
 body.dark-theme .delete-icon-wrap { background: #3b1414 !important; color: #ef4444 !important; border-color: #7f1d1d !important; }
 body.dark-theme .btn-delete-cancel { border-color: #383838 !important; color: #94a3b8 !important; }
 body.dark-theme .btn-delete-cancel:hover { border-color: #555555 !important; color: #ffffff !important; }
+
+/* ============================================================
+   PAGE HERO WAVE BOTTOM DIVIDER — Dark Mode Override
+   ============================================================ */
+/* In dark mode, wave fill switches from #fff to #121212 */
+body.dark-theme .page-hero::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 80' preserveAspectRatio='none'%3E%3Cpath fill='%23121212' d='M0,56 C180,80 360,20 540,40 C720,60 900,80 1080,56 C1260,32 1380,48 1440,40 L1440,80 L0,80 Z'/%3E%3C/svg%3E") !important;
+}
