@@ -71,8 +71,8 @@ import { ArticleService } from '../../services/article.service';
                   <div class="cat-mega-preview-col" *ngIf="activeCatPreview">
                     <div class="cat-preview-card" (click)="openPreviewCategory(activeCatPreview.catName, $event)">
                       <div class="cat-preview-img-wrap">
-                        <img [src]="activeCatPreview.image" [alt]="activeCatPreview.title" class="cat-preview-img" />
-                        <span class="cat-preview-badge">SAMPLE ARTICLE</span>
+                        <img [src]="activeCatPreview.image" [alt]="activeCatPreview.title" class="cat-preview-img" (error)="onImgError($event)" />
+                        <span class="cat-preview-badge">ARTICLE PREVIEW</span>
                       </div>
                       <div class="cat-preview-body">
                         <h4 class="cat-preview-title">{{ activeCatPreview.title }}</h4>
@@ -570,70 +570,70 @@ export class HeaderComponent implements OnInit {
     'Daily Life / Musings': {
       catName: 'Daily Life / Musings',
       title: 'The Magic of Slow Mornings: Reclaiming My Day',
-      image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=500&q=80',
+      image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80',
       excerpt: 'I spend the first 30 minutes of every day in screen-free silence. Here is what changed...',
       readTime: '4 min read'
     },
     'Personal Growth': {
       catName: 'Personal Growth',
       title: 'The Kaizen Philosophy: 1% Daily Improvement',
-      image: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=500&q=80',
+      image: 'https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=600&q=80',
       excerpt: 'Japanese methodology teaches us that tiny daily habits compound into mastery over time...',
       readTime: '5 min read'
     },
     'Travel & Places': {
       catName: 'Travel & Places',
       title: 'Bali Travel Guide 2026: Hidden Cascades & Temples',
-      image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=500&q=80',
+      image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=600&q=80',
       excerpt: 'Explore Tegallalang rice terraces, Mount Batur sunrise treks, and secret jungle waterfalls...',
       readTime: '7 min read'
     },
     'Relationships': {
       catName: 'Relationships',
       title: 'Long-Distance Friendships: Keeping Bonds Strong',
-      image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=500&q=80',
+      image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=600&q=80',
       excerpt: 'What 2 years of living abroad taught me about non-negotiable calls and async voice notes...',
       readTime: '5 min read'
     },
     'Health & Wellbeing': {
       catName: 'Health & Wellbeing',
       title: 'Zone 2 Cardio: The Unsexy Key to Longevity',
-      image: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=500&q=80',
+      image: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=600&q=80',
       excerpt: 'Why elite endurance athletes train at low intensity 80% of the time for cellular health...',
       readTime: '6 min read'
     },
     'Work & Career': {
       catName: 'Work & Career',
       title: 'Golang + Modern Frontend Architecture',
-      image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=500&q=80',
+      image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80',
       excerpt: 'Building high-throughput REST APIs in Go combined with reactive Angular SPAs...',
       readTime: '8 min read'
     },
     'Books & Learning': {
       catName: 'Books & Learning',
       title: '5 Books That Genuinely Changed How I Think',
-      image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=500&q=80',
+      image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?auto=format&fit=crop&w=600&q=80',
       excerpt: 'Permanent mental models from Thinking Fast & Slow, Antifragile, and Atomic Habits...',
       readTime: '7 min read'
     },
     'Goals & Projects': {
       catName: 'Goals & Projects',
       title: 'Building My Personal Knowledge System (PKM)',
-      image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&w=500&q=80',
+      image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&w=600&q=80',
       excerpt: 'Two years of experimenting with Obsidian, Readwise, and physical notebooks...',
       readTime: '8 min read'
     },
     'Random Thoughts / Rants': {
       catName: 'Random Thoughts / Rants',
       title: 'Hot Take: Productivity Culture is Procrastination',
-      image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66936?auto=format&fit=crop&w=500&q=80',
+      image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80',
       excerpt: 'Why optimizing your morning routine and Notion system often stops you from doing real work...',
       readTime: '4 min read'
     },
     'Photography / Snapshots': {
       catName: 'Photography / Snapshots',
       title: 'Natural Light Travel Photography Guide',
-      image: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?auto=format&fit=crop&w=500&q=80',
+      image: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?auto=format&fit=crop&w=600&q=80',
       excerpt: 'Harness Golden Hour and Blue Hour to capture depth, atmosphere, and raw texture...',
       readTime: '6 min read'
     }
@@ -663,9 +663,25 @@ export class HeaderComponent implements OnInit {
   closeMenu() { this.activeMenu = null; }
 
   setPreview(catLabel: string) {
+    const realArticle = this.articleService.getPersistedArticles(catLabel, '')[0];
+    if (realArticle && realArticle.cover_image) {
+      this.activeCatPreview = {
+        catName: realArticle.category,
+        title: realArticle.title,
+        image: realArticle.cover_image,
+        excerpt: realArticle.excerpt,
+        readTime: 'Published Article'
+      };
+      return;
+    }
+
     if (this.samplePreviews[catLabel]) {
       this.activeCatPreview = this.samplePreviews[catLabel];
     }
+  }
+
+  onImgError(event: any) {
+    event.target.src = 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80';
   }
 
   navigate(page: string, e: Event) {

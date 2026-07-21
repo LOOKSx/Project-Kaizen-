@@ -635,7 +635,7 @@ For travel, the best camera is the one you have with you. A Sony A7C II for seri
     }
   }
 
-  private getPersistedArticles(category: string, search: string): Article[] {
+  public getPersistedArticles(category: string = '', search: string = ''): Article[] {
     const dataStr = localStorage.getItem('kaizen_articles') || '[]';
     const list: Article[] = JSON.parse(dataStr);
     return list.filter(a => {
