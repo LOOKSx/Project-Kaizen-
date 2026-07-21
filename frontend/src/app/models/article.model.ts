@@ -14,6 +14,7 @@ export interface Article {
   excerpt: string;
   content: string;
   category: string;
+  country?: string;
   cover_image: string;
   read_time: string;
   views: number;

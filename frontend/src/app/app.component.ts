@@ -460,59 +460,62 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
         </div>
         <main class="page-body">
           <div class="container">
+            <!-- 1. Continent Filter Bar -->
             <div class="dest-filter-bar">
-              <button class="dest-pill" [class.active]="destFilter==='All'" (click)="destFilter='All'">All</button>
-              <button class="dest-pill" *ngFor="let r of regions" [class.active]="destFilter===r" (click)="destFilter=r">{{ r }}</button>
-            </div>
-            <!-- Destinations Cards Grid -->
-            <div class="dest-grid">
-              <div class="dest-card" *ngFor="let d of filteredDestinations" (click)="openDestArticle(d)">
-                <div class="dest-img-wrap">
-                  <img [src]="d.image" [alt]="d.name" class="dest-img" loading="lazy" />
-                  <div class="dest-region-badge">{{ d.region }}</div>
-                  <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(d, 'image', 'Destination: ' + d.name)">
-                    <i class="fa-solid fa-camera"></i>
-                  </button>
-                </div>
-                <div class="dest-info">
-                  <h3 class="dest-name">{{ d.name }}</h3>
-                  <p class="dest-desc">{{ d.desc }}</p>
-                  <div class="dest-meta">
-                    <span><i class="fa-solid fa-camera"></i> {{ d.photos }}</span>
-                    <span><i class="fa-solid fa-newspaper"></i> {{ d.articles }}</span>
-                    <span class="dest-read">Explore Stories &rarr;</span>
-                  </div>
-                </div>
-              </div>
+              <button class="dest-pill" [class.active]="destFilter==='All'" (click)="setDestContinent('All')">All Continents</button>
+              <button class="dest-pill" *ngFor="let r of regions" [class.active]="destFilter===r" (click)="setDestContinent(r)">{{ r }}</button>
             </div>
 
-            <!-- Dedicated Continent Travel Stories & Guides Section -->
-            <div id="dest-stories-section" style="margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--color-border);">
-              <div class="section-header">
-                <div>
-                  <h2 class="section-heading">TRAVEL STORIES &amp; CONTINENT GUIDES</h2>
-                  <p style="font-size: 13px; color: var(--color-muted); margin: 6px 0 0;">
-                    Authentic travel storytelling, expedition journals, and cultural guides for <strong>{{ destFilter === 'All' ? 'All Continents' : destFilter }}</strong>.
-                  </p>
-                </div>
-              </div>
+            <!-- 2. Country Subcategory Filters -->
+            <div class="country-subfilter-bar" *ngIf="availableDestCountries.length > 0" style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; padding: 14px 20px; background: var(--color-light); border-radius: 6px; border: 1px solid var(--color-border);">
+              <span style="font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-accent); margin-right: 6px; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-flag"></i> Country / หมวดหมู่ย่อย:
+              </span>
+              <button
+                class="filter-pill"
+                [class.active]="destCountryFilter === 'All'"
+                (click)="destCountryFilter = 'All'"
+                style="cursor: pointer;"
+              >
+                All Countries
+              </button>
+              <button
+                class="filter-pill"
+                *ngFor="let country of availableDestCountries"
+                [class.active]="destCountryFilter === country"
+                (click)="destCountryFilter = country"
+                style="cursor: pointer;"
+              >
+                {{ country }}
+              </button>
+            </div>
 
-              <div class="posts-grid" *ngIf="destTravelArticles.length > 0">
-                <app-article-card
-                  *ngFor="let article of destTravelArticles"
-                  [article]="article"
-                  [isAdmin]="isAdmin"
-                  (onSelect)="openReader($event)"
-                  (onEdit)="openEditModal($event)"
-                  (onDelete)="promptDeleteArticle($event)"
-                ></app-article-card>
+            <!-- 3. Travel Stories & Country Guides Grid -->
+            <div class="section-header">
+              <div>
+                <h2 class="section-heading">TRAVEL STORIES &amp; COUNTRY GUIDES</h2>
+                <p style="font-size: 13px; color: var(--color-muted); margin: 6px 0 0;">
+                  Explore travel guides for <strong>{{ destFilter === 'All' ? 'All Continents' : destFilter }}</strong>
+                  <span *ngIf="destCountryFilter !== 'All'"> &rarr; <strong>{{ destCountryFilter }}</strong></span>
+                </p>
               </div>
+            </div>
 
-              <div class="empty-state" *ngIf="destTravelArticles.length === 0">
-                <i class="fa-solid fa-compass empty-icon"></i>
-                <h3>No Travel Stories Found for {{ destFilter }}</h3>
-                <p>Explore travel stories from other continents or check back soon.</p>
-              </div>
+            <div class="posts-grid" *ngIf="filteredDestTravelArticles.length > 0">
+              <app-article-card
+                *ngFor="let article of filteredDestTravelArticles"
+                [article]="article"
+                [isAdmin]="isAdmin"
+                (onSelect)="openReader($event)"
+                (onEdit)="openEditModal($event)"
+                (onDelete)="promptDeleteArticle($event)"
+              ></app-article-card>
+            </div>
+
+            <div class="empty-state" *ngIf="filteredDestTravelArticles.length === 0">
+              <i class="fa-solid fa-compass empty-icon"></i>
+              <h3>No Travel Stories Found for {{ destCountryFilter !== 'All' ? destCountryFilter : destFilter }}</h3>
+              <p>Try selecting another continent or country, or write a new travel story!</p>
             </div>
           </div>
         </main>
@@ -2314,6 +2317,45 @@ export class AppComponent implements OnInit, OnDestroy {
     this.selectedArticle = article;
   }
 
+  destCountryFilter: string = 'All';
+
+  setDestContinent(r: string) {
+    this.destFilter = r;
+    this.destCountryFilter = 'All';
+  }
+
+  get availableDestCountries(): string[] {
+    const list = this.destTravelArticles;
+    const countries = new Set<string>();
+    list.forEach(a => {
+      if (a.country) {
+        countries.add(a.country);
+      } else {
+        const text = (a.title + ' ' + a.tags).toLowerCase();
+        if (text.includes('indonesia') || text.includes('bali')) countries.add('Indonesia');
+        if (text.includes('japan') || text.includes('kyoto')) countries.add('Japan');
+        if (text.includes('thailand') || text.includes('chiang mai')) countries.add('Thailand');
+        if (text.includes('greece') || text.includes('santorini')) countries.add('Greece');
+        if (text.includes('italy') || text.includes('amalfi')) countries.add('Italy');
+        if (text.includes('iceland')) countries.add('Iceland');
+        if (text.includes('argentina') || text.includes('patagonia')) countries.add('Argentina');
+        if (text.includes('peru') || text.includes('machu picchu')) countries.add('Peru');
+        if (text.includes('tanzania') || text.includes('serengeti')) countries.add('Tanzania');
+      }
+    });
+    return Array.from(countries);
+  }
+
+  get filteredDestTravelArticles(): Article[] {
+    const list = this.destTravelArticles;
+    if (this.destCountryFilter === 'All') return list;
+    return list.filter(a => {
+      const c = a.country || '';
+      const text = (a.title + ' ' + a.excerpt + ' ' + a.tags + ' ' + a.content).toLowerCase();
+      return c.toLowerCase() === this.destCountryFilter.toLowerCase() || text.includes(this.destCountryFilter.toLowerCase());
+    });
+  }
+
   get destTravelArticles(): Article[] {
     const travelCats = ['travel & places', 'travel & adventure', 'travel'];
     const travelList = this.articles.filter(a => 
@@ -2324,11 +2366,11 @@ export class AppComponent implements OnInit, OnDestroy {
     
     const regionLower = this.destFilter.toLowerCase();
     return travelList.filter(a => {
-      const text = (a.title + ' ' + a.excerpt + ' ' + a.tags + ' ' + a.content).toLowerCase();
-      if (regionLower === 'asia') return text.includes('bali') || text.includes('japan') || text.includes('kyoto') || text.includes('thailand') || text.includes('chiang mai') || text.includes('asia') || text.includes('indonesia');
-      if (regionLower === 'europe') return text.includes('greece') || text.includes('santorini') || text.includes('italy') || text.includes('amalfi') || text.includes('iceland') || text.includes('europe');
-      if (regionLower === 'americas') return text.includes('patagonia') || text.includes('argentina') || text.includes('peru') || text.includes('machu picchu') || text.includes('americas');
-      if (regionLower === 'africa') return text.includes('serengeti') || text.includes('tanzania') || text.includes('africa');
+      const text = (a.title + ' ' + a.excerpt + ' ' + a.tags + ' ' + a.content + ' ' + (a.country || '')).toLowerCase();
+      if (regionLower === 'asia') return text.includes('bali') || text.includes('japan') || text.includes('kyoto') || text.includes('thailand') || text.includes('chiang mai') || text.includes('asia') || text.includes('indonesia') || text.includes('vietnam') || text.includes('singapore');
+      if (regionLower === 'europe') return text.includes('greece') || text.includes('santorini') || text.includes('italy') || text.includes('amalfi') || text.includes('iceland') || text.includes('europe') || text.includes('france') || text.includes('spain');
+      if (regionLower === 'americas') return text.includes('patagonia') || text.includes('argentina') || text.includes('peru') || text.includes('machu picchu') || text.includes('americas') || text.includes('united states');
+      if (regionLower === 'africa') return text.includes('serengeti') || text.includes('tanzania') || text.includes('africa') || text.includes('egypt');
       return text.includes(regionLower);
     });
   }

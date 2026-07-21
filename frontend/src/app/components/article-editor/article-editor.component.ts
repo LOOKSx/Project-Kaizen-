@@ -119,16 +119,17 @@ import { Article } from '../../models/article.model';
             </div>
           </div>
 
-          <!-- TARGET CONTINENT / REGION (SHOWN ONLY FOR TRAVEL) -->
+          <!-- TARGET CONTINENT & COUNTRY (SHOWN ONLY FOR TRAVEL) -->
           <div class="form-group continent-picker-group" *ngIf="publishType === 'travel'">
-            <label>TARGET CONTINENT / REGION <span class="required">*</span></label>
+            <!-- 1. Continent Selection -->
+            <label>1. TARGET CONTINENT / REGION <span class="required">*</span></label>
             <div class="continent-grid">
               <button
                 type="button"
                 class="continent-btn"
                 *ngFor="let region of regions"
                 [class.active]="selectedRegion === region"
-                (click)="selectedRegion = region"
+                (click)="onRegionChange(region)"
               >
                 <i class="fa-solid fa-earth-americas" *ngIf="region === 'Americas'"></i>
                 <i class="fa-solid fa-earth-asia" *ngIf="region === 'Asia'"></i>
@@ -139,9 +140,37 @@ import { Article } from '../../models/article.model';
                 <span>{{ region }}</span>
               </button>
             </div>
+
+            <!-- 2. Country / Subcategory Selection -->
+            <div class="country-section">
+              <label>2. COUNTRY / SUBCATEGORY (ประเทศ / หมวดหมู่ย่อย) <span class="required">*</span></label>
+              <div class="country-pills-wrap">
+                <button
+                  type="button"
+                  class="country-pill"
+                  *ngFor="let c of availableCountries"
+                  [class.active]="selectedCountry === c"
+                  (click)="selectedCountry = c"
+                >
+                  {{ c }}
+                </button>
+              </div>
+
+              <!-- Custom Country Input -->
+              <div style="margin-top: 10px;" *ngIf="selectedCountry === 'Custom / Other'">
+                <input
+                  type="text"
+                  placeholder="Enter country name (e.g. Iceland, Switzerland, Vietnam...)"
+                  [(ngModel)]="customCountryInput"
+                  name="customCountryInput"
+                  class="url-input"
+                />
+              </div>
+            </div>
+
             <p class="continent-hint">
               <i class="fa-solid fa-circle-info"></i>
-              This story will be published under <strong>Destinations &rarr; {{ selectedRegion }}</strong>.
+              Published under <strong>Destinations &rarr; {{ selectedRegion }} &rarr; {{ getFinalCountry() }}</strong>
             </p>
           </div>
 
@@ -679,6 +708,55 @@ import { Article } from '../../models/article.model';
     body.dark-theme .continent-hint {
       color: #94a3b8;
     }
+
+    /* ===== COUNTRY PILLS ===== */
+    .country-section {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(232, 71, 42, 0.2);
+    }
+    .country-pills-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .country-pill {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+    .country-pill:hover {
+      border-color: #e8472a;
+      color: #e8472a;
+    }
+    .country-pill.active {
+      background: #e8472a;
+      border-color: #e8472a;
+      color: #ffffff;
+    }
+
+    body.dark-theme .country-pill {
+      background: #282828;
+      border-color: #383838;
+      color: #cbd5e1;
+    }
+    body.dark-theme .country-pill:hover {
+      border-color: #e8472a;
+      color: #ffffff;
+    }
+    body.dark-theme .country-pill.active {
+      background: #e8472a;
+      border-color: #e8472a;
+      color: #ffffff;
+    }
   `]
 })
 export class ArticleEditorComponent {
@@ -706,6 +784,36 @@ export class ArticleEditorComponent {
   publishType: 'blog' | 'travel' = 'blog';
   selectedRegion: string = 'Asia';
   regions: string[] = ['Asia', 'Europe', 'Americas', 'Africa', 'Oceania', 'Middle East'];
+
+  countriesByRegion: { [key: string]: string[] } = {
+    'Asia': ['Thailand', 'Japan', 'Indonesia', 'Vietnam', 'Singapore', 'South Korea', 'Custom / Other'],
+    'Europe': ['Greece', 'Italy', 'Iceland', 'France', 'Spain', 'Switzerland', 'Custom / Other'],
+    'Americas': ['Argentina', 'Peru', 'United States', 'Mexico', 'Brazil', 'Custom / Other'],
+    'Africa': ['Tanzania', 'Egypt', 'South Africa', 'Kenya', 'Morocco', 'Custom / Other'],
+    'Oceania': ['Australia', 'New Zealand', 'Fiji', 'Custom / Other'],
+    'Middle East': ['UAE (Dubai)', 'Turkey', 'Jordan', 'Custom / Other']
+  };
+
+  selectedCountry: string = 'Indonesia';
+  customCountryInput: string = '';
+
+  get availableCountries(): string[] {
+    return this.countriesByRegion[this.selectedRegion] || ['Custom / Other'];
+  }
+
+  onRegionChange(region: string) {
+    this.selectedRegion = region;
+    const countries = this.countriesByRegion[region];
+    this.selectedCountry = countries ? countries[0] : 'Custom / Other';
+    this.customCountryInput = '';
+  }
+
+  getFinalCountry(): string {
+    if (this.selectedCountry === 'Custom / Other') {
+      return this.customCountryInput.trim() || 'General';
+    }
+    return this.selectedCountry;
+  }
 
   setPublishType(type: 'blog' | 'travel') {
     this.publishType = type;
@@ -841,15 +949,21 @@ export class ArticleEditorComponent {
   publishArticle() {
     if (this.title && this.excerpt && this.content) {
       this.publishing = true;
+      let finalCountry = '';
       
       if (this.publishType === 'travel') {
         this.category = 'Travel & Places';
+        finalCountry = this.getFinalCountry();
+        
         let tagList = this.tags ? this.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
         if (!tagList.some(t => t.toLowerCase() === 'travel')) {
           tagList.unshift('Travel');
         }
         if (!tagList.some(t => t.toLowerCase() === this.selectedRegion.toLowerCase())) {
           tagList.push(this.selectedRegion);
+        }
+        if (finalCountry && !tagList.some(t => t.toLowerCase() === finalCountry.toLowerCase())) {
+          tagList.push(finalCountry);
         }
         this.tags = tagList.join(', ');
       }
@@ -859,6 +973,7 @@ export class ArticleEditorComponent {
           ...this.articleToEdit,
           title: this.title,
           category: this.category,
+          country: finalCountry || this.articleToEdit.country,
           read_time: this.readTime,
           cover_image: this.coverImage || this.articleToEdit.cover_image,
           excerpt: this.excerpt,
@@ -874,6 +989,7 @@ export class ArticleEditorComponent {
         this.articleService.createArticle({
           title: this.title,
           category: this.category,
+          country: finalCountry,
           read_time: this.readTime,
           cover_image: this.coverImage,
           excerpt: this.excerpt,

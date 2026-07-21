@@ -249,9 +249,9 @@ export class ArticleService {
     // Always reset if version tag is outdated
     const stored = localStorage.getItem('kaizen_articles');
     const version = localStorage.getItem('kaizen_articles_version');
-    if (!stored || version !== 'v5') {
+    if (!stored || version !== 'v6') {
       localStorage.removeItem('kaizen_articles');
-      localStorage.setItem('kaizen_articles_version', 'v5');
+      localStorage.setItem('kaizen_articles_version', 'v6');
     }
 
     if (!localStorage.getItem('kaizen_articles')) {
@@ -358,6 +358,7 @@ Wake at 2:00 AM, reach the summit by 5:30 AM, and witness one of the most specta
 * **Best Season**: May to October (Dry season with clear blue skies and cooler mountain breeze).
 * **Footwear**: Bring sturdy waterproof hiking shoes for river crossings.`,
           category: 'Travel & Places',
+          country: 'Indonesia',
           cover_image: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1000&q=80',
           read_time: '7 min read',
           views: 2420,
@@ -396,6 +397,7 @@ Navigating the winding coastal road between Sorrento and Salerno reveals terrace
 * **Pacing**: Avoid rushing 5 cities into 7 days. Spend at least 3 nights per base.
 * **Shoulder Season**: May and September offer warm weather with half the summer crowds.`,
           category: 'Travel & Places',
+          country: 'Greece',
           cover_image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=1000&q=80',
           read_time: '8 min read',
           views: 3120,
@@ -426,6 +428,7 @@ Ascending through Andean mist to behold the ancient Inca citadel perched silentl
 * **Layering System**: Merino wool base, fleece mid-layer, and heavy-duty gore-tex shell.
 * **Altitude Prep**: Spend 2 days acclimatizing in Cusco (3,400m) before starting high-altitude treks.`,
           category: 'Travel & Places',
+          country: 'Argentina',
           cover_image: 'https://images.unsplash.com/photo-1531761535209-180857e963b9?auto=format&fit=crop&w=1000&q=80',
           read_time: '9 min read',
           views: 2790,
@@ -452,6 +455,7 @@ Witnessing vast herds moving across golden grasslands in rhythmic harmony while 
 ## 2. Serengeti Sunrises & Hot Air Ballooning
 Floating silently at 500 feet over acacia trees at golden hour provides an unprecedented aerial perspective of wild Africa.`,
           category: 'Travel & Places',
+          country: 'Tanzania',
           cover_image: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1000&q=80',
           read_time: '7 min read',
           views: 1850,
