@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ArticleService } from './services/article.service';
@@ -542,7 +542,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
               <button class="dest-pill" *ngFor="let g of galleryTags" [class.active]="galleryFilter===g" (click)="galleryFilter=g">{{ g }}</button>
             </div>
             <div class="gallery-grid">
-              <div class="gallery-item" *ngFor="let p of filteredPhotos" [class.tall]="p.tall">
+              <div class="gallery-item" *ngFor="let p of filteredPhotos; let idx = index" [class.tall]="p.tall" (click)="openLightbox(idx)" style="cursor: pointer;">
                 <img [src]="p.url" [alt]="p.caption" class="gallery-img" loading="lazy" />
                 <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(p, 'url', 'Gallery Photo: ' + p.caption)">
                   <i class="fa-solid fa-camera"></i>
@@ -920,6 +920,45 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
             <button type="button" class="btn-delete-confirm" (click)="confirmDeleteArticle()">
               <i class="fa-solid fa-trash-can"></i> Delete Permanently
             </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Gallery Lightbox Fullscreen Image Modal -->
+      <div class="lightbox-backdrop" *ngIf="showLightbox" (click)="closeLightbox()">
+        <div class="lightbox-container" (click)="$event.stopPropagation()">
+          
+          <!-- Close Button -->
+          <button class="lightbox-close-btn" (click)="closeLightbox()" title="Close (Esc)">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+
+          <!-- Counter Badge -->
+          <div class="lightbox-counter" *ngIf="filteredPhotos.length > 0">
+            <span>Photo {{ activeLightboxIndex + 1 }} of {{ filteredPhotos.length }}</span>
+          </div>
+
+          <!-- Main Image View -->
+          <div class="lightbox-media-wrap" *ngIf="activeLightboxPhoto">
+            <img [src]="activeLightboxPhoto.url" [alt]="activeLightboxPhoto.caption" class="lightbox-img" />
+          </div>
+
+          <!-- Navigation Prev / Next Buttons -->
+          <button class="lightbox-nav-btn prev-btn" (click)="prevLightboxPhoto()" title="Previous Photo (Left Arrow)">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+
+          <button class="lightbox-nav-btn next-btn" (click)="nextLightboxPhoto()" title="Next Photo (Right Arrow)">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+
+          <!-- Caption & Tag Footer -->
+          <div class="lightbox-footer" *ngIf="activeLightboxPhoto">
+            <div class="lightbox-caption-group">
+              <span class="lightbox-tag">{{ activeLightboxPhoto.tag }}</span>
+              <h3 class="lightbox-caption">{{ activeLightboxPhoto.caption }}</h3>
+            </div>
           </div>
 
         </div>
@@ -2170,6 +2209,152 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       .intro-stats { gap: 16px; }
     }
 
+    /* ===== GALLERY LIGHTBOX MODAL ===== */
+    .lightbox-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(0, 0, 0, 0.92);
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.25s ease;
+    }
+    .lightbox-container {
+      position: relative;
+      width: 92vw;
+      height: 90vh;
+      max-width: 1300px;
+      max-height: 850px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox-close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      z-index: 2010;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .lightbox-close-btn:hover {
+      background: #e8472a;
+      border-color: #e8472a;
+      transform: scale(1.1);
+    }
+    .lightbox-counter {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 2010;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #ffffff;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .lightbox-media-wrap {
+      width: 100%;
+      height: calc(100% - 70px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      animation: zoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes zoomIn {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .lightbox-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2010;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(4px);
+    }
+    .lightbox-nav-btn:hover {
+      background: #e8472a;
+      border-color: #e8472a;
+      transform: translateY(-50%) scale(1.12);
+    }
+    .lightbox-nav-btn.prev-btn { left: 20px; }
+    .lightbox-nav-btn.next-btn { right: 20px; }
+
+    @media (max-width: 768px) {
+      .lightbox-nav-btn.prev-btn { left: 5px; width: 42px; height: 42px; font-size: 15px; }
+      .lightbox-nav-btn.next-btn { right: 5px; width: 42px; height: 42px; font-size: 15px; }
+    }
+
+    .lightbox-footer {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2010;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.75);
+      padding: 10px 24px;
+      border-radius: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(6px);
+      max-width: 80%;
+    }
+    .lightbox-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #e8472a;
+      margin-bottom: 2px;
+    }
+    .lightbox-caption {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     /* ===== PROFILE SETTINGS MODAL ===== */
     .profile-modal-card {
       background: #ffffff;
@@ -2467,6 +2652,47 @@ export class AppComponent implements OnInit, OnDestroy {
   get filteredPhotos() {
     if (this.galleryFilter === 'All') return this.photos;
     return this.photos.filter(p => p.tag === this.galleryFilter);
+  }
+
+  // Gallery Lightbox State & Navigation
+  showLightbox = false;
+  activeLightboxIndex = 0;
+
+  get activeLightboxPhoto() {
+    if (!this.filteredPhotos || this.filteredPhotos.length === 0) return null;
+    const index = Math.max(0, Math.min(this.activeLightboxIndex, this.filteredPhotos.length - 1));
+    return this.filteredPhotos[index];
+  }
+
+  openLightbox(index: number) {
+    this.activeLightboxIndex = index;
+    this.showLightbox = true;
+  }
+
+  closeLightbox() {
+    this.showLightbox = false;
+  }
+
+  nextLightboxPhoto() {
+    if (!this.filteredPhotos.length) return;
+    this.activeLightboxIndex = (this.activeLightboxIndex + 1) % this.filteredPhotos.length;
+  }
+
+  prevLightboxPhoto() {
+    if (!this.filteredPhotos.length) return;
+    this.activeLightboxIndex = (this.activeLightboxIndex - 1 + this.filteredPhotos.length) % this.filteredPhotos.length;
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (!this.showLightbox) return;
+    if (event.key === 'ArrowRight') {
+      this.nextLightboxPhoto();
+    } else if (event.key === 'ArrowLeft') {
+      this.prevLightboxPhoto();
+    } else if (event.key === 'Escape') {
+      this.closeLightbox();
+    }
   }
 
   // About
