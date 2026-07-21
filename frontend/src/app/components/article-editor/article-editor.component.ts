@@ -141,30 +141,34 @@ import { Article } from '../../models/article.model';
               </button>
             </div>
 
-            <!-- 2. Country / Subcategory Selection -->
+            <!-- 2. Country / Subcategory Selection & Direct Input -->
             <div class="country-section">
-              <label>2. COUNTRY / SUBCATEGORY (ประเทศ / หมวดหมู่ย่อย) <span class="required">*</span></label>
+              <label>2. COUNTRY / SUBCATEGORY (พิมพ์ชื่อประเทศได้เอง หรือเลือกพรีเซ็ต) <span class="required">*</span></label>
+              
+              <!-- Direct Country Text Input -->
+              <div class="custom-country-input-wrap">
+                <i class="fa-solid fa-flag country-input-icon"></i>
+                <input
+                  type="text"
+                  placeholder="Type country name (e.g. Thailand, Switzerland, Norway, Laos...)"
+                  [(ngModel)]="countryInput"
+                  name="countryInput"
+                  class="country-text-input"
+                />
+              </div>
+
+              <!-- Quick Presets -->
+              <div class="country-presets-label">Quick Presets for {{ selectedRegion }}:</div>
               <div class="country-pills-wrap">
                 <button
                   type="button"
                   class="country-pill"
                   *ngFor="let c of availableCountries"
-                  [class.active]="selectedCountry === c"
-                  (click)="selectedCountry = c"
+                  [class.active]="countryInput.toLowerCase() === c.toLowerCase()"
+                  (click)="selectPresetCountry(c)"
                 >
-                  {{ c }}
+                  + {{ c }}
                 </button>
-              </div>
-
-              <!-- Custom Country Input -->
-              <div style="margin-top: 10px;" *ngIf="selectedCountry === 'Custom / Other'">
-                <input
-                  type="text"
-                  placeholder="Enter country name (e.g. Iceland, Switzerland, Vietnam...)"
-                  [(ngModel)]="customCountryInput"
-                  name="customCountryInput"
-                  class="url-input"
-                />
               </div>
             </div>
 
@@ -743,19 +747,51 @@ import { Article } from '../../models/article.model';
       color: #ffffff;
     }
 
-    body.dark-theme .country-pill {
-      background: #282828;
-      border-color: #383838;
-      color: #cbd5e1;
+    /* ===== DIRECT COUNTRY TEXT INPUT ===== */
+    .custom-country-input-wrap {
+      position: relative;
+      margin-top: 8px;
     }
-    body.dark-theme .country-pill:hover {
-      border-color: #e8472a;
-      color: #ffffff;
+    .country-input-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #e8472a;
+      font-size: 14px;
     }
-    body.dark-theme .country-pill.active {
-      background: #e8472a;
-      border-color: #e8472a;
-      color: #ffffff;
+    .country-text-input {
+      width: 100%;
+      padding: 10px 14px 10px 38px !important;
+      border: 1.5px solid #cbd5e1 !important;
+      border-radius: 4px !important;
+      font-size: 13.5px !important;
+      font-weight: 600 !important;
+      color: #1e293b !important;
+      background: #ffffff !important;
+      transition: all 0.2s ease !important;
+    }
+    .country-text-input:focus {
+      border-color: #e8472a !important;
+      box-shadow: 0 0 0 3px rgba(232, 71, 42, 0.12) !important;
+      outline: none !important;
+    }
+    .country-presets-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      margin-top: 10px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    body.dark-theme .country-text-input {
+      background: #1e1e1e !important;
+      border-color: #383838 !important;
+      color: #f8fafc !important;
+    }
+    body.dark-theme .country-text-input:focus {
+      border-color: #e8472a !important;
     }
   `]
 })
@@ -786,33 +822,34 @@ export class ArticleEditorComponent {
   regions: string[] = ['Asia', 'Europe', 'Americas', 'Africa', 'Oceania', 'Middle East'];
 
   countriesByRegion: { [key: string]: string[] } = {
-    'Asia': ['Thailand', 'Japan', 'Indonesia', 'Vietnam', 'Singapore', 'South Korea', 'Custom / Other'],
-    'Europe': ['Greece', 'Italy', 'Iceland', 'France', 'Spain', 'Switzerland', 'Custom / Other'],
-    'Americas': ['Argentina', 'Peru', 'United States', 'Mexico', 'Brazil', 'Custom / Other'],
-    'Africa': ['Tanzania', 'Egypt', 'South Africa', 'Kenya', 'Morocco', 'Custom / Other'],
-    'Oceania': ['Australia', 'New Zealand', 'Fiji', 'Custom / Other'],
-    'Middle East': ['UAE (Dubai)', 'Turkey', 'Jordan', 'Custom / Other']
+    'Asia': ['Thailand', 'Japan', 'Indonesia', 'Vietnam', 'Singapore', 'South Korea'],
+    'Europe': ['Greece', 'Italy', 'Iceland', 'France', 'Spain', 'Switzerland'],
+    'Americas': ['Argentina', 'Peru', 'United States', 'Mexico', 'Brazil', 'Canada'],
+    'Africa': ['Tanzania', 'Egypt', 'South Africa', 'Kenya', 'Morocco'],
+    'Oceania': ['Australia', 'New Zealand', 'Fiji'],
+    'Middle East': ['UAE (Dubai)', 'Turkey', 'Jordan']
   };
 
-  selectedCountry: string = 'Indonesia';
-  customCountryInput: string = '';
+  countryInput: string = 'Indonesia';
 
   get availableCountries(): string[] {
-    return this.countriesByRegion[this.selectedRegion] || ['Custom / Other'];
+    return this.countriesByRegion[this.selectedRegion] || [];
+  }
+
+  selectPresetCountry(c: string) {
+    this.countryInput = c;
   }
 
   onRegionChange(region: string) {
     this.selectedRegion = region;
     const countries = this.countriesByRegion[region];
-    this.selectedCountry = countries ? countries[0] : 'Custom / Other';
-    this.customCountryInput = '';
+    if (countries && countries.length > 0) {
+      this.countryInput = countries[0];
+    }
   }
 
   getFinalCountry(): string {
-    if (this.selectedCountry === 'Custom / Other') {
-      return this.customCountryInput.trim() || 'General';
-    }
-    return this.selectedCountry;
+    return this.countryInput.trim() || 'General';
   }
 
   setPublishType(type: 'blog' | 'travel') {
@@ -830,6 +867,7 @@ export class ArticleEditorComponent {
       this.category = this.articleToEdit.category || 'Daily Life / Musings';
       if (this.category === 'Travel & Places') {
         this.publishType = 'travel';
+        this.countryInput = this.articleToEdit.country || '';
         const text = ((this.articleToEdit.tags || '') + ' ' + (this.articleToEdit.title || '')).toLowerCase();
         if (text.includes('europe') || text.includes('santorini') || text.includes('italy')) this.selectedRegion = 'Europe';
         else if (text.includes('americas') || text.includes('patagonia') || text.includes('peru')) this.selectedRegion = 'Americas';
