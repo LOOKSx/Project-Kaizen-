@@ -94,13 +94,63 @@ import { Article } from '../../models/article.model';
             />
           </div>
 
-          <!-- Category -->
+          <!-- POST TYPE SELECTOR -->
           <div class="form-group">
+            <label>POST TYPE <span class="required">*</span></label>
+            <div class="publish-type-selector">
+              <button
+                type="button"
+                class="publish-type-btn"
+                [class.active]="publishType === 'blog'"
+                (click)="setPublishType('blog')"
+              >
+                <i class="fa-solid fa-pen-nib"></i>
+                <span>General Blog Article</span>
+              </button>
+              <button
+                type="button"
+                class="publish-type-btn"
+                [class.active]="publishType === 'travel'"
+                (click)="setPublishType('travel')"
+              >
+                <i class="fa-solid fa-plane-departure"></i>
+                <span>Travel Story / Guide</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- TARGET CONTINENT / REGION (SHOWN ONLY FOR TRAVEL) -->
+          <div class="form-group continent-picker-group" *ngIf="publishType === 'travel'">
+            <label>TARGET CONTINENT / REGION <span class="required">*</span></label>
+            <div class="continent-grid">
+              <button
+                type="button"
+                class="continent-btn"
+                *ngFor="let region of regions"
+                [class.active]="selectedRegion === region"
+                (click)="selectedRegion = region"
+              >
+                <i class="fa-solid fa-earth-americas" *ngIf="region === 'Americas'"></i>
+                <i class="fa-solid fa-earth-asia" *ngIf="region === 'Asia'"></i>
+                <i class="fa-solid fa-earth-europe" *ngIf="region === 'Europe'"></i>
+                <i class="fa-solid fa-earth-africa" *ngIf="region === 'Africa'"></i>
+                <i class="fa-solid fa-earth-oceania" *ngIf="region === 'Oceania'"></i>
+                <i class="fa-solid fa-globe" *ngIf="region === 'Middle East'"></i>
+                <span>{{ region }}</span>
+              </button>
+            </div>
+            <p class="continent-hint">
+              <i class="fa-solid fa-circle-info"></i>
+              This story will be published under <strong>Destinations &rarr; {{ selectedRegion }}</strong>.
+            </p>
+          </div>
+
+          <!-- CATEGORY DROPDOWN (SHOWN ONLY FOR GENERAL BLOG) -->
+          <div class="form-group" *ngIf="publishType === 'blog'">
             <label>CATEGORY</label>
             <select [(ngModel)]="category" name="category">
               <option value="Daily Life / Musings">Daily Life / Musings</option>
               <option value="Personal Growth">Personal Growth</option>
-              <option value="Travel &amp; Places">Travel &amp; Places</option>
               <option value="Relationships">Relationships</option>
               <option value="Health &amp; Wellbeing">Health &amp; Wellbeing</option>
               <option value="Work &amp; Career">Work &amp; Career</option>
@@ -499,6 +549,136 @@ import { Article } from '../../models/article.model';
       .editor-modal-card { padding: 28px 20px 22px; }
       .form-row { flex-direction: column; }
     }
+
+    /* ===== PUBLISH TYPE SELECTOR ===== */
+    .publish-type-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .publish-type-btn {
+      background: #f8f9fa;
+      border: 2px solid #e9ecef;
+      border-radius: 4px;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #495057;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: inherit;
+    }
+    .publish-type-btn i {
+      font-size: 15px;
+      color: #868e96;
+      transition: color 0.2s;
+    }
+    .publish-type-btn:hover {
+      border-color: #ced4da;
+      background: #ffffff;
+    }
+    .publish-type-btn.active {
+      border-color: #e8472a;
+      background: rgba(232, 71, 42, 0.05);
+      color: #e8472a;
+    }
+    .publish-type-btn.active i {
+      color: #e8472a;
+    }
+
+    /* ===== CONTINENT PICKER ===== */
+    .continent-picker-group {
+      background: #fdfbfb;
+      border: 1px solid #f3ebea;
+      border-left: 3px solid #e8472a;
+      padding: 14px;
+      border-radius: 4px;
+    }
+    .continent-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .continent-btn {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 8px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+    .continent-btn:hover {
+      border-color: #cbd5e1;
+      color: #0f172a;
+    }
+    .continent-btn.active {
+      background: #e8472a;
+      border-color: #e8472a;
+      color: #ffffff;
+    }
+    .continent-btn.active i {
+      color: #ffffff;
+    }
+    .continent-hint {
+      font-size: 11.5px;
+      color: #64748b;
+      margin: 8px 0 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .continent-hint strong {
+      color: #e8472a;
+    }
+
+    body.dark-theme .publish-type-btn {
+      background: #222222;
+      border-color: #333333;
+      color: #cbd5e1;
+    }
+    body.dark-theme .publish-type-btn:hover {
+      background: #2a2a2a;
+      border-color: #444444;
+    }
+    body.dark-theme .publish-type-btn.active {
+      border-color: #e8472a;
+      background: rgba(232, 71, 42, 0.15);
+      color: #ffffff;
+    }
+    body.dark-theme .continent-picker-group {
+      background: #1e1e1e;
+      border-color: #333333;
+    }
+    body.dark-theme .continent-btn {
+      background: #282828;
+      border-color: #383838;
+      color: #cbd5e1;
+    }
+    body.dark-theme .continent-btn:hover {
+      border-color: #555555;
+      color: #ffffff;
+    }
+    body.dark-theme .continent-btn.active {
+      background: #e8472a;
+      border-color: #e8472a;
+      color: #ffffff;
+    }
+    body.dark-theme .continent-hint {
+      color: #94a3b8;
+    }
   `]
 })
 export class ArticleEditorComponent {
@@ -523,10 +703,35 @@ export class ArticleEditorComponent {
 
   constructor(private articleService: ArticleService) {}
 
+  publishType: 'blog' | 'travel' = 'blog';
+  selectedRegion: string = 'Asia';
+  regions: string[] = ['Asia', 'Europe', 'Americas', 'Africa', 'Oceania', 'Middle East'];
+
+  setPublishType(type: 'blog' | 'travel') {
+    this.publishType = type;
+    if (type === 'travel') {
+      this.category = 'Travel & Places';
+    } else if (this.category === 'Travel & Places') {
+      this.category = 'Daily Life / Musings';
+    }
+  }
+
   ngOnInit() {
     if (this.articleToEdit) {
       this.title = this.articleToEdit.title || '';
       this.category = this.articleToEdit.category || 'Daily Life / Musings';
+      if (this.category === 'Travel & Places') {
+        this.publishType = 'travel';
+        const text = ((this.articleToEdit.tags || '') + ' ' + (this.articleToEdit.title || '')).toLowerCase();
+        if (text.includes('europe') || text.includes('santorini') || text.includes('italy')) this.selectedRegion = 'Europe';
+        else if (text.includes('americas') || text.includes('patagonia') || text.includes('peru')) this.selectedRegion = 'Americas';
+        else if (text.includes('africa') || text.includes('serengeti') || text.includes('tanzania')) this.selectedRegion = 'Africa';
+        else if (text.includes('oceania') || text.includes('australia')) this.selectedRegion = 'Oceania';
+        else if (text.includes('middle east')) this.selectedRegion = 'Middle East';
+        else this.selectedRegion = 'Asia';
+      } else {
+        this.publishType = 'blog';
+      }
       this.readTime = this.articleToEdit.read_time || '5 min read';
       this.coverImage = this.articleToEdit.cover_image || '';
       this.coverImagePreview = this.articleToEdit.cover_image || '';
@@ -636,6 +841,19 @@ export class ArticleEditorComponent {
   publishArticle() {
     if (this.title && this.excerpt && this.content) {
       this.publishing = true;
+      
+      if (this.publishType === 'travel') {
+        this.category = 'Travel & Places';
+        let tagList = this.tags ? this.tags.split(',').map(t => t.trim()).filter(Boolean) : [];
+        if (!tagList.some(t => t.toLowerCase() === 'travel')) {
+          tagList.unshift('Travel');
+        }
+        if (!tagList.some(t => t.toLowerCase() === this.selectedRegion.toLowerCase())) {
+          tagList.push(this.selectedRegion);
+        }
+        this.tags = tagList.join(', ');
+      }
+
       if (this.articleToEdit) {
         const updated: Article = {
           ...this.articleToEdit,
