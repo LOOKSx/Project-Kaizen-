@@ -81,7 +81,9 @@ import { ArticleService } from '../../services/article.service';
             <!-- Comments List -->
             <div class="comments-list" *ngIf="article.comments && article.comments.length > 0">
               <div class="comment-item" *ngFor="let comment of article.comments; let i = index">
-                <img [src]="comment.author_avatar" [alt]="comment.author_name" class="comment-avatar">
+                <div class="comment-avatar-grey" [title]="comment.author_name">
+                  <i class="fa-solid fa-user"></i>
+                </div>
                 <div class="comment-content">
                   <div class="comment-header">
                     <span class="comment-author">{{ comment.author_name }}</span>
@@ -117,6 +119,11 @@ import { ArticleService } from '../../services/article.service';
               <!-- Anti-Spam / Validation Alert -->
               <div class="comment-error-alert" *ngIf="commentError">
                 <i class="fa-solid fa-circle-exclamation"></i> {{ commentError }}
+              </div>
+
+              <!-- Comment Success Alert -->
+              <div class="comment-success-alert" *ngIf="commentSuccess">
+                <i class="fa-solid fa-circle-check"></i> {{ commentSuccess }}
               </div>
 
               <div class="form-row">
@@ -190,6 +197,43 @@ import { ArticleService } from '../../services/article.service';
       align-items: center;
       gap: 8px;
       animation: shake 0.3s ease;
+    }
+    .comment-success-alert {
+      background: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: fadeIn 0.25s ease;
+    }
+    .comment-avatar-grey {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      border: 1px solid #cbd5e1;
+    }
+    body.dark-theme .comment-avatar-grey {
+      background: #282828 !important;
+      color: #64748b !important;
+      border-color: #383838 !important;
+    }
+    body.dark-theme .comment-success-alert {
+      background: #14532d !important;
+      color: #dcfce7 !important;
+      border-color: #15803d !important;
     }
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
@@ -587,6 +631,7 @@ export class ArticleReaderComponent {
   newCommentText: string = '';
   honeypotWebsite: string = '';
   commentError: string = '';
+  commentSuccess: string = '';
 
   private readonly profanityList: string[] = [
     // Thai profanity & slurs
@@ -701,17 +746,28 @@ export class ArticleReaderComponent {
       return;
     }
 
-    // All checks passed -> Submit comment
+    // All checks passed -> Submit comment with Instant Optimistic UI Update & Success Banner
     if (this.article) {
-      this.articleService.addComment(this.article.id, {
+      const newComment = {
+        id: Date.now(),
+        article_id: this.article.id,
         author_name: trimmedAuthor,
-        content: trimmedContent
-      }).subscribe(comment => {
-        if (!this.article!.comments) this.article!.comments = [];
-        this.article!.comments.push(comment);
-        this.newCommentText = '';
-        this.commentError = '';
-      });
+        author_avatar: '',
+        content: trimmedContent,
+        created_at: new Date().toISOString()
+      };
+
+      if (!this.article.comments) this.article.comments = [];
+      this.article.comments.push(newComment);
+      this.articleService.updatePersistedArticle(this.article);
+
+      this.newCommentText = '';
+      this.commentError = '';
+      this.commentSuccess = 'ส่งความคิดเห็นเรียบร้อยแล้ว (Comment posted successfully!)';
+      
+      setTimeout(() => {
+        this.commentSuccess = '';
+      }, 4000);
     }
   }
 }
