@@ -249,9 +249,9 @@ export class ArticleService {
     // Always reset if version tag is outdated
     const stored = localStorage.getItem('kaizen_articles');
     const version = localStorage.getItem('kaizen_articles_version');
-    if (!stored || version !== 'v3') {
+    if (!stored || version !== 'v5') {
       localStorage.removeItem('kaizen_articles');
-      localStorage.setItem('kaizen_articles_version', 'v3');
+      localStorage.setItem('kaizen_articles_version', 'v5');
     }
 
     if (!localStorage.getItem('kaizen_articles')) {
@@ -377,6 +377,92 @@ Wake at 2:00 AM, reach the summit by 5:30 AM, and witness one of the most specta
               created_at: new Date().toISOString()
             }
           ]
+        },
+        // 3b. Europe Travel Story
+        {
+          id: 31,
+          title: 'Santorini & Amalfi Coast: A 14-Day Mediterranean Cliffside & Aegean Island Journal',
+          slug: 'europe-mediterranean-travel-journal',
+          excerpt: 'From blue-domed cliffside villages in Oia to bougainvillea-draped coastal drives along Positano and Iceland’s Arctic waterfalls...',
+          content: `Southern Europe offers an unforgettable tapestry of azure seas, cliffside architecture, and culinary mastery. Here is a curated 14-day itinerary across the Mediterranean coastline.
+
+## 1. Oia, Santorini: Golden Hour Above the Caldera
+Watching the sun dip below the Aegean horizon from Oia's castle ruins is legendary. The contrast between white-washed villas, cobalt blue domes, and glowing orange sky is unmatched.
+
+## 2. Amalfi & Positano: Italian Coastal Drives
+Navigating the winding coastal road between Sorrento and Salerno reveals terraced lemon groves, hidden coves, and pastel-hued villages clinging impossibly to sheer cliff faces.
+
+## 3. Essential European Travel Advice
+* **Pacing**: Avoid rushing 5 cities into 7 days. Spend at least 3 nights per base.
+* **Shoulder Season**: May and September offer warm weather with half the summer crowds.`,
+          category: 'Travel & Places',
+          cover_image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=1000&q=80',
+          read_time: '8 min read',
+          views: 3120,
+          likes: 84,
+          featured: true,
+          author_name: 'Kaizen Creator',
+          author_avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+          tags: 'Santorini, Europe, Italy, Greece, Travel',
+          created_at: new Date(Date.now() - 86400000 * 4).toISOString(),
+          updated_at: new Date(Date.now() - 86400000 * 4).toISOString(),
+          comments: []
+        },
+        // 3c. Americas Travel Story
+        {
+          id: 32,
+          title: 'Patagonia & Machu Picchu Expedition: Trekking Raw Andean Wilderness',
+          slug: 'patagonia-machu-picchu-expedition',
+          excerpt: 'Jagged granite towers, turquoise glacial lakes of Torres del Paine, and sacred cloud forests of the Inca empire in Peru...',
+          content: `South America's spine — the majestic Andes range — harbors some of Earth's most dramatic trekking trails.
+
+## 1. Torres del Paine, Patagonia
+Standing before the granite horns of Paine at dawn as first sunlight turns the peaks blazing orange is a bucket-list moment for every wilderness enthusiast.
+
+## 2. Machu Picchu & The Sacred Valley
+Ascending through Andean mist to behold the ancient Inca citadel perched silently above cloud forests is a deeply moving historical experience.
+
+## Essential Gear for South America
+* **Layering System**: Merino wool base, fleece mid-layer, and heavy-duty gore-tex shell.
+* **Altitude Prep**: Spend 2 days acclimatizing in Cusco (3,400m) before starting high-altitude treks.`,
+          category: 'Travel & Places',
+          cover_image: 'https://images.unsplash.com/photo-1531761535209-180857e963b9?auto=format&fit=crop&w=1000&q=80',
+          read_time: '9 min read',
+          views: 2790,
+          likes: 67,
+          featured: false,
+          author_name: 'Kaizen Creator',
+          author_avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+          tags: 'Patagonia, Americas, Peru, Argentina, Travel',
+          created_at: new Date(Date.now() - 86400000 * 6).toISOString(),
+          updated_at: new Date(Date.now() - 86400000 * 6).toISOString(),
+          comments: []
+        },
+        // 3d. Africa Travel Story
+        {
+          id: 33,
+          title: 'Serengeti Safari Diary: Witnessing the Great Wildlife Migration at Dawn',
+          slug: 'serengeti-safari-migration-diary',
+          excerpt: 'Millions of wildebeest and zebras crossing golden savannah rivers under endless East African skies...',
+          content: `The Serengeti ecosystem in Tanzania hosts the greatest wildlife spectacle on Earth.
+
+## 1. The Great Migration
+Witnessing vast herds moving across golden grasslands in rhythmic harmony while apex predators track their movement is raw nature at its finest.
+
+## 2. Serengeti Sunrises & Hot Air Ballooning
+Floating silently at 500 feet over acacia trees at golden hour provides an unprecedented aerial perspective of wild Africa.`,
+          category: 'Travel & Places',
+          cover_image: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=1000&q=80',
+          read_time: '7 min read',
+          views: 1850,
+          likes: 53,
+          featured: false,
+          author_name: 'Kaizen Creator',
+          author_avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
+          tags: 'Serengeti, Africa, Tanzania, Safari, Travel',
+          created_at: new Date(Date.now() - 86400000 * 8).toISOString(),
+          updated_at: new Date(Date.now() - 86400000 * 8).toISOString(),
+          comments: []
         },
         // 4. Relationships
         {
