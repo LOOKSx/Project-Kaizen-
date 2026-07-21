@@ -139,6 +139,31 @@ import { ArticleService } from '../../services/article.service';
             <li class="nav-item">
               <a href="#" class="nav-link" [class.active]="activePage==='contact'" (click)="navigate('contact', $event)">CONTACT</a>
             </li>
+
+            <!-- Mobile Admin Quick Panel -->
+            <li class="mobile-admin-panel" *ngIf="isAdmin">
+              <div class="mobile-admin-divider"><span>ADMIN CONTROLS</span></div>
+              <div class="mobile-admin-buttons">
+                <button class="mobile-admin-btn write" (click)="openPublisherEvent(); mobileOpen = false;">
+                  <i class="fa-solid fa-pen"></i> Write Article
+                </button>
+                <button class="mobile-admin-btn profile" (click)="openProfileSettingsEvent(); mobileOpen = false;">
+                  <i class="fa-solid fa-user-gear"></i> Edit Profile &amp; Social Links
+                </button>
+                <button class="mobile-admin-btn logout" (click)="logoutAdmin(); mobileOpen = false;">
+                  <i class="fa-solid fa-lock"></i> Exit Admin Mode
+                </button>
+              </div>
+            </li>
+
+            <!-- Mobile Admin Login Trigger if NOT logged in -->
+            <li class="mobile-admin-panel" *ngIf="!isAdmin">
+              <div class="mobile-admin-buttons">
+                <button class="mobile-admin-btn login-link" (click)="triggerAdminPassModal(); mobileOpen = false;">
+                  <i class="fa-solid fa-key"></i> Admin Login (kaizen2026)
+                </button>
+              </div>
+            </li>
           </ul>
         </nav>
 
@@ -593,6 +618,67 @@ import { ArticleService } from '../../services/article.service';
       .dest-subpanel-col { width: 100% !important; padding: 14px 20px !important; }
       .search-input { width: 120px; font-size: 12px; }
       .write-btn { padding: 5px 10px; font-size: 10px; }
+    }
+
+    /* ===== MOBILE ADMIN PANEL ===== */
+    .mobile-admin-panel {
+      display: none;
+      padding: 16px 20px 10px;
+    }
+    @media (max-width: 900px) {
+      .mobile-admin-panel { display: block; }
+    }
+    .mobile-admin-divider {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      color: #e8472a;
+      margin-bottom: 12px;
+      border-bottom: 1px dashed rgba(232, 71, 42, 0.3);
+      line-height: 0.1em;
+    }
+    .mobile-admin-divider span {
+      background: #111;
+      padding: 0 10px;
+    }
+    .mobile-admin-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .mobile-admin-btn {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      transition: all 0.2s;
+    }
+    .mobile-admin-btn.write {
+      background: #e8472a;
+      color: #ffffff;
+    }
+    .mobile-admin-btn.profile {
+      background: #2563eb;
+      color: #ffffff;
+    }
+    .mobile-admin-btn.logout {
+      background: #282828;
+      color: #cbd5e1;
+      border: 1px solid #383838;
+    }
+    .mobile-admin-btn.login-link {
+      background: rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
     /* ===== DESTINATIONS 2-LEVEL MEGAMENU ===== */
@@ -1069,6 +1155,10 @@ export class HeaderComponent implements OnInit {
 
   openProfileSettingsEvent() {
     window.dispatchEvent(new CustomEvent('kaizen:open-profile-settings'));
+  }
+
+  triggerAdminPassModal() {
+    window.dispatchEvent(new CustomEvent('kaizen:open-admin-passcode'));
   }
 
   initTheme() {
