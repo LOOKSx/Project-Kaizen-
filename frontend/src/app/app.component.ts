@@ -88,17 +88,17 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
         <section class="home-intro">
           <div class="container">
             <div class="intro-layout">
-              <div class="intro-text">
+              <div class="intro-text" style="position: relative;">
+                <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openAboutStoryEditor()" style="position: absolute; top: 0; right: 0; font-size: 11px; padding: 4px 12px; background: #2563eb; color: #ffffff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer;" title="Edit Story Text">
+                  <i class="fa-solid fa-pen"></i> Edit Story Text
+                </button>
                 <p class="intro-eyebrow">WELCOME TO KAIZEN</p>
-                <h2 class="intro-heading">A Life Lived with Intention</h2>
+                <h2 class="intro-heading">{{ aboutTexts.storyTitle }}</h2>
                 <p class="intro-body">
-                  <strong>Kaizen (改善)</strong> is the Japanese philosophy of <em>continuous improvement</em> — the belief that small,
-                  deliberate changes compound into extraordinary results over time.
+                  {{ aboutTexts.storyP1 }}
                 </p>
                 <p class="intro-body">
-                  This blog is my living journal. Here you'll find travel guides from {{ allDestinations.length }} destinations, reflections on personal growth,
-                  photography from the road, honest book reviews, career insights from a software engineer, and raw musings on life.
-                  Everything written from direct personal experience. No fluff.
+                  {{ aboutTexts.storyP2 }}
                 </p>
                 <div class="intro-stats">
                   <div class="istat"><span class="istat-num">{{ allDestinations.length }}</span><span class="istat-lbl">Destinations</span></div>
@@ -108,10 +108,13 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 </div>
               </div>
               <div class="intro-author">
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80" alt="Author" class="intro-author-img" />
-                <div class="intro-author-card">
-                  <h3>Kaizen Explorer</h3>
-                  <p>World Traveler & Software Engineer, based in Bangkok & wherever the next flight takes me.</p>
+                <img [src]="authorAvatar" [alt]="authorName" class="intro-author-img" />
+                <div class="intro-author-card" style="position: relative;">
+                  <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openProfileSettingsModal()" style="position: absolute; top: 10px; right: 10px; font-size: 10px; padding: 4px 8px; background: #2563eb; color: #ffffff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; z-index: 10;" title="Edit Profile &amp; Links">
+                    <i class="fa-solid fa-user-gear"></i> Edit
+                  </button>
+                  <h3>{{ authorName }}</h3>
+                  <p>{{ authorTitle }}</p>
                   <button class="intro-link" (click)="navTo('about')">Read Full Story →</button>
                 </div>
               </div>
