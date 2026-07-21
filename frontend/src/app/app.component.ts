@@ -39,7 +39,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
           </div>
           <div class="hero-overlay"></div>
           <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('currentSlideImg', 'Home Hero Slide #' + (currentSlide + 1))" title="Change slide image">
-            <i class="fa-solid fa-camera"></i>
+            <i class="fa-solid fa-camera"></i> Change Image
           </button>
           <div class="hero-content">
             <p class="hero-eyebrow">A PERSONAL JOURNAL</p>
@@ -449,7 +449,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <ng-container *ngIf="currentPage === 'destinations'">
         <div class="page-hero" [style.background-image]="'url(' + destHeroImg + ')'">
           <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('destHeroImg', 'Destinations Hero Banner')" title="Change hero image">
-            <i class="fa-solid fa-camera"></i>
+            <i class="fa-solid fa-camera"></i> Change Image
           </button>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
@@ -494,7 +494,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <ng-container *ngIf="currentPage === 'gallery'">
         <div class="page-hero" [style.background-image]="'url(' + galleryHeroImg + ')'">
           <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('galleryHeroImg', 'Gallery Hero Banner')" title="Change hero image">
-            <i class="fa-solid fa-camera"></i>
+            <i class="fa-solid fa-camera"></i> Change Image
           </button>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
@@ -530,7 +530,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <ng-container *ngIf="currentPage === 'about'">
         <div class="page-hero" [style.background-image]="'url(' + aboutHeroImg + ')'">
           <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('aboutHeroImg', 'About Hero Banner')" title="Change hero image">
-            <i class="fa-solid fa-camera"></i>
+            <i class="fa-solid fa-camera"></i> Change Image
           </button>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
@@ -1703,28 +1703,33 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     /* ===== HERO IMAGE EDIT BUTTON ===== */
     .hero-edit-img-btn {
       position: absolute;
-      top: 16px;
-      right: 16px;
-      z-index: 20;
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      color: rgba(255,255,255,0.75);
-      border: 1px solid rgba(255,255,255,0.25);
+      top: 76px;
+      right: 24px;
+      z-index: 1000;
+      padding: 7px 14px;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.72);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.35);
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 13px;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
       cursor: pointer;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      transition: all 0.15s;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      transition: all 0.2s ease;
     }
     .hero-edit-img-btn:hover {
-      background: rgba(255,255,255,0.28);
+      background: #e8472a;
       color: #fff;
-      border-color: rgba(255,255,255,0.45);
+      border-color: #e8472a;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(232, 71, 42, 0.4);
     }
     .cat-edit-img-btn {
       position: absolute;
