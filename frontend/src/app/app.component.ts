@@ -2233,6 +2233,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.checkSecretRoute();
     this.loadSiteSettings();
     this.loadData();
+    this.restoreActivePageState();
 
     this.articleService.selectedCategory$.subscribe(cat => {
       this.activeCategory = cat;
@@ -2261,9 +2262,33 @@ export class AppComponent implements OnInit, OnDestroy {
         this.selectedCatName = e.detail.cat;
         this.articleService.setCategory(e.detail.cat);
       }
-      this.navigateTo(page);
+      this.navigateTo(page, e.detail?.cat);
       if (e.detail?.dest) this.destFilter = e.detail.dest;
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Handle Browser Back & Forward Buttons
+    window.addEventListener('popstate', (e: PopStateEvent) => {
+      if (e.state && e.state.page) {
+        if (e.state.catName) {
+          this.selectedCatName = e.state.catName;
+          this.articleService.setCategory(e.state.catName);
+        }
+        if (e.state.destFilter) this.destFilter = e.state.destFilter;
+        if (e.state.articleId && this.articles.length > 0) {
+          const found = this.articles.find(a => a.id === e.state.articleId);
+          if (found) this.selectedArticle = found;
+        } else {
+          this.selectedArticle = null;
+        }
+        this.navigateTo(e.state.page, undefined, false);
+      } else {
+        this.restoreActivePageState();
+      }
+    });
+
+    window.addEventListener('hashchange', () => {
+      this.restoreActivePageState();
     });
 
     // Preload hero slide images for instant 0ms slide transitions
@@ -2296,11 +2321,81 @@ export class AppComponent implements OnInit, OnDestroy {
     this.startSlideshow();
   }
 
-  navigateTo(page: string) {
+  private updateUrlAndHistory(page: string, catName?: string, dest?: string, push: boolean = true) {
+    if (typeof window === 'undefined') return;
+
+    let hash = '#' + page;
+    if (page === 'category' && catName) {
+      hash += '?cat=' + encodeURIComponent(catName);
+    } else if (page === 'destinations' && dest && dest !== 'All') {
+      hash += '?dest=' + encodeURIComponent(dest);
+    }
+
+    const stateObj = { page, catName: catName || this.selectedCatName, destFilter: dest || this.destFilter };
+    
+    try {
+      sessionStorage.setItem('kaizen_active_state', JSON.stringify(stateObj));
+    } catch (e) {}
+
+    if (push && window.location.hash !== hash) {
+      window.history.pushState(stateObj, '', hash);
+    }
+  }
+
+  private restoreActivePageState() {
+    if (typeof window === 'undefined') return;
+
+    const hash = window.location.hash;
+    if (hash && hash.length > 1) {
+      const cleanHash = hash.substring(1);
+      const parts = cleanHash.split('?');
+      const page = parts[0];
+      
+      if (['home', 'blog', 'destinations', 'categories', 'category', 'gallery', 'about', 'contact'].includes(page)) {
+        if (page === 'category' && parts[1] && parts[1].includes('cat=')) {
+          const params = new URLSearchParams(parts[1]);
+          const cat = params.get('cat');
+          if (cat) {
+            this.selectedCatName = cat;
+            this.articleService.setCategory(cat);
+          }
+        }
+        if (page === 'destinations' && parts[1] && parts[1].includes('dest=')) {
+          const params = new URLSearchParams(parts[1]);
+          const dest = params.get('dest');
+          if (dest) this.destFilter = dest;
+        }
+        this.navigateTo(page, undefined, false);
+        return;
+      }
+    }
+
+    try {
+      const saved = sessionStorage.getItem('kaizen_active_state');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.page && ['home', 'blog', 'destinations', 'categories', 'category', 'gallery', 'about', 'contact'].includes(parsed.page)) {
+          if (parsed.catName) {
+            this.selectedCatName = parsed.catName;
+            this.articleService.setCategory(parsed.catName);
+          }
+          if (parsed.destFilter) this.destFilter = parsed.destFilter;
+          this.navigateTo(parsed.page, undefined, false);
+          return;
+        }
+      }
+    } catch (e) {}
+  }
+
+  navigateTo(page: string, catName?: string, pushState: boolean = true) {
     if (page === 'blog') {
       this.resetFilters();
     }
     this.currentPage = page;
+    if (catName) {
+      this.selectedCatName = catName;
+    }
+    this.updateUrlAndHistory(page, catName, this.destFilter, pushState);
     window.dispatchEvent(new CustomEvent('kaizen:page-changed', { detail: { page } }));
   }
 
@@ -2413,7 +2508,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (e) e.preventDefault();
     this.selectedCatName = catName;
     this.articleService.setCategory(catName);
-    this.navigateTo('category');
+    this.navigateTo('category', catName);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
