@@ -2264,6 +2264,7 @@ export class AppComponent implements OnInit, OnDestroy {
       }
       this.navigateTo(page, e.detail?.cat);
       if (e.detail?.dest) this.destFilter = e.detail.dest;
+      if (e.detail?.country) this.destCountryFilter = e.detail.country;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 

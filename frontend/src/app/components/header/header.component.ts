@@ -26,20 +26,56 @@ import { ArticleService } from '../../services/article.service';
               <a href="#" class="nav-link" [class.active]="activePage==='blog'" (click)="navigate('blog', $event)">BLOG</a>
             </li>
 
-            <!-- DESTINATIONS megamenu -->
+            <!-- DESTINATIONS 2-Level Megamenu (Matching Image 1 & Image 2) -->
             <li class="nav-item has-dropdown" (mouseenter)="openMenu('dest')" (mouseleave)="closeMenu()">
               <a href="#" class="nav-link" [class.active]="activePage==='destinations'" (click)="navigate('destinations', $event)">
                 DESTINATIONS <span class="caret">›</span>
               </a>
-              <div class="mega-dropdown" [class.visible]="activeMenu === 'dest'">
-                <ul class="mega-list">
-                  <li *ngFor="let d of destinations">
-                    <a href="#" (click)="navigateDest(d.label, $event)">
-                      {{ d.label }}
+              <div class="dest-mega-dropdown" [class.visible]="activeMenu === 'dest'">
+                <div class="dest-mega-layout">
+                  
+                  <!-- Left Column: Continents List -->
+                  <div class="dest-continents-col">
+                    <a href="#" (click)="navigateDest('All', $event)" class="dest-mega-all-btn">
+                      <span>ALL DESTINATIONS</span>
                       <span class="mega-arrow">›</span>
                     </a>
-                  </li>
-                </ul>
+                    <div class="dest-divider"></div>
+                    <ul class="dest-continent-list">
+                      <li *ngFor="let item of destinationsData"
+                          [class.active]="hoveredContinent === item.continent"
+                          (mouseenter)="hoveredContinent = item.continent">
+                        <a href="#" (click)="navigateDest(item.continent, $event)">
+                          <span class="continent-name">
+                            <span class="continent-icon">{{ item.icon }}</span> {{ item.continent | uppercase }}
+                          </span>
+                          <span class="mega-arrow">›</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <!-- Right Column: Subcategory Countries List for Hovered Continent -->
+                  <div class="dest-countries-col" *ngIf="activeContinentData">
+                    <div class="dest-countries-header">
+                      <span class="countries-header-title">
+                        {{ activeContinentData.icon }} {{ activeContinentData.continent | uppercase }} DESTINATIONS
+                      </span>
+                      <span class="count-badge">{{ activeContinentData.countries.length }} Countries</span>
+                    </div>
+                    <div class="dest-countries-divider"></div>
+                    
+                    <ul class="dest-countries-list">
+                      <li *ngFor="let c of activeContinentData.countries">
+                        <a href="#" (click)="navigateCountry(activeContinentData.continent, c.tag, $event)">
+                          <span class="country-item-name">{{ c.name | uppercase }}</span>
+                          <span class="country-arrow">&rarr;</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+
+                </div>
               </div>
             </li>
 
@@ -517,6 +553,153 @@ import { ArticleService } from '../../services/article.service';
       .hamburger { display: flex; }
     }
 
+    /* ===== DESTINATIONS 2-LEVEL MEGAMENU ===== */
+    .dest-mega-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 480px;
+      background: #111111;
+      border: 1px solid #282828;
+      border-top: 2px solid #e8472a;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+      display: none;
+      z-index: 1000;
+      animation: fadeIn 0.2s ease;
+    }
+    .dest-mega-dropdown.visible { display: block; }
+
+    .dest-mega-layout {
+      display: flex;
+      min-height: 280px;
+    }
+
+    /* Left Column: Continents */
+    .dest-continents-col {
+      width: 210px;
+      background: #111111;
+      border-right: 1px solid #222222;
+      padding: 12px 0;
+    }
+    .dest-mega-all-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 18px;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: #e8472a;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .dest-mega-all-btn:hover { background: #1a1a1a; }
+    .dest-divider {
+      height: 1px;
+      background: #222222;
+      margin: 4px 18px 8px;
+    }
+    .dest-continent-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .dest-continent-list li a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 18px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #cccccc;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .dest-continent-list li.active a,
+    .dest-continent-list li a:hover {
+      background: #1c1c1c;
+      color: #e8472a;
+    }
+    .continent-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .continent-icon { font-size: 13px; }
+    .mega-arrow {
+      font-size: 14px;
+      color: #666;
+    }
+    .dest-continent-list li.active .mega-arrow,
+    .dest-continent-list li a:hover .mega-arrow {
+      color: #e8472a;
+    }
+
+    /* Right Column: Subcategory Countries */
+    .dest-countries-col {
+      flex: 1;
+      background: #161616;
+      padding: 16px 20px;
+    }
+    .dest-countries-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .countries-header-title {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: #e8472a;
+    }
+    .count-badge {
+      font-size: 10px;
+      font-weight: 700;
+      background: #262626;
+      color: #888888;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .dest-countries-divider {
+      height: 1px;
+      background: #262626;
+      margin-bottom: 12px;
+    }
+    .dest-countries-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .dest-countries-list li a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-radius: 3px;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #dddddd;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .dest-countries-list li a:hover {
+      background: #242424;
+      color: #ffffff;
+      padding-left: 14px;
+    }
+    .country-arrow {
+      font-size: 12px;
+      color: #666;
+      transition: transform 0.15s;
+    }
+    .dest-countries-list li a:hover .country-arrow {
+      color: #e8472a;
+      transform: translateX(3px);
+    }
+
     .admin-logout-btn {
       background: rgba(255,255,255,0.1);
       color: #aaa;
@@ -543,15 +726,87 @@ export class HeaderComponent implements OnInit {
   isAdmin = false;
   isDarkMode = false;
 
-  destinations = [
-    { label: 'Africa' },
-    { label: 'Americas' },
-    { label: 'Asia' },
-    { label: 'Caribbean' },
-    { label: 'Europe' },
-    { label: 'Middle East' },
-    { label: 'Oceania' },
+  destinationsData: { continent: string; icon: string; countries: { name: string; tag: string }[] }[] = [
+    {
+      continent: 'Africa',
+      icon: '🌍',
+      countries: [
+        { name: 'Egypt', tag: 'Egypt' },
+        { name: 'Morocco', tag: 'Morocco' },
+        { name: 'Tanzania', tag: 'Tanzania' },
+        { name: 'South Africa', tag: 'South Africa' },
+        { name: 'Kenya', tag: 'Kenya' }
+      ]
+    },
+    {
+      continent: 'Americas',
+      icon: '🌎',
+      countries: [
+        { name: 'Argentina', tag: 'Argentina' },
+        { name: 'Peru', tag: 'Peru' },
+        { name: 'United States', tag: 'United States' },
+        { name: 'Mexico', tag: 'Mexico' },
+        { name: 'Brazil', tag: 'Brazil' }
+      ]
+    },
+    {
+      continent: 'Asia',
+      icon: '🌏',
+      countries: [
+        { name: 'Indonesia (Bali)', tag: 'Indonesia' },
+        { name: 'Japan (Kyoto)', tag: 'Japan' },
+        { name: 'Thailand (Chiang Mai)', tag: 'Thailand' },
+        { name: 'Vietnam', tag: 'Vietnam' },
+        { name: 'Singapore', tag: 'Singapore' },
+        { name: 'South Korea', tag: 'South Korea' }
+      ]
+    },
+    {
+      continent: 'Caribbean',
+      icon: '🏝️',
+      countries: [
+        { name: 'Bahamas', tag: 'Bahamas' },
+        { name: 'Jamaica', tag: 'Jamaica' },
+        { name: 'Dominican Republic', tag: 'Dominican Republic' }
+      ]
+    },
+    {
+      continent: 'Europe',
+      icon: '🏛️',
+      countries: [
+        { name: 'Greece (Santorini)', tag: 'Greece' },
+        { name: 'Italy (Amalfi)', tag: 'Italy' },
+        { name: 'Iceland (Highlands)', tag: 'Iceland' },
+        { name: 'France', tag: 'France' },
+        { name: 'Spain', tag: 'Spain' },
+        { name: 'Switzerland', tag: 'Switzerland' }
+      ]
+    },
+    {
+      continent: 'Middle East',
+      icon: '🕌',
+      countries: [
+        { name: 'UAE (Dubai)', tag: 'UAE (Dubai)' },
+        { name: 'Turkey', tag: 'Turkey' },
+        { name: 'Jordan', tag: 'Jordan' }
+      ]
+    },
+    {
+      continent: 'Oceania',
+      icon: '🦘',
+      countries: [
+        { name: 'Australia', tag: 'Australia' },
+        { name: 'New Zealand', tag: 'New Zealand' },
+        { name: 'Fiji', tag: 'Fiji' }
+      ]
+    }
   ];
+
+  hoveredContinent: string = 'Asia';
+
+  get activeContinentData() {
+    return this.destinationsData.find(d => d.continent === this.hoveredContinent) || this.destinationsData[2];
+  }
 
   navCategories = [
     { label: 'Daily Life / Musings' },
@@ -695,7 +950,14 @@ export class HeaderComponent implements OnInit {
     e.preventDefault();
     this.activeMenu = null;
     this.mobileOpen = false;
-    window.dispatchEvent(new CustomEvent('kaizen:navigate', { detail: { page: 'destinations', dest } }));
+    window.dispatchEvent(new CustomEvent('kaizen:navigate', { detail: { page: 'destinations', dest, country: 'All' } }));
+  }
+
+  navigateCountry(continent: string, countryTag: string, e: Event) {
+    e.preventDefault();
+    this.activeMenu = null;
+    this.mobileOpen = false;
+    window.dispatchEvent(new CustomEvent('kaizen:navigate', { detail: { page: 'destinations', dest: continent, country: countryTag } }));
   }
 
   toggleSearch() {
