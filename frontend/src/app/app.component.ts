@@ -258,11 +258,11 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
               </div>
             </div>
             <div class="dest-teaser-text">
-              <p class="section-eyebrow" style="color:#e8472a">TRAVEL DEEPER</p>
-              <h2 style="font-family:'Lato',sans-serif;font-size:clamp(28px,4vw,44px);font-weight:900;color:#111;margin:0 0 20px;line-height:1.15">
+              <p class="section-eyebrow">TRAVEL DEEPER</p>
+              <h2 class="dest-teaser-title">
                 38 Countries.<br>Countless Stories.
               </h2>
-              <p style="font-size:15px;color:#666;line-height:1.8;margin-bottom:28px">
+              <p class="dest-teaser-desc">
                 From the ancient temples of Kyoto and the blue domes of Santorini to the wild plains of the Serengeti — every destination has left its mark. Browse the full collection of travel guides, hidden gems, and practical tips.
               </p>
               <button class="hero-btn-primary" (click)="navTo('destinations')">Explore Destinations</button>
@@ -1203,6 +1203,20 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     .home-dest-teaser {
       background: #f4f1ec;
       padding: 80px 0;
+    }
+    .dest-teaser-title {
+      font-family: 'Lato', sans-serif;
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 900;
+      color: #111111;
+      margin: 0 0 20px;
+      line-height: 1.15;
+    }
+    .dest-teaser-desc {
+      font-size: 15px;
+      color: #666666;
+      line-height: 1.8;
+      margin-bottom: 28px;
     }
     .dest-teaser-inner {
       max-width: 1200px;

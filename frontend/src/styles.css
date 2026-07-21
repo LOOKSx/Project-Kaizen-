@@ -84,13 +84,25 @@ body.dark-theme,
 body.dark-theme .app-wrapper,
 body.dark-theme .page-body,
 body.dark-theme .home-intro,
-body.dark-theme .latest-posts-section {
+body.dark-theme .home-latest,
+body.dark-theme .latest-posts-section,
+body.dark-theme .category-posts-section {
   background-color: #121212 !important;
   color: #e2e8f0 !important;
 }
 
 body.dark-theme .home-features {
   background-color: #181818 !important;
+}
+
+body.dark-theme .home-dest-teaser {
+  background-color: #1a1a1a !important;
+  border-top: 1px solid #282828 !important;
+  border-bottom: 1px solid #282828 !important;
+}
+
+body.dark-theme .home-topics {
+  background-color: #161616 !important;
 }
 
 /* --- Typography & Headings --- */
@@ -103,7 +115,10 @@ body.dark-theme h6,
 body.dark-theme .intro-heading,
 body.dark-theme .section-title,
 body.dark-theme .section-heading,
+body.dark-theme .dest-teaser-title,
 body.dark-theme .post-title,
+body.dark-theme .lc-title,
+body.dark-theme .fc-body h3,
 body.dark-theme .page-hero-title,
 body.dark-theme .cat-preview-title,
 body.dark-theme .article-title,
@@ -115,7 +130,10 @@ body.dark-theme .dest-name {
 
 body.dark-theme p,
 body.dark-theme .intro-body,
+body.dark-theme .dest-teaser-desc,
 body.dark-theme .post-excerpt,
+body.dark-theme .lc-excerpt,
+body.dark-theme .fc-body p,
 body.dark-theme .cat-preview-excerpt,
 body.dark-theme .author-title,
 body.dark-theme .dest-desc,
@@ -133,6 +151,7 @@ body.dark-theme .ink-divider svg ellipse {
 
 /* --- Cards & Components --- */
 body.dark-theme .post-card,
+body.dark-theme .latest-card,
 body.dark-theme .feature-card,
 body.dark-theme .latest-card,
 body.dark-theme .cat-full-card,
@@ -151,6 +170,7 @@ body.dark-theme .intro-author-card {
 }
 
 body.dark-theme .post-card:hover,
+body.dark-theme .latest-card:hover,
 body.dark-theme .dest-card:hover,
 body.dark-theme .cat-full-card:hover,
 body.dark-theme .feature-card:hover {
