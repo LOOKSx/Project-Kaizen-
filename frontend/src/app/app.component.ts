@@ -898,7 +898,18 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
             </p>
           </div>
 
-          <div class="delete-actions">
+          <!-- Delete Progress Bar -->
+          <div class="delete-progress-wrap" *ngIf="isDeleting" style="margin-bottom: 20px; padding: 12px 14px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px;">
+            <div class="progress-info-row" style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: #dc2626; margin-bottom: 6px;">
+              <span><i class="fa-solid fa-trash-can fa-bounce"></i> Deleting Article...</span>
+              <span style="font-family: monospace; font-size: 13px;">{{ deleteProgress }}%</span>
+            </div>
+            <div class="progress-track" style="height: 6px; background: #fee2e2; border-radius: 3px; overflow: hidden;">
+              <div class="progress-fill" [style.width.%]="deleteProgress" style="height: 100%; background: #dc2626; transition: width 0.15s ease;"></div>
+            </div>
+          </div>
+
+          <div class="delete-actions" *ngIf="!isDeleting">
             <button type="button" class="btn-delete-cancel" (click)="cancelDelete()">Cancel</button>
             <button type="button" class="btn-delete-confirm" (click)="confirmDeleteArticle()">
               <i class="fa-solid fa-trash-can"></i> Delete Permanently
@@ -2700,28 +2711,47 @@ export class AppComponent implements OnInit, OnDestroy {
 
   showDeleteModal = false;
   articleToDelete: Article | null = null;
+  isDeleting = false;
+  deleteProgress = 0;
 
   promptDeleteArticle(article: Article) {
     this.articleToDelete = article;
     this.showDeleteModal = true;
+    this.isDeleting = false;
+    this.deleteProgress = 0;
   }
 
   cancelDelete() {
+    if (this.isDeleting) return;
     this.showDeleteModal = false;
     this.articleToDelete = null;
   }
 
   confirmDeleteArticle() {
-    if (!this.articleToDelete) return;
+    if (!this.articleToDelete || this.isDeleting) return;
     const target = this.articleToDelete;
+    this.isDeleting = true;
+    this.deleteProgress = 25;
+
+    // Step 1: Optimistic Instant UI Deletion (0ms latency for user)
+    this.articles = this.articles.filter(a => a.id !== target.id);
+    if (this.selectedArticle && this.selectedArticle.id === target.id) {
+      this.selectedArticle = null;
+    }
+
+    setTimeout(() => { this.deleteProgress = 65; }, 100);
+    setTimeout(() => { this.deleteProgress = 90; }, 200);
+
+    // Step 2: Persistent Storage & Cloud Deletion
     this.articleService.deleteArticle(target.id).subscribe(() => {
-      this.articles = this.articles.filter(a => a.id !== target.id);
-      if (this.selectedArticle && this.selectedArticle.id === target.id) {
-        this.selectedArticle = null;
-      }
-      this.showDeleteModal = false;
-      this.articleToDelete = null;
-      this.showToast(`"${target.title}" was deleted permanently.`);
+      this.deleteProgress = 100;
+      setTimeout(() => {
+        this.showDeleteModal = false;
+        this.articleToDelete = null;
+        this.isDeleting = false;
+        this.deleteProgress = 0;
+        this.showToast(`"${target.title}" was deleted permanently.`);
+      }, 150);
     });
   }
 

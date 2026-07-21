@@ -52,11 +52,24 @@ import { Article } from '../../models/article.model';
                 <p class="upload-hint">PNG, JPG, WEBP &mdash; auto compressed</p>
               </div>
 
-              <!-- Uploading Spinner -->
-              <div class="upload-prompt" *ngIf="uploading">
-                <i class="fa-solid fa-circle-notch fa-spin upload-icon loading"></i>
-                <p class="upload-title">Processing image...</p>
-                <p class="upload-hint">Compressing & optimising</p>
+              <!-- Real-Time Uploading Progress Bar -->
+              <div class="upload-progress-card" *ngIf="uploading">
+                <div class="progress-info-row">
+                  <span class="progress-title"><i class="fa-solid fa-circle-notch fa-spin"></i> Processing &amp; Compressing Image...</span>
+                  <span class="progress-pct">{{ uploadProgress }}%</span>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill" [style.width.%]="uploadProgress"></div>
+                </div>
+                <p class="progress-subtext" *ngIf="uploadProgress < 50">
+                  Reading file from disk ({{ uploadLoadedBytes }} KB / {{ uploadTotalBytes }} KB)
+                </p>
+                <p class="progress-subtext" *ngIf="uploadProgress >= 50 && uploadProgress < 90">
+                  Resizing canvas &amp; compressing JPEG quality
+                </p>
+                <p class="progress-subtext" *ngIf="uploadProgress >= 90">
+                  Finalizing high-quality image preview
+                </p>
               </div>
 
               <input
@@ -232,12 +245,22 @@ import { Article } from '../../models/article.model';
             />
           </div>
 
-          <!-- Actions -->
-          <div class="editor-actions">
+          <!-- Actions & Publishing Progress Bar -->
+          <div class="publishing-bar-wrap" *ngIf="publishing" style="margin-top: 20px;">
+            <div class="progress-info-row">
+              <span class="progress-title"><i class="fa-solid fa-cloud-arrow-up fa-bounce"></i> {{ articleToEdit ? 'Saving Changes...' : 'Publishing Article...' }}</span>
+              <span class="progress-pct">{{ publishProgress }}%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" [style.width.%]="publishProgress"></div>
+            </div>
+          </div>
+
+          <div class="editor-actions" *ngIf="!publishing">
             <button type="button" class="btn-cancel" (click)="onClose.emit()">Cancel</button>
-            <button type="submit" class="btn-publish" [disabled]="!title || !excerpt || !content || publishing || uploading">
-              <i class="fa-solid" [class.fa-paper-plane]="!publishing" [class.fa-spinner]="publishing" [class.fa-spin]="publishing"></i>
-              <span>{{ publishing ? 'Saving...' : (articleToEdit ? 'Save Changes' : 'Publish Article') }}</span>
+            <button type="submit" class="btn-publish" [disabled]="!title || !excerpt || !content || uploading">
+              <i class="fa-solid fa-paper-plane"></i>
+              <span>{{ articleToEdit ? 'Save Changes' : 'Publish Article' }}</span>
             </button>
           </div>
 
@@ -747,51 +770,68 @@ import { Article } from '../../models/article.model';
       color: #ffffff;
     }
 
-    /* ===== DIRECT COUNTRY TEXT INPUT ===== */
-    .custom-country-input-wrap {
-      position: relative;
-      margin-top: 8px;
-    }
-    .country-input-icon {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #e8472a;
-      font-size: 14px;
-    }
-    .country-text-input {
-      width: 100%;
-      padding: 10px 14px 10px 38px !important;
-      border: 1.5px solid #cbd5e1 !important;
-      border-radius: 4px !important;
-      font-size: 13.5px !important;
-      font-weight: 600 !important;
-      color: #1e293b !important;
-      background: #ffffff !important;
-      transition: all 0.2s ease !important;
-    }
-    .country-text-input:focus {
-      border-color: #e8472a !important;
-      box-shadow: 0 0 0 3px rgba(232, 71, 42, 0.12) !important;
-      outline: none !important;
-    }
-    .country-presets-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: #64748b;
+    /* ===== REAL-TIME PROGRESS BAR STYLES ===== */
+    .upload-progress-card,
+    .publishing-bar-wrap {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 14px 16px;
       margin-top: 10px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+    }
+    .progress-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .progress-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .progress-pct {
+      font-size: 13px;
+      font-weight: 900;
+      color: #e8472a;
+      font-family: monospace;
+    }
+    .progress-track {
+      width: 100%;
+      height: 7px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #e8472a 0%, #ff6b4a 100%);
+      border-radius: 4px;
+      transition: width 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .progress-subtext {
+      font-size: 11px;
+      color: #64748b;
+      margin: 6px 0 0;
     }
 
-    body.dark-theme .country-text-input {
-      background: #1e1e1e !important;
-      border-color: #383838 !important;
-      color: #f8fafc !important;
+    body.dark-theme .upload-progress-card,
+    body.dark-theme .publishing-bar-wrap {
+      background: #1e1e1e;
+      border-color: #333333;
     }
-    body.dark-theme .country-text-input:focus {
-      border-color: #e8472a !important;
+    body.dark-theme .progress-title {
+      color: #f8fafc;
+    }
+    body.dark-theme .progress-track {
+      background: #333333;
+    }
+    body.dark-theme .progress-subtext {
+      color: #94a3b8;
     }
   `]
 })
@@ -920,12 +960,31 @@ export class ArticleEditorComponent {
     }
   }
 
+  uploadProgress: number = 0;
+  uploadLoadedBytes: number = 0;
+  uploadTotalBytes: number = 0;
+  publishProgress: number = 0;
+
   private compressFile(file: File): Promise<string> {
     return new Promise((resolve) => {
+      this.uploadTotalBytes = Math.round(file.size / 1024);
+      this.uploadLoadedBytes = 0;
+      this.uploadProgress = 5;
+
       const reader = new FileReader();
+
+      reader.onprogress = (e) => {
+        if (e.lengthComputable) {
+          this.uploadLoadedBytes = Math.round(e.loaded / 1024);
+          this.uploadProgress = Math.min(45, Math.round((e.loaded / e.total) * 45));
+        }
+      };
+
       reader.onload = (e) => {
+        this.uploadProgress = 55;
         const img = new Image();
         img.onload = () => {
+          this.uploadProgress = 75;
           let width = img.width;
           let height = img.height;
           const maxDim = 1200;
@@ -944,15 +1003,26 @@ export class ArticleEditorComponent {
           const ctx = canvas.getContext('2d');
           if (ctx) {
             ctx.drawImage(img, 0, 0, width, height);
-            resolve(canvas.toDataURL('image/jpeg', 0.82));
+            this.uploadProgress = 90;
+            setTimeout(() => {
+              this.uploadProgress = 100;
+              resolve(canvas.toDataURL('image/jpeg', 0.82));
+            }, 80);
           } else {
+            this.uploadProgress = 100;
             resolve(e.target?.result as string);
           }
         };
-        img.onerror = () => resolve(e.target?.result as string);
+        img.onerror = () => {
+          this.uploadProgress = 100;
+          resolve(e.target?.result as string);
+        };
         img.src = e.target?.result as string;
       };
-      reader.onerror = () => resolve('');
+      reader.onerror = () => {
+        this.uploadProgress = 100;
+        resolve('');
+      };
       reader.readAsDataURL(file);
     });
   }
@@ -963,7 +1033,10 @@ export class ArticleEditorComponent {
       this.coverImage = compressed;
       this.coverImagePreview = compressed;
       this.coverImageUrl = '';
-      this.uploading = false;
+      setTimeout(() => {
+        this.uploading = false;
+        this.uploadProgress = 0;
+      }, 200);
     });
   }
 
@@ -987,8 +1060,12 @@ export class ArticleEditorComponent {
   publishArticle() {
     if (this.title && this.excerpt && this.content) {
       this.publishing = true;
+      this.publishProgress = 20;
+
+      setTimeout(() => { this.publishProgress = 55; }, 100);
+      setTimeout(() => { this.publishProgress = 85; }, 220);
+
       let finalCountry = '';
-      
       if (this.publishType === 'travel') {
         this.category = 'Travel & Places';
         finalCountry = this.getFinalCountry();
@@ -1006,6 +1083,16 @@ export class ArticleEditorComponent {
         this.tags = tagList.join(', ');
       }
 
+      const finishPublish = (res: Article) => {
+        this.publishProgress = 100;
+        setTimeout(() => {
+          this.publishing = false;
+          this.publishProgress = 0;
+          this.onArticlePublished.emit(res);
+          this.onClose.emit();
+        }, 150);
+      };
+
       if (this.articleToEdit) {
         const updated: Article = {
           ...this.articleToEdit,
@@ -1018,11 +1105,7 @@ export class ArticleEditorComponent {
           content: this.content,
           tags: this.tags
         };
-        this.articleService.updateArticle(updated).subscribe(res => {
-          this.publishing = false;
-          this.onArticlePublished.emit(res);
-          this.onClose.emit();
-        });
+        this.articleService.updateArticle(updated).subscribe(res => finishPublish(res));
       } else {
         this.articleService.createArticle({
           title: this.title,
@@ -1033,11 +1116,7 @@ export class ArticleEditorComponent {
           excerpt: this.excerpt,
           content: this.content,
           tags: this.tags
-        }).subscribe(created => {
-          this.publishing = false;
-          this.onArticlePublished.emit(created);
-          this.onClose.emit();
-        });
+        }).subscribe(created => finishPublish(created));
       }
     }
   }
