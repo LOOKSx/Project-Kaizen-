@@ -1182,16 +1182,6 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
         </div>
       </div>
 
-      <!-- Mobile Floating Admin Quick Dock (Admin Mode on Mobile) -->
-      <div class="mobile-floating-admin-dock" *ngIf="isAdmin">
-        <button class="m-dock-btn write" (click)="showPublisherModal = true" title="Write New Article">
-          <i class="fa-solid fa-plus"></i> Write
-        </button>
-        <button class="m-dock-btn profile" (click)="openProfileSettingsModal()" title="Edit Profile &amp; Links">
-          <i class="fa-solid fa-user-gear"></i> Profile
-        </button>
-      </div>
-
       <!-- Toast Notification -->
       <div class="toast-notification" *ngIf="toastMsg">
         <i class="fa-solid fa-circle-check"></i> {{ toastMsg }}
@@ -2341,49 +2331,6 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       .profile-modal-card { width: 95vw; padding: 20px 16px; max-height: 85vh; }
       .dest-filter-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; scrollbar-width: none; }
       .dest-filter-bar::-webkit-scrollbar { display: none; }
-    }
-
-    /* ===== MOBILE FLOATING ADMIN DOCK ===== */
-    .mobile-floating-admin-dock {
-      display: none;
-      position: fixed;
-      bottom: 24px;
-      left: 16px;
-      z-index: 9999;
-      background: rgba(17, 17, 17, 0.9);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 6px 10px;
-      border-radius: 30px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      align-items: center;
-      gap: 8px;
-    }
-    @media (max-width: 900px) {
-      .mobile-floating-admin-dock {
-        display: flex;
-      }
-    }
-    .m-dock-btn {
-      border: none;
-      padding: 7px 14px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      color: #fff;
-    }
-    .m-dock-btn.write {
-      background: #e8472a;
-    }
-    .m-dock-btn.profile {
-      background: #2563eb;
     }
 
     /* ===== GALLERY LIGHTBOX MODAL ===== */

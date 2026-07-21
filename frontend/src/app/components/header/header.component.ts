@@ -155,15 +155,6 @@ import { ArticleService } from '../../services/article.service';
                 </button>
               </div>
             </li>
-
-            <!-- Mobile Admin Login Trigger if NOT logged in -->
-            <li class="mobile-admin-panel" *ngIf="!isAdmin">
-              <div class="mobile-admin-buttons">
-                <button class="mobile-admin-btn login-link" (click)="triggerAdminPassModal(); mobileOpen = false;">
-                  <i class="fa-solid fa-key"></i> Admin Login (kaizen2026)
-                </button>
-              </div>
-            </li>
           </ul>
         </nav>
 
