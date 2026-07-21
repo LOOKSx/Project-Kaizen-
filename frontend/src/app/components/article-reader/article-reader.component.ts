@@ -690,6 +690,16 @@ import { ArticleService } from '../../services/article.service';
       transition: all 0.2s;
     }
     .btn-delete-comment:hover { background: #e8472a; color: #fff; }
+
+    @media (max-width: 600px) {
+      .reader-modal-backdrop { padding: 10px 6px; }
+      .reader-modal-card { width: 100vw; max-height: 94vh; border-radius: 8px; }
+      .reader-hero { min-height: 260px; }
+      .reader-header-content { padding: 18px 16px; }
+      .reader-title { font-size: 22px; }
+      .reader-body { padding: 18px 16px; }
+      .close-btn { top: 12px; right: 12px; width: 34px; height: 34px; font-size: 14px; }
+    }
   `]
 })
 export class ArticleReaderComponent {

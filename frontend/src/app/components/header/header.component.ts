@@ -546,21 +546,53 @@ import { ArticleService } from '../../services/article.service';
 
     /* ---- Mobile ---- */
     @media (max-width: 900px) {
+      .navbar-inner { padding: 0 14px; }
+      .site-logo { margin-right: auto; }
+      .logo-text { font-size: 18px; letter-spacing: 2px; }
       .primary-nav {
         display: none;
         position: absolute;
         top: 62px;
         left: 0; right: 0;
-        background: #111;
-        padding: 10px 0 20px;
+        background: rgba(17, 17, 17, 0.98);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        padding: 16px 0 24px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+        border-bottom: 2px solid #e8472a;
+        max-height: 82vh;
+        overflow-y: auto;
       }
-      .primary-nav.open { display: block; }
-      .nav-list { flex-direction: column; align-items: flex-start; }
-      .nav-link { padding: 12px 24px; height: auto; }
-      .mega-dropdown, .categories-mega-dropdown { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; border: none; background: #1e1e1e; width: 100%; }
-      .cat-mega-layout { grid-template-columns: 1fr; }
-      .cat-mega-preview-col { display: none; }
-      .hamburger { display: flex; }
+      .primary-nav.open { display: block; animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+      .nav-list { flex-direction: column; align-items: stretch; width: 100%; }
+      .nav-link { padding: 14px 24px; height: auto; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+      .hamburger {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        color: #ffffff;
+        font-size: 20px;
+        width: 44px;
+        height: 44px;
+        cursor: pointer;
+      }
+      .dest-mega-dropdown {
+        position: static !important;
+        width: 100% !important;
+        box-shadow: none !important;
+        border: none !important;
+        background: #181818 !important;
+      }
+      .dest-mega-layout {
+        flex-direction: column !important;
+        min-height: auto !important;
+      }
+      .dest-continents-col { width: 100% !important; border-right: none !important; border-bottom: 1px solid #282828 !important; }
+      .dest-subpanel-col { width: 100% !important; padding: 14px 20px !important; }
+      .search-input { width: 120px; font-size: 12px; }
+      .write-btn { padding: 5px 10px; font-size: 10px; }
     }
 
     /* ===== DESTINATIONS 2-LEVEL MEGAMENU ===== */

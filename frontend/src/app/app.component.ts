@@ -2312,9 +2312,12 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       .footer-inner { grid-template-columns: 1fr; gap: 30px; }
       .footer-links-area { justify-content: flex-start; }
       .dest-teaser-inner { grid-template-columns: 1fr; }
-      .dest-teaser-imgs { height: 300px; }
+      .dest-teaser-imgs { height: 260px; }
     }
     @media (max-width: 600px) {
+      .page-hero { height: 320px; margin-top: 62px; }
+      .hero-admin-actions { top: 12px; right: 12px; gap: 6px; }
+      .hero-edit-img-btn { padding: 5px 10px; font-size: 10px; }
       .cat-full-card { flex-direction: column; }
       .cat-full-img-wrap { width: 100%; height: 160px; }
       .features-grid { grid-template-columns: 1fr; }
@@ -2324,7 +2327,10 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       .gallery-grid { columns: 1; }
       .footer-links-area { flex-wrap: wrap; }
       .hero-btns { flex-direction: column; align-items: center; }
-      .intro-stats { gap: 16px; }
+      .intro-stats { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      .profile-modal-card { width: 95vw; padding: 20px 16px; max-height: 85vh; }
+      .dest-filter-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; scrollbar-width: none; }
+      .dest-filter-bar::-webkit-scrollbar { display: none; }
     }
 
     /* ===== GALLERY LIGHTBOX MODAL ===== */
