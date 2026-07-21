@@ -449,14 +449,62 @@ import { ArticleService } from '../../services/article.service';
       color: #333333;
       margin-bottom: 30px;
     }
+    .article-text-content ::ng-deep h1 {
+      font-family: 'Lato', sans-serif;
+      font-size: 24px;
+      font-weight: 900;
+      margin: 30px 0 14px;
+      color: #111111;
+      border-left: 4px solid #e8472a;
+      padding-left: 14px;
+      line-height: 1.3;
+    }
     .article-text-content ::ng-deep h2 {
       font-family: 'Lato', sans-serif;
-      font-size: 22px;
+      font-size: 21px;
       font-weight: 700;
-      margin: 28px 0 14px;
+      margin: 26px 0 12px;
       color: #111111;
       border-left: 4px solid #e8472a;
       padding-left: 12px;
+      line-height: 1.3;
+    }
+    .article-text-content ::ng-deep h3 {
+      font-family: 'Lato', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin: 22px 0 10px;
+      color: #222222;
+      border-left: 3px solid #ff6b4a;
+      padding-left: 10px;
+      line-height: 1.3;
+    }
+    .article-text-content ::ng-deep strong,
+    .article-text-content ::ng-deep b {
+      font-weight: 900;
+      color: #0f172a;
+    }
+    .article-text-content ::ng-deep em,
+    .article-text-content ::ng-deep i {
+      font-style: italic;
+      color: #334155;
+    }
+    .article-text-content ::ng-deep blockquote {
+      border-left: 4px solid #cbd5e1;
+      margin: 18px 0;
+      padding: 10px 18px;
+      background: #f8fafc;
+      color: #475569;
+      font-style: italic;
+      border-radius: 0 4px 4px 0;
+    }
+    .article-text-content ::ng-deep code {
+      font-family: monospace;
+      background: #f1f5f9;
+      color: #e8472a;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 14px;
     }
     .article-text-content ::ng-deep p {
       margin-bottom: 18px;
@@ -466,6 +514,29 @@ import { ArticleService } from '../../services/article.service';
     }
     .article-text-content ::ng-deep li {
       margin-bottom: 6px;
+    }
+
+    body.dark-theme .article-text-content ::ng-deep h1,
+    body.dark-theme .article-text-content ::ng-deep h2,
+    body.dark-theme .article-text-content ::ng-deep h3 {
+      color: #f8fafc !important;
+    }
+    body.dark-theme .article-text-content ::ng-deep strong,
+    body.dark-theme .article-text-content ::ng-deep b {
+      color: #ffffff !important;
+    }
+    body.dark-theme .article-text-content ::ng-deep em,
+    body.dark-theme .article-text-content ::ng-deep i {
+      color: #cbd5e1 !important;
+    }
+    body.dark-theme .article-text-content ::ng-deep blockquote {
+      background: #1e1e1e !important;
+      border-color: #475569 !important;
+      color: #94a3b8 !important;
+    }
+    body.dark-theme .article-text-content ::ng-deep code {
+      background: #282828 !important;
+      color: #ff6b4a !important;
     }
     .article-tags {
       display: flex;
@@ -648,9 +719,57 @@ export class ArticleReaderComponent {
 
   formatContent(rawText: string): string {
     if (!rawText) return '';
-    let formatted = rawText.replace(/\r\n|\r|\n/g, '<br>');
-    formatted = formatted.replace(/## (.*?)(<br>|$)/g, '<h2>$1</h2>');
-    return formatted;
+
+    const lines = rawText.split(/\r\n|\r|\n/);
+    const result: string[] = [];
+
+    for (let line of lines) {
+      const trimmed = line.trim();
+
+      if (/^#{1,3}\s*\S+/i.test(trimmed)) {
+        if (trimmed.startsWith('###')) {
+          const content = this.applyInlineMarkdown(trimmed.replace(/^###\s*/, ''));
+          result.push(`<h3>${content}</h3>`);
+        } else if (trimmed.startsWith('##')) {
+          const content = this.applyInlineMarkdown(trimmed.replace(/^##\s*/, ''));
+          result.push(`<h2>${content}</h2>`);
+        } else if (trimmed.startsWith('#')) {
+          const content = this.applyInlineMarkdown(trimmed.replace(/^#\s*/, ''));
+          result.push(`<h1>${content}</h1>`);
+        }
+      } else if (trimmed.startsWith('>')) {
+        const content = this.applyInlineMarkdown(trimmed.replace(/^>\s*/, ''));
+        result.push(`<blockquote>${content}</blockquote>`);
+      } else if (trimmed.length > 0) {
+        const content = this.applyInlineMarkdown(line);
+        result.push(content);
+      } else {
+        result.push('<br>');
+      }
+    }
+
+    let out = result.join('<br>');
+    out = out.replace(/(<\/h[1-3]>)\s*<br>/g, '$1');
+    out = out.replace(/(<\/blockquote>)\s*<br>/g, '$1');
+    return out;
+  }
+
+  private applyInlineMarkdown(text: string): string {
+    if (!text) return '';
+    let out = text;
+
+    // Bold (**text** or ** text ** or __text__)
+    out = out.replace(/\*\*\s*(.*?)\s*\*\*/g, '<strong>$1</strong>');
+    out = out.replace(/__\s*(.*?)\s*__/g, '<strong>$1</strong>');
+
+    // Italics (*text* or _text_)
+    out = out.replace(/\*\s*(.*?)\s*\*/g, '<em>$1</em>');
+    out = out.replace(/_\s*(.*?)\s*_/g, '<em>$1</em>');
+
+    // Inline code (`code`)
+    out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    return out;
   }
 
   getTagsList(tags: string): string[] {
