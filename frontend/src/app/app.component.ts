@@ -102,8 +102,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 </p>
                 <div class="intro-stats">
                   <div class="istat"><span class="istat-num">38+</span><span class="istat-lbl">Countries Visited</span></div>
-                  <div class="istat"><span class="istat-num">10</span><span class="istat-lbl">Blog Articles</span></div>
-                  <div class="istat"><span class="istat-num">14K</span><span class="istat-lbl">Photos Taken</span></div>
+                  <div class="istat"><span class="istat-num">{{ articles.length }}</span><span class="istat-lbl">Blog Articles</span></div>
+                  <div class="istat"><span class="istat-num">{{ photos.length }}</span><span class="istat-lbl">Photos Shared</span></div>
                   <div class="istat"><span class="istat-num">6+</span><span class="istat-lbl">Years Writing</span></div>
                 </div>
               </div>
@@ -549,8 +549,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                   <p class="author-title">World Traveler & Software Engineer</p>
                   <div class="author-stats">
                     <div class="stat"><span class="stat-num">38</span><span class="stat-lbl">Countries</span></div>
-                    <div class="stat"><span class="stat-num">10</span><span class="stat-lbl">Articles</span></div>
-                    <div class="stat"><span class="stat-num">14K+</span><span class="stat-lbl">Photos</span></div>
+                    <div class="stat"><span class="stat-num">{{ articles.length }}</span><span class="stat-lbl">Articles</span></div>
+                    <div class="stat"><span class="stat-num">{{ photos.length }}</span><span class="stat-lbl">Photos</span></div>
                   </div>
                   <div class="author-socials">
                     <a href="#" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
