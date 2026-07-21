@@ -737,33 +737,43 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
         (onArticlePublished)="handleArticlePublished($event)"
       ></app-article-editor>
 
-      <!-- Stealth Admin Passcode Authorization Modal -->
+      <!-- Admin Access Modal (Minimal Editorial) -->
       <div class="admin-modal-backdrop" *ngIf="showAdminPassModal" (click)="showAdminPassModal = false">
         <div class="admin-modal-card" (click)="$event.stopPropagation()">
+
+          <!-- Close button -->
+          <button class="admin-modal-close" (click)="showAdminPassModal = false" aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+
           <div class="admin-header">
-            <div class="admin-shield-icon"><i class="fa-solid fa-user-shield"></i></div>
-            <h2>Stealth Admin Access</h2>
-            <p>Enter secret passcode to unlock writing and editing tools.</p>
+            <span class="admin-eyebrow">KAIZEN &mdash; ADMIN</span>
+            <h2>Admin Access</h2>
+            <p>Enter your passcode to unlock editing tools.</p>
           </div>
+
           <form (ngSubmit)="unlockAdmin()">
             <div class="admin-form-group">
-              <label>Secret Passcode</label>
+              <label>Passcode</label>
               <input
                 type="password"
                 class="admin-pass-input"
-                placeholder="Enter passcode..."
+                placeholder="••••••••"
                 [(ngModel)]="adminPassInput"
                 name="adminPassInput"
                 autofocus
                 required
               />
-              <p class="admin-error" *ngIf="adminPassError">Incorrect passcode. Access denied.</p>
+              <div class="admin-error" *ngIf="adminPassError">
+                <i class="fa-solid fa-circle-exclamation"></i> Incorrect passcode.
+              </div>
             </div>
             <div class="admin-actions">
-              <button type="button" class="btn-cancel" (click)="showAdminPassModal = false">Cancel</button>
-              <button type="submit" class="btn-unlock"><i class="fa-solid fa-lock-open"></i> Unlock Admin</button>
+              <button type="button" class="btn-admin-cancel" (click)="showAdminPassModal = false">Cancel</button>
+              <button type="submit" class="btn-admin-unlock">Unlock <i class="fa-solid fa-arrow-right"></i></button>
             </div>
           </form>
+
         </div>
       </div>
 
@@ -1534,43 +1544,140 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     .admin-modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.8);
-      backdrop-filter: blur(8px);
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       z-index: 10000;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
     }
+    /* ===== ADMIN MODAL — MINIMAL EDITORIAL ===== */
     .admin-modal-card {
-      background: #1c1c1c;
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 12px;
-      padding: 32px;
+      background: #fff;
+      border-top: 3px solid #e8472a;
+      border-radius: 0 0 4px 4px;
+      padding: 36px 36px 32px;
       width: 100%;
-      max-width: 420px;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.6);
-      animation: modalPop 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      max-width: 400px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.22);
+      position: relative;
+      animation: adminSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    @keyframes modalPop {
-      from { transform: scale(0.95); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+    @keyframes adminSlideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
-    .admin-header { text-align: center; margin-bottom: 24px; }
-    .admin-shield-icon { font-size: 36px; color: #e8472a; margin-bottom: 12px; }
-    .admin-header h2 { font-family: 'Lato', sans-serif; font-size: 22px; font-weight: 800; margin: 0 0 6px; }
-    .admin-header p { font-size: 13px; color: #aaa; margin: 0; }
+    .admin-modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1px solid #e8e8e8;
+      color: #bbb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .admin-modal-close:hover { background: #111; color: #fff; border-color: #111; }
+    .admin-header { margin-bottom: 28px; }
+    .admin-eyebrow {
+      display: block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #e8472a;
+      margin-bottom: 10px;
+    }
+    .admin-header h2 {
+      font-family: 'Lato', sans-serif;
+      font-size: 26px;
+      font-weight: 900;
+      color: #111;
+      margin: 0 0 8px;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    .admin-header p { font-size: 13px; color: #999; margin: 0; line-height: 1.5; }
     .admin-form-group { margin-bottom: 24px; }
-    .admin-form-group label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: #ccc; margin-bottom: 8px; }
-    .admin-pass-input { width: 100%; background: #2a2a2a; border: 1px solid #444; border-radius: 6px; padding: 12px 14px; color: #fff; font-size: 15px; outline: none; box-sizing: border-box; transition: border-color 0.2s; }
-    .admin-pass-input:focus { border-color: #e8472a; }
-    .admin-error { color: #ff5252; font-size: 12px; margin: 8px 0 0; font-weight: 600; }
-    .admin-actions { display: flex; gap: 12px; justify-content: flex-end; }
-    .btn-cancel { background: rgba(255,255,255,0.08); color: #ccc; border: none; padding: 10px 18px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; }
-    .btn-cancel:hover { background: rgba(255,255,255,0.15); color: #fff; }
-    .btn-unlock { background: #e8472a; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.2s; }
-    .btn-unlock:hover { background: #d03a1e; }
+    .admin-form-group label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 8px;
+    }
+    .admin-pass-input {
+      width: 100%;
+      background: #f8f8f8;
+      border: 1.5px solid #ebebeb;
+      border-radius: 3px;
+      padding: 12px 14px;
+      color: #111;
+      font-size: 16px;
+      letter-spacing: 0.08em;
+      outline: none;
+      box-sizing: border-box;
+      font-family: inherit;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .admin-pass-input::placeholder { color: #ccc; letter-spacing: 0.08em; }
+    .admin-pass-input:focus { border-color: #111; background: #fff; }
+    .admin-error {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #e8472a;
+      font-size: 12px;
+      font-weight: 600;
+      margin: 8px 0 0;
+    }
+    .admin-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      padding-top: 8px;
+    }
+    .btn-admin-cancel {
+      background: transparent;
+      color: #999;
+      border: 1.5px solid #e8e8e8;
+      padding: 10px 20px;
+      border-radius: 3px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .btn-admin-cancel:hover { border-color: #bbb; color: #555; }
+    .btn-admin-unlock {
+      background: #111;
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 3px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: 0.02em;
+      transition: background 0.15s;
+    }
+    .btn-admin-unlock:hover { background: #e8472a; }
 
     /* ===== TOAST ===== */
     .toast-notification {
