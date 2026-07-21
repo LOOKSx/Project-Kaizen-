@@ -562,9 +562,12 @@ import { ArticleService } from '../../services/article.service';
 
     /* ---- Mobile ---- */
     @media (max-width: 900px) {
-      .navbar-inner { padding: 0 14px; }
-      .site-logo { margin-right: auto; }
+      .navbar-inner { padding: 0 12px; justify-content: space-between; }
+      .site-logo { margin-right: 0; }
       .logo-text { font-size: 18px; letter-spacing: 2px; }
+      .nav-right { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
+      .nav-right .write-btn,
+      .nav-right .admin-logout-btn { display: none !important; }
       .primary-nav {
         display: none;
         position: absolute;
@@ -583,16 +586,17 @@ import { ArticleService } from '../../services/article.service';
       .nav-list { flex-direction: column; align-items: stretch; width: 100%; }
       .nav-link { padding: 14px 24px; height: auto; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.06); }
       .hamburger {
-        display: flex;
+        display: flex !important;
         align-items: center;
         justify-content: center;
         background: transparent;
         border: none;
         color: #ffffff;
         font-size: 20px;
-        width: 44px;
-        height: 44px;
+        width: 40px;
+        height: 40px;
         cursor: pointer;
+        flex-shrink: 0;
       }
       .dest-mega-dropdown {
         position: static !important;
