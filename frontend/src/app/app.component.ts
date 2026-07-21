@@ -576,20 +576,23 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
           <div class="container">
             <div class="about-layout">
               <aside class="about-sidebar">
-                <div class="author-card">
-                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" alt="Author" class="author-avatar-lg" />
-                  <h2 class="author-name">Kaizen Explorer</h2>
-                  <p class="author-title">World Traveler & Software Engineer</p>
+                <div class="author-card" style="position: relative;">
+                  <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openProfileSettingsModal()" style="position: absolute; top: 12px; right: 12px; font-size: 11px; padding: 4px 10px;" title="Edit Profile &amp; Links">
+                    <i class="fa-solid fa-user-gear"></i> Edit Profile
+                  </button>
+                  <img [src]="authorAvatar" [alt]="authorName" class="author-avatar-lg" />
+                  <h2 class="author-name">{{ authorName }}</h2>
+                  <p class="author-title">{{ authorTitle }}</p>
                   <div class="author-stats">
                     <div class="stat"><span class="stat-num">{{ allDestinations.length }}</span><span class="stat-lbl">Destinations</span></div>
                     <div class="stat"><span class="stat-num">{{ articles.length }}</span><span class="stat-lbl">Articles</span></div>
                     <div class="stat"><span class="stat-num">{{ photos.length }}</span><span class="stat-lbl">Photos</span></div>
                   </div>
                   <div class="author-socials">
-                    <a href="#" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#" title="Twitter/X"><i class="fa-brands fa-x-twitter"></i></a>
-                    <a href="#" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
-                    <a href="#" title="GitHub"><i class="fa-brands fa-github"></i></a>
+                    <a [href]="instagramUrl" target="_blank" title="Instagram" *ngIf="instagramUrl"><i class="fa-brands fa-instagram"></i></a>
+                    <a [href]="twitterUrl" target="_blank" title="Twitter/X" *ngIf="twitterUrl"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a [href]="youtubeUrl" target="_blank" title="YouTube" *ngIf="youtubeUrl"><i class="fa-brands fa-youtube"></i></a>
+                    <a [href]="githubUrl" target="_blank" title="GitHub" *ngIf="githubUrl"><i class="fa-brands fa-github"></i></a>
                   </div>
                 </div>
               </aside>
@@ -916,6 +919,106 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
             </button>
           </div>
 
+        </div>
+      </div>
+
+      <!-- Profile & Social Links Settings Modal -->
+      <div class="admin-modal-backdrop" *ngIf="showProfileSettingsModal" (click)="closeProfileSettingsModal()">
+        <div class="profile-modal-card" (click)="$event.stopPropagation()">
+          <button class="admin-modal-close" (click)="closeProfileSettingsModal()" aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+
+          <div class="profile-modal-header">
+            <div class="profile-modal-icon">
+              <i class="fa-solid fa-user-gear"></i>
+            </div>
+            <h2>Profile &amp; Social Links Settings</h2>
+            <p>Customize your public author persona, contact email, and social media links.</p>
+          </div>
+
+          <form (ngSubmit)="saveProfileSettings()" class="profile-form">
+            
+            <!-- Avatar Upload & Preview -->
+            <div class="form-group avatar-form-group">
+              <label>PROFILE AVATAR PICTURE</label>
+              <div class="avatar-edit-row">
+                <img [src]="tempAuthorAvatar || authorAvatar" alt="Avatar Preview" class="avatar-preview-img" />
+                <div class="avatar-actions-col">
+                  <div class="drag-upload-box" 
+                       [class.dragging]="isAvatarDragging"
+                       (dragover)="onAvatarDragOver($event)"
+                       (dragleave)="onAvatarDragLeave($event)"
+                       (drop)="onAvatarDrop($event)"
+                       (click)="avatarFileInput.click()">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span>Drag &amp; Drop or Click to Upload Image</span>
+                    <small>Compressed automatically to high-quality JPEG</small>
+                    <input #avatarFileInput type="file" accept="image/*" (change)="onAvatarFileSelected($event)" hidden />
+                  </div>
+                  <div class="or-divider"><span>OR PASTE IMAGE URL</span></div>
+                  <input type="text" class="profile-input" placeholder="https://images.unsplash.com/..." [(ngModel)]="tempAuthorAvatar" name="avatarUrl" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Author Name & Title -->
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>AUTHOR NAME <span class="required">*</span></label>
+                <input type="text" class="profile-input" [(ngModel)]="tempAuthorName" name="authorName" required placeholder="e.g. Kaizen Explorer" />
+              </div>
+              <div class="form-group">
+                <label>TAGLINE / TITLE</label>
+                <input type="text" class="profile-input" [(ngModel)]="tempAuthorTitle" name="authorTitle" placeholder="e.g. World Traveler &amp; Software Engineer" />
+              </div>
+            </div>
+
+            <!-- Contact Email -->
+            <div class="form-group">
+              <label>CONTACT EMAIL ADDRESS</label>
+              <div class="input-with-icon">
+                <i class="fa-solid fa-envelope input-icon"></i>
+                <input type="email" class="profile-input icon-padded" [(ngModel)]="tempContactEmail" name="contactEmail" placeholder="hello@kaizen-blog.com" />
+              </div>
+            </div>
+
+            <!-- Social Links Section -->
+            <div class="social-section-title">
+              <i class="fa-solid fa-share-nodes"></i> SOCIAL MEDIA CONNECT LINKS
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label><i class="fa-brands fa-instagram instagram-col"></i> INSTAGRAM URL</label>
+                <input type="url" class="profile-input" [(ngModel)]="tempInstagramUrl" name="instagramUrl" placeholder="https://instagram.com/yourhandle" />
+              </div>
+              <div class="form-group">
+                <label><i class="fa-brands fa-x-twitter"></i> X / TWITTER URL</label>
+                <input type="url" class="profile-input" [(ngModel)]="tempTwitterUrl" name="twitterUrl" placeholder="https://x.com/yourhandle" />
+              </div>
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label><i class="fa-brands fa-youtube youtube-col"></i> YOUTUBE CHANNEL URL</label>
+                <input type="url" class="profile-input" [(ngModel)]="tempYoutubeUrl" name="youtubeUrl" placeholder="https://youtube.com/@yourhandle" />
+              </div>
+              <div class="form-group">
+                <label><i class="fa-brands fa-github"></i> GITHUB PROFILE URL</label>
+                <input type="url" class="profile-input" [(ngModel)]="tempGithubUrl" name="githubUrl" placeholder="https://github.com/yourhandle" />
+              </div>
+            </div>
+
+            <!-- Save Actions -->
+            <div class="profile-modal-actions">
+              <button type="button" class="btn-profile-cancel" (click)="closeProfileSettingsModal()">Cancel</button>
+              <button type="submit" class="btn-profile-save">
+                <i class="fa-solid fa-check"></i> Save Profile Settings
+              </button>
+            </div>
+
+          </form>
         </div>
       </div>
 
@@ -2051,6 +2154,168 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       .hero-btns { flex-direction: column; align-items: center; }
       .intro-stats { gap: 16px; }
     }
+
+    /* ===== PROFILE SETTINGS MODAL ===== */
+    .profile-modal-card {
+      background: #ffffff;
+      color: #0f172a;
+      width: 100%;
+      max-width: 640px;
+      border-radius: 8px;
+      padding: 28px 30px;
+      position: relative;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    body.dark-theme .profile-modal-card {
+      background: #181818;
+      color: #f8fafc;
+      border: 1px solid #2e2e2e;
+    }
+    .profile-modal-header {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+    .profile-modal-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(232, 71, 42, 0.1);
+      color: #e8472a;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+    .profile-modal-header h2 {
+      font-size: 20px;
+      font-weight: 800;
+      margin: 0 0 6px;
+    }
+    .profile-modal-header p {
+      font-size: 13px;
+      color: #64748b;
+      margin: 0;
+    }
+    body.dark-theme .profile-modal-header p { color: #94a3b8; }
+    
+    .profile-form { display: flex; flex-direction: column; gap: 16px; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 580px) { .form-row-2 { grid-template-columns: 1fr; } }
+    
+    .profile-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 5px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #1e293b;
+      background: #ffffff;
+      box-sizing: border-box;
+      transition: all 0.2s;
+    }
+    .profile-input:focus {
+      border-color: #e8472a;
+      box-shadow: 0 0 0 3px rgba(232, 71, 42, 0.12);
+      outline: none;
+    }
+    body.dark-theme .profile-input {
+      background: #222222;
+      border-color: #383838;
+      color: #f8fafc;
+    }
+    
+    .avatar-edit-row { display: flex; gap: 16px; align-items: center; margin-top: 6px; }
+    .avatar-preview-img {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #e8472a;
+      flex-shrink: 0;
+    }
+    .avatar-actions-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .drag-upload-box {
+      border: 2px dashed #cbd5e1;
+      border-radius: 6px;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      background: #f8fafc;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .drag-upload-box:hover, .drag-upload-box.dragging {
+      border-color: #e8472a;
+      background: rgba(232, 71, 42, 0.05);
+    }
+    .drag-upload-box i { font-size: 18px; color: #e8472a; }
+    .drag-upload-box span { font-size: 12px; font-weight: 700; color: #334155; }
+    .drag-upload-box small { font-size: 10px; color: #64748b; }
+    body.dark-theme .drag-upload-box { background: #222222; border-color: #383838; }
+    body.dark-theme .drag-upload-box span { color: #cbd5e1; }
+
+    .or-divider { text-align: center; font-size: 10px; font-weight: 800; color: #94a3b8; letter-spacing: 0.1em; }
+
+    .input-with-icon { position: relative; }
+    .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #e8472a; font-size: 14px; }
+    .icon-padded { padding-left: 38px !important; }
+
+    .social-section-title {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      color: #e8472a;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .instagram-col { color: #e1306c; }
+    .youtube-col { color: #ff0000; }
+
+    .profile-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #e2e8f0;
+    }
+    body.dark-theme .profile-modal-actions { border-color: #2e2e2e; }
+
+    .btn-profile-cancel {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      padding: 10px 18px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-profile-save {
+      background: #e8472a;
+      color: #ffffff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+    .btn-profile-save:hover { background: #d03b20; }
   `]
 })
 export class AppComponent implements OnInit, OnDestroy {
@@ -2207,17 +2472,30 @@ export class AppComponent implements OnInit, OnDestroy {
     { year: '2026', title: 'Still Going', desc: '38 countries, 10+ articles, and a growing conviction that the best stories are still ahead.' },
   ];
 
+  // Author & Contact Profile Settings
+  authorName = 'Kaizen Explorer';
+  authorTitle = 'World Traveler & Software Engineer';
+  authorAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80';
+  authorBio = 'World Traveler & Software Engineer, based in Bangkok & wherever the next flight takes me.';
+  contactEmailValue = 'hello@kaizen-blog.com';
+  instagramUrl = 'https://instagram.com/kaizen_explorer';
+  twitterUrl = 'https://x.com/kaizen_explorer';
+  youtubeUrl = 'https://youtube.com/@kaizen_explorer';
+  githubUrl = 'https://github.com/kaizen_explorer';
+
   // Contact
   contactName = '';
   contactEmail = '';
   contactSubject = 'Just Saying Hello';
   contactMessage = '';
   contactSent = false;
-  contactItems = [
-    { icon: 'fa-solid fa-envelope', label: 'Email', value: 'hello@kaizen-blog.com' },
-    { icon: 'fa-solid fa-location-dot', label: 'Based In', value: 'Bangkok, Thailand & Global' },
-    { icon: 'fa-solid fa-clock', label: 'Response Time', value: 'Usually within 24–48 hours' },
-  ];
+  get contactItems() {
+    return [
+      { icon: 'fa-solid fa-envelope', label: 'Email', value: this.contactEmailValue },
+      { icon: 'fa-solid fa-location-dot', label: 'Based In', value: 'Bangkok, Thailand & Global' },
+      { icon: 'fa-solid fa-clock', label: 'Response Time', value: 'Usually within 24–48 hours' },
+    ];
+  }
 
   isAdmin = false;
   showAdminPassModal = false;
@@ -2253,6 +2531,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
     window.addEventListener('kaizen:open-publisher', () => {
       this.showPublisherModal = true;
+    });
+    window.addEventListener('kaizen:open-profile-settings', () => {
+      this.openProfileSettingsModal();
     });
     window.addEventListener('kaizen:navigate', (e: any) => {
       const page = e.detail?.page || 'home';
@@ -2739,7 +3020,16 @@ export class AppComponent implements OnInit, OnDestroy {
         heroSlides: this.heroSlides,
         categoryPageItems: this.categoryPageItems,
         allDestinations: this.allDestinations,
-        photos: this.photos
+        photos: this.photos,
+        authorName: this.authorName,
+        authorTitle: this.authorTitle,
+        authorAvatar: this.authorAvatar,
+        authorBio: this.authorBio,
+        contactEmailValue: this.contactEmailValue,
+        instagramUrl: this.instagramUrl,
+        twitterUrl: this.twitterUrl,
+        youtubeUrl: this.youtubeUrl,
+        githubUrl: this.githubUrl
       };
       localStorage.setItem('kaizen_site_settings', JSON.stringify(settings));
       this.articleService.syncToCloud(this.articles, settings);
@@ -2764,8 +3054,95 @@ export class AppComponent implements OnInit, OnDestroy {
         if (parsed.categoryPageItems && parsed.categoryPageItems.length) this.categoryPageItems = parsed.categoryPageItems;
         if (parsed.allDestinations && parsed.allDestinations.length) this.allDestinations = parsed.allDestinations;
         if (parsed.photos && parsed.photos.length) this.photos = parsed.photos;
+        if (parsed.authorName) this.authorName = parsed.authorName;
+        if (parsed.authorTitle) this.authorTitle = parsed.authorTitle;
+        if (parsed.authorAvatar) this.authorAvatar = parsed.authorAvatar;
+        if (parsed.authorBio) this.authorBio = parsed.authorBio;
+        if (parsed.contactEmailValue) this.contactEmailValue = parsed.contactEmailValue;
+        if (parsed.instagramUrl !== undefined) this.instagramUrl = parsed.instagramUrl;
+        if (parsed.twitterUrl !== undefined) this.twitterUrl = parsed.twitterUrl;
+        if (parsed.youtubeUrl !== undefined) this.youtubeUrl = parsed.youtubeUrl;
+        if (parsed.githubUrl !== undefined) this.githubUrl = parsed.githubUrl;
       }
     } catch (e) {}
+  }
+
+  // Profile Settings Modal logic
+  showProfileSettingsModal = false;
+  tempAuthorName = '';
+  tempAuthorTitle = '';
+  tempAuthorAvatar = '';
+  tempContactEmail = '';
+  tempInstagramUrl = '';
+  tempTwitterUrl = '';
+  tempYoutubeUrl = '';
+  tempGithubUrl = '';
+  isAvatarDragging = false;
+
+  openProfileSettingsModal() {
+    this.tempAuthorName = this.authorName;
+    this.tempAuthorTitle = this.authorTitle;
+    this.tempAuthorAvatar = this.authorAvatar;
+    this.tempContactEmail = this.contactEmailValue;
+    this.tempInstagramUrl = this.instagramUrl;
+    this.tempTwitterUrl = this.twitterUrl;
+    this.tempYoutubeUrl = this.youtubeUrl;
+    this.tempGithubUrl = this.githubUrl;
+    this.showProfileSettingsModal = true;
+  }
+
+  closeProfileSettingsModal() {
+    this.showProfileSettingsModal = false;
+  }
+
+  saveProfileSettings() {
+    if (this.tempAuthorName) this.authorName = this.tempAuthorName;
+    if (this.tempAuthorTitle) this.authorTitle = this.tempAuthorTitle;
+    if (this.tempAuthorAvatar) this.authorAvatar = this.tempAuthorAvatar;
+    if (this.tempContactEmail) this.contactEmailValue = this.tempContactEmail;
+    this.instagramUrl = this.tempInstagramUrl;
+    this.twitterUrl = this.tempTwitterUrl;
+    this.youtubeUrl = this.tempYoutubeUrl;
+    this.githubUrl = this.tempGithubUrl;
+
+    this.saveSiteSettings();
+    this.showProfileSettingsModal = false;
+    this.showToast('Profile & Social Links updated successfully!');
+  }
+
+  onAvatarDragOver(e: DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.isAvatarDragging = true;
+  }
+
+  onAvatarDragLeave(e: DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.isAvatarDragging = false;
+  }
+
+  onAvatarDrop(e: DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.isAvatarDragging = false;
+    const files = e.dataTransfer?.files;
+    if (files && files[0] && files[0].type.startsWith('image/')) {
+      this.processAvatarFile(files[0]);
+    }
+  }
+
+  onAvatarFileSelected(e: Event) {
+    const input = e.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.processAvatarFile(input.files[0]);
+    }
+  }
+
+  processAvatarFile(file: File) {
+    this.compressImage(file, 600, 0.85).then(compressed => {
+      this.tempAuthorAvatar = compressed;
+    });
   }
 
   saveImageEditor() {

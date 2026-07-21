@@ -166,6 +166,9 @@ import { ArticleService } from '../../services/article.service';
           <button class="write-btn" *ngIf="isAdmin" (click)="openPublisherEvent()">
             <i class="fa-solid fa-pen"></i> Write
           </button>
+          <button class="write-btn profile-btn" *ngIf="isAdmin" (click)="openProfileSettingsEvent()" style="background: #2563eb;" title="Edit Author Profile &amp; Social Links">
+            <i class="fa-solid fa-user-gear"></i> Profile
+          </button>
           <button class="admin-logout-btn" *ngIf="isAdmin" (click)="logoutAdmin()" title="Exit Admin Mode">
             <i class="fa-solid fa-lock"></i> Exit Admin
           </button>
@@ -1030,6 +1033,10 @@ export class HeaderComponent implements OnInit {
 
   openPublisherEvent() {
     window.dispatchEvent(new CustomEvent('kaizen:open-publisher'));
+  }
+
+  openProfileSettingsEvent() {
+    window.dispatchEvent(new CustomEvent('kaizen:open-profile-settings'));
   }
 
   initTheme() {
