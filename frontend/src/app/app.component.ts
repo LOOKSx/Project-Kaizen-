@@ -96,15 +96,15 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                   deliberate changes compound into extraordinary results over time.
                 </p>
                 <p class="intro-body">
-                  This blog is my living journal. Here you'll find travel guides from 38+ countries, reflections on personal growth,
+                  This blog is my living journal. Here you'll find travel guides from {{ allDestinations.length }} destinations, reflections on personal growth,
                   photography from the road, honest book reviews, career insights from a software engineer, and raw musings on life.
                   Everything written from direct personal experience. No fluff.
                 </p>
                 <div class="intro-stats">
-                  <div class="istat"><span class="istat-num">38+</span><span class="istat-lbl">Countries Visited</span></div>
+                  <div class="istat"><span class="istat-num">{{ allDestinations.length }}</span><span class="istat-lbl">Destinations</span></div>
                   <div class="istat"><span class="istat-num">{{ articles.length }}</span><span class="istat-lbl">Blog Articles</span></div>
                   <div class="istat"><span class="istat-num">{{ photos.length }}</span><span class="istat-lbl">Photos Shared</span></div>
-                  <div class="istat"><span class="istat-num">6+</span><span class="istat-lbl">Years Writing</span></div>
+                  <div class="istat"><span class="istat-num">{{ categories.length || 10 }}</span><span class="istat-lbl">Categories</span></div>
                 </div>
               </div>
               <div class="intro-author">
@@ -260,7 +260,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
             <div class="dest-teaser-text">
               <p class="section-eyebrow">TRAVEL DEEPER</p>
               <h2 class="dest-teaser-title">
-                38 Countries.<br>Countless Stories.
+                {{ allDestinations.length }} Destinations.<br>Countless Stories.
               </h2>
               <p class="dest-teaser-desc">
                 From the ancient temples of Kyoto and the blue domes of Santorini to the wild plains of the Serengeti — every destination has left its mark. Browse the full collection of travel guides, hidden gems, and practical tips.
@@ -548,7 +548,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                   <h2 class="author-name">Kaizen Explorer</h2>
                   <p class="author-title">World Traveler & Software Engineer</p>
                   <div class="author-stats">
-                    <div class="stat"><span class="stat-num">38</span><span class="stat-lbl">Countries</span></div>
+                    <div class="stat"><span class="stat-num">{{ allDestinations.length }}</span><span class="stat-lbl">Destinations</span></div>
                     <div class="stat"><span class="stat-num">{{ articles.length }}</span><span class="stat-lbl">Articles</span></div>
                     <div class="stat"><span class="stat-num">{{ photos.length }}</span><span class="stat-lbl">Photos</span></div>
                   </div>
@@ -564,7 +564,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 <div class="about-section">
                   <h2>The Kaizen Story</h2>
                   <p><strong>Kaizen (改善)</strong> is a Japanese word meaning "continuous improvement." This blog was born from a simple belief: that small, deliberate improvements in every aspect of life compound into something extraordinary over time.</p>
-                  <p>I started writing here as a personal journal. It quickly became something more: a documentation of a life lived with curiosity — 38 countries, countless engineering challenges, thousands of books, and an ongoing experiment in becoming a little better every day.</p>
+                  <p>I started writing here as a personal journal. It quickly became something more: a documentation of a life lived with curiosity — {{ allDestinations.length }} destinations, countless engineering challenges, thousands of books, and an ongoing experiment in becoming a little better every day.</p>
                 </div>
                 <div class="about-section">
                   <h2>What I Write About</h2>
