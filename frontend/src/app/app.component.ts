@@ -2160,7 +2160,9 @@ export class AppComponent implements OnInit, OnDestroy {
     });
     window.addEventListener('kaizen:navigate', (e: any) => {
       const page = e.detail?.page || 'home';
-      if (e.detail?.cat) {
+      if (page === 'blog' && !e.detail?.cat) {
+        this.resetFilters();
+      } else if (e.detail?.cat) {
         this.selectedCatName = e.detail.cat;
         this.articleService.setCategory(e.detail.cat);
       }
@@ -2200,6 +2202,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   navigateTo(page: string) {
+    if (page === 'blog') {
+      this.resetFilters();
+    }
     this.currentPage = page;
     window.dispatchEvent(new CustomEvent('kaizen:page-changed', { detail: { page } }));
   }
@@ -2268,8 +2273,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   resetFilters() {
+    this.activeCategory = '';
+    this.searchQuery = '';
     this.articleService.setCategory('');
     this.articleService.setSearchQuery('');
+    this.loadArticles();
   }
 
   editingArticle: Article | null = null;
