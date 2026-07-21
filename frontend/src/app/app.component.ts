@@ -876,10 +876,24 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
             (input)="onUrlInputChanged()"
           />
 
+          <!-- Extra Photo Details (Caption & Tag) for Gallery Items -->
+          <div *ngIf="imageEditorTargetItem && imageEditorTargetItem.caption !== undefined" style="margin-top: 15px; text-align: left; background: #f8fafc; padding: 12px 14px; border-radius: 6px; border: 1px solid #e2e8f0;">
+            <div class="form-group" style="margin-bottom: 10px;">
+              <label style="font-size: 11px; font-weight: 800; color: #e8472a; letter-spacing: 0.08em; display: block; margin-bottom: 4px;">PHOTO CAPTION / TITLE</label>
+              <input type="text" class="profile-input" placeholder="e.g. Fushimi Inari, Kyoto" [(ngModel)]="tempPhotoCaption" />
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label style="font-size: 11px; font-weight: 800; color: #e8472a; letter-spacing: 0.08em; display: block; margin-bottom: 4px;">PHOTO TAG / CATEGORY</label>
+              <select class="profile-input" [(ngModel)]="tempPhotoTag">
+                <option *ngFor="let tag of galleryTags.slice(1)" [value]="tag">{{ tag }}</option>
+              </select>
+            </div>
+          </div>
+
           <div class="img-editor-actions">
             <button type="button" class="img-editor-btn-cancel" (click)="showImageEditorModal = false">Cancel</button>
             <button type="button" class="img-editor-btn-save" [disabled]="!imageEditorPreview || imageUploading" (click)="saveImageEditor()">
-              <i class="fa-solid fa-check"></i> Save Image
+              <i class="fa-solid fa-check"></i> Save Image &amp; Caption
             </button>
           </div>
         </div>
@@ -955,7 +969,10 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
 
           <!-- Caption & Tag Footer -->
           <div class="lightbox-footer" *ngIf="activeLightboxPhoto">
-            <div class="lightbox-caption-group">
+            <div class="lightbox-caption-group" style="position: relative; padding-right: 70px;">
+              <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(activeLightboxPhoto, 'url', 'Gallery Photo: ' + activeLightboxPhoto.caption)" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); font-size: 10px; padding: 4px 10px; background: #2563eb; color: #ffffff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer;" title="Edit Photo &amp; Caption">
+                <i class="fa-solid fa-pen"></i> Edit
+              </button>
               <span class="lightbox-tag">{{ activeLightboxPhoto.tag }}</span>
               <h3 class="lightbox-caption">{{ activeLightboxPhoto.caption }}</h3>
             </div>
@@ -3151,12 +3168,17 @@ export class AppComponent implements OnInit, OnDestroy {
     this.showImageEditorModal = true;
   }
 
+  tempPhotoCaption = '';
+  tempPhotoTag = '';
+
   openImageEditorItem(item: any, propName: string, title: string) {
     this.imageEditorTargetKey = 'item';
     this.imageEditorTargetItem = item;
     this.imageEditorTargetProp = propName;
     this.imageEditorTitle = title;
     this.imageEditorPreview = item[propName] || '';
+    this.tempPhotoCaption = item.caption || '';
+    this.tempPhotoTag = item.tag || 'Travel';
     this.imageEditorUrlInput = '';
     this.imageUploading = false;
     this.imageUploadSuccess = false;
@@ -3403,6 +3425,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
     if (this.imageEditorTargetKey === 'item' && this.imageEditorTargetItem) {
       this.imageEditorTargetItem[this.imageEditorTargetProp] = this.imageEditorPreview;
+      if (this.imageEditorTargetItem.caption !== undefined) {
+        this.imageEditorTargetItem.caption = this.tempPhotoCaption;
+      }
+      if (this.imageEditorTargetItem.tag !== undefined) {
+        this.imageEditorTargetItem.tag = this.tempPhotoTag;
+      }
     } else if (this.imageEditorTargetKey === 'currentSlideImg') {
       this.heroSlides[this.currentSlide].img = this.imageEditorPreview;
     } else if (this.imageEditorTargetKey) {
