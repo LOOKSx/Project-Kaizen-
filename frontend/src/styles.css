@@ -533,10 +533,118 @@ input, textarea, select {
   color: var(--color-accent);
   transition: var(--transition);
 }
-.cat-tag:hover {
-  text-decoration: underline;
+/* ============================================================
+   CUSTOM DELETE CONFIRMATION MODAL (MINIMAL EDITORIAL)
+   ============================================================ */
+.delete-modal-card {
+  background: #ffffff;
+  border-top: 3.5px solid #dc2626;
+  border-radius: 0 0 4px 4px;
+  padding: 36px 36px 32px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 32px 90px rgba(0,0,0,0.28);
+  position: relative;
+  animation: deleteSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.cat-tag.tag-tech   { color: var(--color-tag-2); }
-.cat-tag.tag-life   { color: var(--color-tag-3); }
-.cat-tag.tag-photo  { color: var(--color-tag-4); }
-.cat-tag.tag-nature { color: var(--color-tag-5); }
+@keyframes deleteSlideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.delete-header {
+  text-align: center;
+  margin-bottom: 26px;
+}
+.delete-icon-wrap {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #fef2f2;
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin: 0 auto 16px;
+  border: 1px solid #fecaca;
+}
+.delete-eyebrow {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #dc2626;
+  margin-bottom: 8px;
+}
+.delete-header h2 {
+  font-family: 'Lato', sans-serif;
+  font-size: 24px;
+  font-weight: 900;
+  color: #111111;
+  margin: 0 0 10px;
+  letter-spacing: -0.02em;
+}
+.delete-header p {
+  font-size: 13.5px;
+  color: #666666;
+  margin: 0;
+  line-height: 1.6;
+}
+.delete-header p strong {
+  color: #111111;
+}
+.delete-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding-top: 10px;
+}
+.btn-delete-cancel {
+  background: transparent;
+  color: #888888;
+  border: 1.5px solid #e5e5e5;
+  padding: 10px 20px;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-delete-cancel:hover {
+  border-color: #bbbbbb;
+  color: #333333;
+}
+.btn-delete-confirm {
+  background: #dc2626;
+  color: #ffffff;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.15s;
+}
+.btn-delete-confirm:hover {
+  background: #b91c1c;
+}
+
+/* --- Dark Theme Delete Modal Overrides --- */
+body.dark-theme .delete-modal-card {
+  background: #1a1a1a !important;
+  color: #f1f5f9 !important;
+  border-color: #dc2626 !important;
+  box-shadow: 0 32px 90px rgba(0,0,0,0.85) !important;
+}
+body.dark-theme .delete-header h2 { color: #f8fafc !important; }
+body.dark-theme .delete-header p { color: #cbd5e1 !important; }
+body.dark-theme .delete-header p strong { color: #ffffff !important; }
+body.dark-theme .delete-icon-wrap { background: #3b1414 !important; color: #ef4444 !important; border-color: #7f1d1d !important; }
+body.dark-theme .btn-delete-cancel { border-color: #383838 !important; color: #94a3b8 !important; }
+body.dark-theme .btn-delete-cancel:hover { border-color: #555555 !important; color: #ffffff !important; }

@@ -846,6 +846,35 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
         </div>
       </div>
 
+      <!-- Custom Delete Confirmation Modal -->
+      <div class="admin-modal-backdrop" *ngIf="showDeleteModal" (click)="cancelDelete()">
+        <div class="delete-modal-card" (click)="$event.stopPropagation()">
+
+          <button class="admin-modal-close" (click)="cancelDelete()" aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+
+          <div class="delete-header">
+            <div class="delete-icon-wrap">
+              <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <span class="delete-eyebrow">CONFIRM DELETION</span>
+            <h2>Delete Article?</h2>
+            <p *ngIf="articleToDelete">
+              Are you sure you want to delete <strong>"{{ articleToDelete.title }}"</strong>? This action cannot be undone.
+            </p>
+          </div>
+
+          <div class="delete-actions">
+            <button type="button" class="btn-delete-cancel" (click)="cancelDelete()">Cancel</button>
+            <button type="button" class="btn-delete-confirm" (click)="confirmDeleteArticle()">
+              <i class="fa-solid fa-trash-can"></i> Delete Permanently
+            </button>
+          </div>
+
+        </div>
+      </div>
+
       <!-- Toast Notification -->
       <div class="toast-notification" *ngIf="toastMsg">
         <i class="fa-solid fa-circle-check"></i> {{ toastMsg }}
@@ -2550,14 +2579,35 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  deleteArticleFromReader(article: Article) {
-    if (confirm(`Are you sure you want to delete "${article.title}"?`)) {
-      this.articleService.deleteArticle(article.id).subscribe(() => {
-        this.articles = this.articles.filter(a => a.id !== article.id);
+  showDeleteModal = false;
+  articleToDelete: Article | null = null;
+
+  promptDeleteArticle(article: Article) {
+    this.articleToDelete = article;
+    this.showDeleteModal = true;
+  }
+
+  cancelDelete() {
+    this.showDeleteModal = false;
+    this.articleToDelete = null;
+  }
+
+  confirmDeleteArticle() {
+    if (!this.articleToDelete) return;
+    const target = this.articleToDelete;
+    this.articleService.deleteArticle(target.id).subscribe(() => {
+      this.articles = this.articles.filter(a => a.id !== target.id);
+      if (this.selectedArticle && this.selectedArticle.id === target.id) {
         this.selectedArticle = null;
-        this.showToast('Article deleted successfully.');
-      });
-    }
+      }
+      this.showDeleteModal = false;
+      this.articleToDelete = null;
+      this.showToast(`"${target.title}" was deleted permanently.`);
+    });
+  }
+
+  deleteArticleFromReader(article: Article) {
+    this.promptDeleteArticle(article);
   }
 
   showToast(msg: string) {

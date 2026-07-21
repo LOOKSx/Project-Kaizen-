@@ -625,21 +625,9 @@ export class ArticleReaderComponent {
   }
 
   deleteComment(index: number) {
-    if (this.article && this.article.comments && confirm('Are you sure you want to delete this comment?')) {
+    if (this.article && this.article.comments) {
       this.article.comments.splice(index, 1);
-      if (typeof localStorage !== 'undefined') {
-        const local = localStorage.getItem('kaizen_articles');
-        if (local) {
-          try {
-            const list: Article[] = JSON.parse(local);
-            const idx = list.findIndex(a => a.id === this.article!.id);
-            if (idx !== -1) {
-              list[idx].comments = this.article.comments;
-              localStorage.setItem('kaizen_articles', JSON.stringify(list));
-            }
-          } catch (e) {}
-        }
-      }
+      this.articleService.updatePersistedArticle(this.article);
     }
   }
 

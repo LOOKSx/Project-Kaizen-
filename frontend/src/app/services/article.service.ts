@@ -191,6 +191,7 @@ export class ArticleService {
   private removePersistedArticle(id: number) {
     const list = this.getPersistedArticles('', '').filter(a => a.id !== id);
     localStorage.setItem('kaizen_articles', JSON.stringify(list));
+    this.syncToCloud(list);
   }
 
   getAuthorProfile(): Observable<AuthorProfile> {
