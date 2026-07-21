@@ -647,7 +647,10 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
         <main class="page-body">
           <div class="container">
             <div class="contact-layout">
-              <div class="contact-info">
+              <div class="contact-info" style="position: relative;">
+                <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openProfileSettingsModal()" style="position: absolute; top: 0; right: 0; font-size: 11px; padding: 5px 14px; background: #2563eb; color: #ffffff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Edit Contact Info">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit Contact Details
+                </button>
                 <h2>Let's Connect</h2>
                 <p>Whether you're a fellow traveler, a reader, a brand, or someone who just stumbled here — welcome. My inbox is always open.</p>
                 <div class="contact-items">
@@ -660,10 +663,10 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                   </div>
                 </div>
                 <div class="contact-socials">
-                  <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i> Instagram</a>
-                  <a href="#" class="social-link"><i class="fa-brands fa-x-twitter"></i> Twitter</a>
-                  <a href="#" class="social-link"><i class="fa-brands fa-youtube"></i> YouTube</a>
-                  <a href="#" class="social-link"><i class="fa-brands fa-github"></i> GitHub</a>
+                  <a [href]="instagramUrl" target="_blank" class="social-link" *ngIf="instagramUrl"><i class="fa-brands fa-instagram"></i> Instagram</a>
+                  <a [href]="twitterUrl" target="_blank" class="social-link" *ngIf="twitterUrl"><i class="fa-brands fa-x-twitter"></i> Twitter/X</a>
+                  <a [href]="youtubeUrl" target="_blank" class="social-link" *ngIf="youtubeUrl"><i class="fa-brands fa-youtube"></i> YouTube</a>
+                  <a [href]="githubUrl" target="_blank" class="social-link" *ngIf="githubUrl"><i class="fa-brands fa-github"></i> GitHub</a>
                 </div>
               </div>
               <div class="contact-form-wrap">
@@ -974,12 +977,24 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
               </div>
             </div>
 
-            <!-- Contact Email -->
+            <!-- Contact Details Section -->
+            <div class="social-section-title">
+              <i class="fa-solid fa-address-card"></i> CONTACT PAGE DETAILS (EMAIL, LOCATION &amp; RESPONSE TIME)
+            </div>
+
             <div class="form-group">
-              <label>CONTACT EMAIL ADDRESS</label>
-              <div class="input-with-icon">
-                <i class="fa-solid fa-envelope input-icon"></i>
-                <input type="email" class="profile-input icon-padded" [(ngModel)]="tempContactEmail" name="contactEmail" placeholder="hello@kaizen-blog.com" />
+              <label><i class="fa-solid fa-envelope"></i> CONTACT EMAIL ADDRESS</label>
+              <input type="email" class="profile-input" [(ngModel)]="tempContactEmail" name="contactEmail" placeholder="hello@kaizen-blog.com" />
+            </div>
+
+            <div class="form-row-2">
+              <div class="form-group">
+                <label><i class="fa-solid fa-location-dot"></i> BASED IN / LOCATION</label>
+                <input type="text" class="profile-input" [(ngModel)]="tempContactLocation" name="contactLocation" placeholder="Bangkok, Thailand &amp; Global" />
+              </div>
+              <div class="form-group">
+                <label><i class="fa-solid fa-clock"></i> RESPONSE TIME</label>
+                <input type="text" class="profile-input" [(ngModel)]="tempContactResponseTime" name="contactResponseTime" placeholder="Usually within 24–48 hours" />
               </div>
             </div>
 
@@ -2478,6 +2493,8 @@ export class AppComponent implements OnInit, OnDestroy {
   authorAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80';
   authorBio = 'World Traveler & Software Engineer, based in Bangkok & wherever the next flight takes me.';
   contactEmailValue = 'hello@kaizen-blog.com';
+  contactLocationValue = 'Bangkok, Thailand & Global';
+  contactResponseTimeValue = 'Usually within 24–48 hours';
   instagramUrl = 'https://instagram.com/kaizen_explorer';
   twitterUrl = 'https://x.com/kaizen_explorer';
   youtubeUrl = 'https://youtube.com/@kaizen_explorer';
@@ -2492,8 +2509,8 @@ export class AppComponent implements OnInit, OnDestroy {
   get contactItems() {
     return [
       { icon: 'fa-solid fa-envelope', label: 'Email', value: this.contactEmailValue },
-      { icon: 'fa-solid fa-location-dot', label: 'Based In', value: 'Bangkok, Thailand & Global' },
-      { icon: 'fa-solid fa-clock', label: 'Response Time', value: 'Usually within 24–48 hours' },
+      { icon: 'fa-solid fa-location-dot', label: 'Based In', value: this.contactLocationValue },
+      { icon: 'fa-solid fa-clock', label: 'Response Time', value: this.contactResponseTimeValue },
     ];
   }
 
@@ -3026,6 +3043,8 @@ export class AppComponent implements OnInit, OnDestroy {
         authorAvatar: this.authorAvatar,
         authorBio: this.authorBio,
         contactEmailValue: this.contactEmailValue,
+        contactLocationValue: this.contactLocationValue,
+        contactResponseTimeValue: this.contactResponseTimeValue,
         instagramUrl: this.instagramUrl,
         twitterUrl: this.twitterUrl,
         youtubeUrl: this.youtubeUrl,
@@ -3059,6 +3078,8 @@ export class AppComponent implements OnInit, OnDestroy {
         if (parsed.authorAvatar) this.authorAvatar = parsed.authorAvatar;
         if (parsed.authorBio) this.authorBio = parsed.authorBio;
         if (parsed.contactEmailValue) this.contactEmailValue = parsed.contactEmailValue;
+        if (parsed.contactLocationValue) this.contactLocationValue = parsed.contactLocationValue;
+        if (parsed.contactResponseTimeValue) this.contactResponseTimeValue = parsed.contactResponseTimeValue;
         if (parsed.instagramUrl !== undefined) this.instagramUrl = parsed.instagramUrl;
         if (parsed.twitterUrl !== undefined) this.twitterUrl = parsed.twitterUrl;
         if (parsed.youtubeUrl !== undefined) this.youtubeUrl = parsed.youtubeUrl;
@@ -3073,6 +3094,8 @@ export class AppComponent implements OnInit, OnDestroy {
   tempAuthorTitle = '';
   tempAuthorAvatar = '';
   tempContactEmail = '';
+  tempContactLocation = '';
+  tempContactResponseTime = '';
   tempInstagramUrl = '';
   tempTwitterUrl = '';
   tempYoutubeUrl = '';
@@ -3084,6 +3107,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.tempAuthorTitle = this.authorTitle;
     this.tempAuthorAvatar = this.authorAvatar;
     this.tempContactEmail = this.contactEmailValue;
+    this.tempContactLocation = this.contactLocationValue;
+    this.tempContactResponseTime = this.contactResponseTimeValue;
     this.tempInstagramUrl = this.instagramUrl;
     this.tempTwitterUrl = this.twitterUrl;
     this.tempYoutubeUrl = this.youtubeUrl;
@@ -3100,6 +3125,8 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.tempAuthorTitle) this.authorTitle = this.tempAuthorTitle;
     if (this.tempAuthorAvatar) this.authorAvatar = this.tempAuthorAvatar;
     if (this.tempContactEmail) this.contactEmailValue = this.tempContactEmail;
+    if (this.tempContactLocation) this.contactLocationValue = this.tempContactLocation;
+    if (this.tempContactResponseTime) this.contactResponseTimeValue = this.tempContactResponseTime;
     this.instagramUrl = this.tempInstagramUrl;
     this.twitterUrl = this.tempTwitterUrl;
     this.youtubeUrl = this.tempYoutubeUrl;
@@ -3107,7 +3134,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.saveSiteSettings();
     this.showProfileSettingsModal = false;
-    this.showToast('Profile & Social Links updated successfully!');
+    this.showToast('Profile & Contact Details updated successfully!');
   }
 
   onAvatarDragOver(e: DragEvent) {
