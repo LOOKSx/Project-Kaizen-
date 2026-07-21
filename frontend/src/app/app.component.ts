@@ -257,13 +257,16 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=300&q=80" alt="Africa" class="dti-s2" />
               </div>
             </div>
-            <div class="dest-teaser-text">
-              <p class="section-eyebrow">TRAVEL DEEPER</p>
+            <div class="dest-teaser-text" style="position: relative;">
+              <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openHomeTeaserEditor()" style="position: absolute; top: -10px; right: 0; font-size: 11px; padding: 4px 12px; background: #2563eb; color: #ffffff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer;" title="Edit Teaser Text">
+                <i class="fa-solid fa-pen-to-square"></i> Edit Teaser
+              </button>
+              <p class="section-eyebrow">{{ homeTexts.teaserEyebrow }}</p>
               <h2 class="dest-teaser-title">
-                {{ allDestinations.length }} Destinations.<br>Countless Stories.
+                {{ homeTexts.teaserTitle }}
               </h2>
               <p class="dest-teaser-desc">
-                From the ancient temples of Kyoto and the blue domes of Santorini to the wild plains of the Serengeti — every destination has left its mark. Browse the full collection of travel guides, hidden gems, and practical tips.
+                {{ homeTexts.teaserDesc }}
               </p>
               <button class="hero-btn-primary" (click)="navTo('destinations')">Explore Destinations</button>
             </div>
@@ -277,15 +280,20 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'blog'">
         <!-- Blog Page Hero -->
-        <div class="page-hero" [style.background-image]="'url(' + blogHeroImg + ')'">
-          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('blogHeroImg', 'Blog Hero Banner')" title="Change hero image">
-            <i class="fa-solid fa-camera"></i>
-          </button>
+        <div class="page-hero" [style.background-image]="'url(' + blogHeroImg + ')'" style="position: relative;">
+          <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; z-index: 10;">
+            <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('blogHeroImg', 'Blog Hero Banner')" title="Change hero image">
+              <i class="fa-solid fa-camera"></i> Change Image
+            </button>
+            <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openHeroTextEditor('blog')" style="background: #2563eb;" title="Edit Hero Text">
+              <i class="fa-solid fa-pen"></i> Edit Text
+            </button>
+          </div>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
-            <p class="page-hero-label">THE JOURNAL</p>
-            <h1 class="page-hero-title">Blog</h1>
-            <p class="page-hero-sub">Travel stories, personal growth, photography, career musings, and everything in between — all written from direct experience.</p>
+            <p class="page-hero-label">{{ pageHeroTexts.blog.label }}</p>
+            <h1 class="page-hero-title">{{ pageHeroTexts.blog.title }}</h1>
+            <p class="page-hero-sub">{{ pageHeroTexts.blog.sub }}</p>
           </div>
         </div>
         <main class="page-body" id="blog-section">
@@ -326,15 +334,20 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ===== CATEGORIES PAGE ========================== -->
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'categories'">
-        <div class="page-hero" [style.background-image]="'url(' + catHeroImg + ')'">
-          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('catHeroImg', 'Categories Hero Banner')" title="Change hero image">
-            <i class="fa-solid fa-camera"></i>
-          </button>
+        <div class="page-hero" [style.background-image]="'url(' + catHeroImg + ')'" style="position: relative;">
+          <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; z-index: 10;">
+            <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('catHeroImg', 'Categories Hero Banner')" title="Change hero image">
+              <i class="fa-solid fa-camera"></i> Change Image
+            </button>
+            <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openHeroTextEditor('categories')" style="background: #2563eb;" title="Edit Hero Text">
+              <i class="fa-solid fa-pen"></i> Edit Text
+            </button>
+          </div>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
-            <p class="page-hero-label">BROWSE BY TOPIC</p>
-            <h1 class="page-hero-title">Categories</h1>
-            <p class="page-hero-sub">Explore all 10 core themes of Kaizen — from daily musings and travel stories to personal growth, books, and technology.</p>
+            <p class="page-hero-label">{{ pageHeroTexts.categories.label }}</p>
+            <h1 class="page-hero-title">{{ pageHeroTexts.categories.title }}</h1>
+            <p class="page-hero-sub">{{ pageHeroTexts.categories.sub }}</p>
           </div>
         </div>
         <main class="page-body">
@@ -348,7 +361,10 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 <div class="cat-full-img-wrap">
                   <img [src]="cat.image" [alt]="cat.name" class="cat-full-img" loading="lazy" />
                   <div class="cat-full-badge">{{ cat.name }}</div>
-                  <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(cat, 'image', 'Category: ' + cat.name)">
+                  <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openCategoryEditor(cat)" style="background: #2563eb; right: 46px;" title="Edit Category Details">
+                    <i class="fa-solid fa-pen"></i>
+                  </button>
+                  <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(cat, 'image', 'Category: ' + cat.name)" title="Change Image">
                     <i class="fa-solid fa-camera"></i>
                   </button>
                 </div>
@@ -447,15 +463,20 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ===== DESTINATIONS PAGE ======================== -->
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'destinations'">
-        <div class="page-hero" [style.background-image]="'url(' + destHeroImg + ')'">
-          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('destHeroImg', 'Destinations Hero Banner')" title="Change hero image">
-            <i class="fa-solid fa-camera"></i> Change Image
-          </button>
+        <div class="page-hero" [style.background-image]="'url(' + destHeroImg + ')'" style="position: relative;">
+          <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; z-index: 10;">
+            <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('destHeroImg', 'Destinations Hero Banner')" title="Change hero image">
+              <i class="fa-solid fa-camera"></i> Change Image
+            </button>
+            <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openHeroTextEditor('destinations')" style="background: #2563eb;" title="Edit Hero Text">
+              <i class="fa-solid fa-pen"></i> Edit Text
+            </button>
+          </div>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
-            <p class="page-hero-label">EXPLORE THE WORLD</p>
-            <h1 class="page-hero-title">Destinations</h1>
-            <p class="page-hero-sub">Handpicked travel guides from across the globe — volcanic peaks, hidden waterfalls, ancient temples, and seaside villages.</p>
+            <p class="page-hero-label">{{ pageHeroTexts.destinations.label }}</p>
+            <h1 class="page-hero-title">{{ pageHeroTexts.destinations.title }}</h1>
+            <p class="page-hero-sub">{{ pageHeroTexts.destinations.sub }}</p>
           </div>
         </div>
         <main class="page-body">
@@ -525,15 +546,20 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ===== GALLERY PAGE ============================= -->
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'gallery'">
-        <div class="page-hero" [style.background-image]="'url(' + galleryHeroImg + ')'">
-          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('galleryHeroImg', 'Gallery Hero Banner')" title="Change hero image">
-            <i class="fa-solid fa-camera"></i> Change Image
-          </button>
+        <div class="page-hero" [style.background-image]="'url(' + galleryHeroImg + ')'" style="position: relative;">
+          <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; z-index: 10;">
+            <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('galleryHeroImg', 'Gallery Hero Banner')" title="Change hero image">
+              <i class="fa-solid fa-camera"></i> Change Image
+            </button>
+            <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openHeroTextEditor('gallery')" style="background: #2563eb;" title="Edit Hero Text">
+              <i class="fa-solid fa-pen"></i> Edit Text
+            </button>
+          </div>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
-            <p class="page-hero-label">VISUAL STORIES</p>
-            <h1 class="page-hero-title">Photo Gallery</h1>
-            <p class="page-hero-sub">A curated collection of travel photography from around the world — golden hours, ancient temples, and wild landscapes.</p>
+            <p class="page-hero-label">{{ pageHeroTexts.gallery.label }}</p>
+            <h1 class="page-hero-title">{{ pageHeroTexts.gallery.title }}</h1>
+            <p class="page-hero-sub">{{ pageHeroTexts.gallery.sub }}</p>
           </div>
         </div>
         <main class="page-body">
@@ -561,15 +587,20 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ===== ABOUT PAGE =============================== -->
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'about'">
-        <div class="page-hero" [style.background-image]="'url(' + aboutHeroImg + ')'">
-          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('aboutHeroImg', 'About Hero Banner')" title="Change hero image">
-            <i class="fa-solid fa-camera"></i> Change Image
-          </button>
+        <div class="page-hero" [style.background-image]="'url(' + aboutHeroImg + ')'" style="position: relative;">
+          <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; z-index: 10;">
+            <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('aboutHeroImg', 'About Hero Banner')" title="Change hero image">
+              <i class="fa-solid fa-camera"></i> Change Image
+            </button>
+            <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openHeroTextEditor('about')" style="background: #2563eb;" title="Edit Hero Text">
+              <i class="fa-solid fa-pen"></i> Edit Text
+            </button>
+          </div>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
-            <p class="page-hero-label">HELLO THERE</p>
-            <h1 class="page-hero-title">About Me</h1>
-            <p class="page-hero-sub">The story behind Kaizen — the philosophy, the journey, and the human writing these words.</p>
+            <p class="page-hero-label">{{ pageHeroTexts.about.label }}</p>
+            <h1 class="page-hero-title">{{ pageHeroTexts.about.title }}</h1>
+            <p class="page-hero-sub">{{ pageHeroTexts.about.sub }}</p>
           </div>
         </div>
         <main class="page-body">
@@ -597,10 +628,13 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 </div>
               </aside>
               <div class="about-content">
-                <div class="about-section">
-                  <h2>The Kaizen Story</h2>
-                  <p><strong>Kaizen (改善)</strong> is a Japanese word meaning "continuous improvement." This blog was born from a simple belief: that small, deliberate improvements in every aspect of life compound into something extraordinary over time.</p>
-                  <p>I started writing here as a personal journal. It quickly became something more: a documentation of a life lived with curiosity — {{ allDestinations.length }} destinations, countless engineering challenges, thousands of books, and an ongoing experiment in becoming a little better every day.</p>
+                <div class="about-section" style="position: relative;">
+                  <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openAboutStoryEditor()" style="position: absolute; top: 0; right: 0; font-size: 11px; padding: 4px 12px; background: #2563eb; color: #ffffff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer;" title="Edit Story Text">
+                    <i class="fa-solid fa-pen"></i> Edit Story Text
+                  </button>
+                  <h2>{{ aboutTexts.storyTitle }}</h2>
+                  <p>{{ aboutTexts.storyP1 }}</p>
+                  <p>{{ aboutTexts.storyP2 }}</p>
                 </div>
                 <div class="about-section">
                   <h2>What I Write About</h2>
@@ -614,7 +648,10 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 <div class="about-section">
                   <h2>My Journey So Far</h2>
                   <div class="timeline">
-                    <div class="timeline-item" *ngFor="let item of timeline">
+                    <div class="timeline-item" *ngFor="let item of timeline" style="position: relative;">
+                      <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="openTimelineEditor(item)" style="position: absolute; top: 0; right: 0; font-size: 11px; background: #2563eb;" title="Edit Milestone">
+                        <i class="fa-solid fa-pen"></i>
+                      </button>
                       <div class="timeline-year">{{ item.year }}</div>
                       <div class="timeline-body">
                         <h4>{{ item.title }}</h4>
@@ -633,15 +670,20 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ===== CONTACT PAGE ============================= -->
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'contact'">
-        <div class="page-hero" [style.background-image]="'url(' + contactHeroImg + ')'">
-          <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('contactHeroImg', 'Contact Hero Banner')" title="Change hero image">
-            <i class="fa-solid fa-camera"></i>
-          </button>
+        <div class="page-hero" [style.background-image]="'url(' + contactHeroImg + ')'" style="position: relative;">
+          <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; z-index: 10;">
+            <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openImageEditor('contactHeroImg', 'Contact Hero Banner')" title="Change hero image">
+              <i class="fa-solid fa-camera"></i> Change Image
+            </button>
+            <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openHeroTextEditor('contact')" style="background: #2563eb;" title="Edit Hero Text">
+              <i class="fa-solid fa-pen"></i> Edit Text
+            </button>
+          </div>
           <div class="page-hero-overlay"></div>
           <div class="page-hero-content">
-            <p class="page-hero-label">GET IN TOUCH</p>
-            <h1 class="page-hero-title">Contact</h1>
-            <p class="page-hero-sub">Have a question, collaboration idea, or just want to say hello? I'd love to hear from you.</p>
+            <p class="page-hero-label">{{ pageHeroTexts.contact.label }}</p>
+            <h1 class="page-hero-title">{{ pageHeroTexts.contact.title }}</h1>
+            <p class="page-hero-sub">{{ pageHeroTexts.contact.sub }}</p>
           </div>
         </div>
         <main class="page-body">
@@ -978,6 +1020,50 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
             </div>
           </div>
 
+        </div>
+      </div>
+
+      <!-- Universal Quick Text Editor Modal -->
+      <div class="admin-modal-backdrop" *ngIf="showTextEditorModal" (click)="closeTextEditorModal()">
+        <div class="profile-modal-card" (click)="$event.stopPropagation()" style="max-width: 580px;">
+          <button class="admin-modal-close" (click)="closeTextEditorModal()" aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+
+          <div class="profile-modal-header">
+            <div class="profile-modal-icon" style="background: rgba(37, 99, 235, 0.1); color: #2563eb;">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </div>
+            <h2>{{ textEditorModalTitle }}</h2>
+            <p>Update section text, headings, and descriptions live on your website.</p>
+          </div>
+
+          <form (ngSubmit)="saveTextEditor()" class="profile-form">
+            
+            <div class="form-group" *ngIf="textEditorField1Label">
+              <label>{{ textEditorField1Label }}</label>
+              <input type="text" class="profile-input" [(ngModel)]="textEditorField1Value" name="field1" />
+            </div>
+
+            <div class="form-group" *ngIf="textEditorField2Label">
+              <label>{{ textEditorField2Label }}</label>
+              <input type="text" class="profile-input" [(ngModel)]="textEditorField2Value" name="field2" *ngIf="!textEditorIsField2Textarea" />
+              <textarea class="profile-input" style="min-height: 90px; resize: vertical;" [(ngModel)]="textEditorField2Value" name="field2Text" *ngIf="textEditorIsField2Textarea"></textarea>
+            </div>
+
+            <div class="form-group" *ngIf="textEditorField3Label">
+              <label>{{ textEditorField3Label }}</label>
+              <textarea class="profile-input" style="min-height: 110px; resize: vertical;" [(ngModel)]="textEditorField3Value" name="field3Text"></textarea>
+            </div>
+
+            <div class="profile-modal-actions">
+              <button type="button" class="btn-profile-cancel" (click)="closeTextEditorModal()">Cancel</button>
+              <button type="submit" class="btn-profile-save" style="background: #2563eb;">
+                <i class="fa-solid fa-check"></i> Save Text Changes
+              </button>
+            </div>
+
+          </form>
         </div>
       </div>
 
@@ -3272,6 +3358,151 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Universal Text Customization State
+  pageHeroTexts = {
+    blog: { label: 'THE JOURNAL', title: 'Blog', sub: 'Travel stories, personal growth, photography, career musings, and everything in between — all written from direct experience.' },
+    destinations: { label: 'TRAVEL DEEPER', title: 'Destinations', sub: 'A curated index of travel guides, cultural deep-dives, and practical tips across 38+ countries.' },
+    categories: { label: 'EXPLORE BY TOPIC', title: 'Categories', sub: 'Curated collections of articles grouped by core themes — from travel & philosophy to software engineering.' },
+    gallery: { label: 'VISUAL STORIES', title: 'Photo Gallery', sub: 'A curated collection of travel photography from around the world — golden hours, ancient temples, and wild landscapes.' },
+    about: { label: 'HELLO THERE', title: 'About Me', sub: 'The story behind Kaizen — the philosophy, the journey, and the human writing these words.' },
+    contact: { label: 'GET IN TOUCH', title: 'Contact', sub: "Have a question, collaboration idea, or just want to say hello? I'd love to hear from you." }
+  };
+
+  aboutTexts = {
+    storyTitle: 'The Kaizen Story',
+    storyP1: 'Kaizen (改善) is a Japanese word meaning "continuous improvement." This blog was born from a simple belief: that small, deliberate improvements in every aspect of life compound into something extraordinary over time.',
+    storyP2: 'I started writing here as a personal journal. It quickly became something more: a documentation of a life lived with curiosity — destinations, countless engineering challenges, thousands of books, and an ongoing experiment in becoming a little better every day.'
+  };
+
+  contactTexts = {
+    title: "Let's Connect",
+    desc: "Whether you're a fellow traveler, a reader, a brand, or someone who just stumbled here — welcome. My inbox is always open."
+  };
+
+  homeTexts = {
+    teaserEyebrow: 'TRAVEL DEEPER',
+    teaserTitle: 'Destinations. Countless Stories.',
+    teaserDesc: 'From the ancient temples of Kyoto and the blue domes of Santorini to the wild plains of the Serengeti — every destination has left its mark. Browse the full collection of travel guides, hidden gems, and practical tips.'
+  };
+
+  // Quick Text Editor Modal State
+  showTextEditorModal = false;
+  textEditorModalTitle = '';
+  textEditorTargetType = '';
+  textEditorTargetItem: any = null;
+  textEditorField1Label = '';
+  textEditorField1Value = '';
+  textEditorField2Label = '';
+  textEditorField2Value = '';
+  textEditorIsField2Textarea = false;
+  textEditorField3Label = '';
+  textEditorField3Value = '';
+
+  openHeroTextEditor(heroKey: string) {
+    const hero = (this.pageHeroTexts as any)[heroKey];
+    if (!hero) return;
+    this.textEditorTargetType = 'hero:' + heroKey;
+    this.textEditorModalTitle = 'Edit ' + heroKey.toUpperCase() + ' Hero Banner Text';
+    this.textEditorField1Label = 'EYEBROW LABEL';
+    this.textEditorField1Value = hero.label;
+    this.textEditorField2Label = 'MAIN TITLE';
+    this.textEditorField2Value = hero.title;
+    this.textEditorIsField2Textarea = false;
+    this.textEditorField3Label = 'SUBTITLE / DESCRIPTION';
+    this.textEditorField3Value = hero.sub;
+    this.showTextEditorModal = true;
+  }
+
+  openAboutStoryEditor() {
+    this.textEditorTargetType = 'aboutStory';
+    this.textEditorModalTitle = 'Edit About Story Content';
+    this.textEditorField1Label = 'STORY SECTION TITLE';
+    this.textEditorField1Value = this.aboutTexts.storyTitle;
+    this.textEditorField2Label = 'PARAGRAPH 1';
+    this.textEditorField2Value = this.aboutTexts.storyP1;
+    this.textEditorIsField2Textarea = true;
+    this.textEditorField3Label = 'PARAGRAPH 2';
+    this.textEditorField3Value = this.aboutTexts.storyP2;
+    this.showTextEditorModal = true;
+  }
+
+  openTimelineEditor(item: any) {
+    this.textEditorTargetType = 'timeline';
+    this.textEditorTargetItem = item;
+    this.textEditorModalTitle = 'Edit Timeline Milestone: ' + item.year;
+    this.textEditorField1Label = 'YEAR';
+    this.textEditorField1Value = item.year;
+    this.textEditorField2Label = 'MILESTONE TITLE';
+    this.textEditorField2Value = item.title;
+    this.textEditorIsField2Textarea = false;
+    this.textEditorField3Label = 'MILESTONE DESCRIPTION';
+    this.textEditorField3Value = item.desc;
+    this.showTextEditorModal = true;
+  }
+
+  openHomeTeaserEditor() {
+    this.textEditorTargetType = 'homeTeaser';
+    this.textEditorModalTitle = 'Edit Home Destination Teaser Text';
+    this.textEditorField1Label = 'EYEBROW LABEL';
+    this.textEditorField1Value = this.homeTexts.teaserEyebrow;
+    this.textEditorField2Label = 'TEASER TITLE';
+    this.textEditorField2Value = this.homeTexts.teaserTitle;
+    this.textEditorIsField2Textarea = false;
+    this.textEditorField3Label = 'TEASER DESCRIPTION';
+    this.textEditorField3Value = this.homeTexts.teaserDesc;
+    this.showTextEditorModal = true;
+  }
+
+  openCategoryEditor(cat: any) {
+    this.textEditorTargetType = 'category';
+    this.textEditorTargetItem = cat;
+    this.textEditorModalTitle = 'Edit Category Hub: ' + cat.name;
+    this.textEditorField1Label = 'CATEGORY NAME';
+    this.textEditorField1Value = cat.name;
+    this.textEditorField2Label = 'CATEGORY DESCRIPTION';
+    this.textEditorField2Value = cat.desc;
+    this.textEditorIsField2Textarea = true;
+    this.textEditorField3Label = '';
+    this.textEditorField3Value = '';
+    this.showTextEditorModal = true;
+  }
+
+  closeTextEditorModal() {
+    this.showTextEditorModal = false;
+  }
+
+  saveTextEditor() {
+    if (this.textEditorTargetType.startsWith('hero:')) {
+      const key = this.textEditorTargetType.split(':')[1];
+      if ((this.pageHeroTexts as any)[key]) {
+        (this.pageHeroTexts as any)[key] = {
+          label: this.textEditorField1Value,
+          title: this.textEditorField2Value,
+          sub: this.textEditorField3Value
+        };
+      }
+    } else if (this.textEditorTargetType === 'aboutStory') {
+      this.aboutTexts.storyTitle = this.textEditorField1Value;
+      this.aboutTexts.storyP1 = this.textEditorField2Value;
+      this.aboutTexts.storyP2 = this.textEditorField3Value;
+    } else if (this.textEditorTargetType === 'timeline' && this.textEditorTargetItem) {
+      this.textEditorTargetItem.year = this.textEditorField1Value;
+      this.textEditorTargetItem.title = this.textEditorField2Value;
+      this.textEditorTargetItem.desc = this.textEditorField3Value;
+    } else if (this.textEditorTargetType === 'category' && this.textEditorTargetItem) {
+      this.textEditorTargetItem.name = this.textEditorField1Value;
+      this.textEditorTargetItem.desc = this.textEditorField2Value;
+    } else if (this.textEditorTargetType === 'homeTeaser') {
+      this.homeTexts.teaserEyebrow = this.textEditorField1Value;
+      this.homeTexts.teaserTitle = this.textEditorField2Value;
+      this.homeTexts.teaserDesc = this.textEditorField3Value;
+    }
+
+    this.saveSiteSettings();
+    this.showTextEditorModal = false;
+    this.showToast('Text content saved successfully!');
+  }
+
   saveSiteSettings() {
     if (typeof localStorage === 'undefined') return;
     try {
@@ -3296,7 +3527,12 @@ export class AppComponent implements OnInit, OnDestroy {
         instagramUrl: this.instagramUrl,
         twitterUrl: this.twitterUrl,
         youtubeUrl: this.youtubeUrl,
-        githubUrl: this.githubUrl
+        githubUrl: this.githubUrl,
+        pageHeroTexts: this.pageHeroTexts,
+        aboutTexts: this.aboutTexts,
+        contactTexts: this.contactTexts,
+        homeTexts: this.homeTexts,
+        timeline: this.timeline
       };
       localStorage.setItem('kaizen_site_settings', JSON.stringify(settings));
       this.articleService.syncToCloud(this.articles, settings);
@@ -3332,6 +3568,11 @@ export class AppComponent implements OnInit, OnDestroy {
         if (parsed.twitterUrl !== undefined) this.twitterUrl = parsed.twitterUrl;
         if (parsed.youtubeUrl !== undefined) this.youtubeUrl = parsed.youtubeUrl;
         if (parsed.githubUrl !== undefined) this.githubUrl = parsed.githubUrl;
+        if (parsed.pageHeroTexts) this.pageHeroTexts = parsed.pageHeroTexts;
+        if (parsed.aboutTexts) this.aboutTexts = parsed.aboutTexts;
+        if (parsed.contactTexts) this.contactTexts = parsed.contactTexts;
+        if (parsed.homeTexts) this.homeTexts = parsed.homeTexts;
+        if (parsed.timeline && parsed.timeline.length) this.timeline = parsed.timeline;
       }
     } catch (e) {}
   }
