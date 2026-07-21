@@ -26,7 +26,7 @@ import { ArticleService } from '../../services/article.service';
               <a href="#" class="nav-link" [class.active]="activePage==='blog'" (click)="navigate('blog', $event)">BLOG</a>
             </li>
 
-            <!-- DESTINATIONS 2-Level Megamenu (Matching Image 1 & Image 2) -->
+            <!-- DESTINATIONS 2-Level Megamenu (Ultra-Clean, Emojis Removed, Dynamic Only) -->
             <li class="nav-item has-dropdown" (mouseenter)="openMenu('dest')" (mouseleave)="closeMenu()">
               <a href="#" class="nav-link" [class.active]="activePage==='destinations'" (click)="navigate('destinations', $event)">
                 DESTINATIONS <span class="caret">›</span>
@@ -42,37 +42,44 @@ import { ArticleService } from '../../services/article.service';
                     </a>
                     <div class="dest-divider"></div>
                     <ul class="dest-continent-list">
-                      <li *ngFor="let item of destinationsData"
-                          [class.active]="hoveredContinent === item.continent"
-                          (mouseenter)="hoveredContinent = item.continent">
-                        <a href="#" (click)="navigateDest(item.continent, $event)">
-                          <span class="continent-name">
-                            <span class="continent-icon">{{ item.icon }}</span> {{ item.continent | uppercase }}
-                          </span>
+                      <li *ngFor="let c of continents"
+                          [class.active]="hoveredContinent === c"
+                          (mouseenter)="hoveredContinent = c">
+                        <a href="#" (click)="navigateDest(c, $event)">
+                          <span class="continent-name">{{ c | uppercase }}</span>
                           <span class="mega-arrow">›</span>
                         </a>
                       </li>
                     </ul>
                   </div>
 
-                  <!-- Right Column: Subcategory Countries List for Hovered Continent -->
-                  <div class="dest-countries-col" *ngIf="activeContinentData">
+                  <!-- Right Column: Subcategory Countries List (ONLY Published Countries) -->
+                  <div class="dest-countries-col">
                     <div class="dest-countries-header">
-                      <span class="countries-header-title">
-                        {{ activeContinentData.icon }} {{ activeContinentData.continent | uppercase }} DESTINATIONS
+                      <span class="countries-header-title">{{ hoveredContinent | uppercase }} DESTINATIONS</span>
+                      <span class="count-badge" *ngIf="activeContinentCountries.length > 0">
+                        {{ activeContinentCountries.length }} {{ activeContinentCountries.length === 1 ? 'Country' : 'Countries' }}
                       </span>
-                      <span class="count-badge">{{ activeContinentData.countries.length }} Countries</span>
                     </div>
                     <div class="dest-countries-divider"></div>
                     
-                    <ul class="dest-countries-list">
-                      <li *ngFor="let c of activeContinentData.countries">
-                        <a href="#" (click)="navigateCountry(activeContinentData.continent, c.tag, $event)">
+                    <!-- Published Countries with written guides -->
+                    <ul class="dest-countries-list" *ngIf="activeContinentCountries.length > 0">
+                      <li *ngFor="let c of activeContinentCountries">
+                        <a href="#" (click)="navigateCountry(hoveredContinent, c.tag, $event)">
                           <span class="country-item-name">{{ c.name | uppercase }}</span>
                           <span class="country-arrow">&rarr;</span>
                         </a>
                       </li>
                     </ul>
+
+                    <!-- Empty State (Shown when no articles exist yet for this region) -->
+                    <div class="no-countries-box" *ngIf="activeContinentCountries.length === 0">
+                      <i class="fa-solid fa-compass"></i>
+                      <p class="no-countries-title">No Guides Published Yet</p>
+                      <p class="no-countries-sub">New destination guides will automatically appear here once published by authors.</p>
+                    </div>
+
                   </div>
 
                 </div>
@@ -700,6 +707,30 @@ import { ArticleService } from '../../services/article.service';
       transform: translateX(3px);
     }
 
+    .no-countries-box {
+      padding: 35px 15px;
+      text-align: center;
+      color: #666666;
+    }
+    .no-countries-box i {
+      font-size: 22px;
+      color: #444444;
+      margin-bottom: 8px;
+    }
+    .no-countries-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #888888;
+      margin: 0 0 4px;
+      letter-spacing: 0.05em;
+    }
+    .no-countries-sub {
+      font-size: 11px;
+      color: #555555;
+      margin: 0;
+      line-height: 1.4;
+    }
+
     .admin-logout-btn {
       background: rgba(255,255,255,0.1);
       color: #aaa;
@@ -726,86 +757,73 @@ export class HeaderComponent implements OnInit {
   isAdmin = false;
   isDarkMode = false;
 
-  destinationsData: { continent: string; icon: string; countries: { name: string; tag: string }[] }[] = [
-    {
-      continent: 'Africa',
-      icon: '🌍',
-      countries: [
-        { name: 'Egypt', tag: 'Egypt' },
-        { name: 'Morocco', tag: 'Morocco' },
-        { name: 'Tanzania', tag: 'Tanzania' },
-        { name: 'South Africa', tag: 'South Africa' },
-        { name: 'Kenya', tag: 'Kenya' }
-      ]
-    },
-    {
-      continent: 'Americas',
-      icon: '🌎',
-      countries: [
-        { name: 'Argentina', tag: 'Argentina' },
-        { name: 'Peru', tag: 'Peru' },
-        { name: 'United States', tag: 'United States' },
-        { name: 'Mexico', tag: 'Mexico' },
-        { name: 'Brazil', tag: 'Brazil' }
-      ]
-    },
-    {
-      continent: 'Asia',
-      icon: '🌏',
-      countries: [
-        { name: 'Indonesia (Bali)', tag: 'Indonesia' },
-        { name: 'Japan (Kyoto)', tag: 'Japan' },
-        { name: 'Thailand (Chiang Mai)', tag: 'Thailand' },
-        { name: 'Vietnam', tag: 'Vietnam' },
-        { name: 'Singapore', tag: 'Singapore' },
-        { name: 'South Korea', tag: 'South Korea' }
-      ]
-    },
-    {
-      continent: 'Caribbean',
-      icon: '🏝️',
-      countries: [
-        { name: 'Bahamas', tag: 'Bahamas' },
-        { name: 'Jamaica', tag: 'Jamaica' },
-        { name: 'Dominican Republic', tag: 'Dominican Republic' }
-      ]
-    },
-    {
-      continent: 'Europe',
-      icon: '🏛️',
-      countries: [
-        { name: 'Greece (Santorini)', tag: 'Greece' },
-        { name: 'Italy (Amalfi)', tag: 'Italy' },
-        { name: 'Iceland (Highlands)', tag: 'Iceland' },
-        { name: 'France', tag: 'France' },
-        { name: 'Spain', tag: 'Spain' },
-        { name: 'Switzerland', tag: 'Switzerland' }
-      ]
-    },
-    {
-      continent: 'Middle East',
-      icon: '🕌',
-      countries: [
-        { name: 'UAE (Dubai)', tag: 'UAE (Dubai)' },
-        { name: 'Turkey', tag: 'Turkey' },
-        { name: 'Jordan', tag: 'Jordan' }
-      ]
-    },
-    {
-      continent: 'Oceania',
-      icon: '🦘',
-      countries: [
-        { name: 'Australia', tag: 'Australia' },
-        { name: 'New Zealand', tag: 'New Zealand' },
-        { name: 'Fiji', tag: 'Fiji' }
-      ]
-    }
-  ];
-
+  continents = ['Africa', 'Americas', 'Asia', 'Caribbean', 'Europe', 'Middle East', 'Oceania'];
   hoveredContinent: string = 'Asia';
 
-  get activeContinentData() {
-    return this.destinationsData.find(d => d.continent === this.hoveredContinent) || this.destinationsData[2];
+  getContinentCountries(continent: string): { name: string; tag: string }[] {
+    const allArticles = this.articleService.getPersistedArticles('', '');
+    const continentLower = continent.toLowerCase();
+
+    const travelCats = ['travel & places', 'travel & adventure', 'travel'];
+    const matchingArticles = allArticles.filter(a => {
+      const isTravel = travelCats.some(tc => a.category.toLowerCase().includes(tc)) || 
+                       (a.tags && a.tags.toLowerCase().includes('travel'));
+      if (!isTravel) return false;
+
+      const text = (a.title + ' ' + a.excerpt + ' ' + a.tags + ' ' + a.content + ' ' + (a.country || '')).toLowerCase();
+
+      if (continentLower === 'asia') {
+        return text.includes('asia') || text.includes('bali') || text.includes('indonesia') || text.includes('kyoto') || text.includes('japan') || text.includes('thailand') || text.includes('chiang mai') || text.includes('vietnam') || text.includes('singapore') || text.includes('korea');
+      }
+      if (continentLower === 'europe') {
+        return text.includes('europe') || text.includes('greece') || text.includes('santorini') || text.includes('italy') || text.includes('amalfi') || text.includes('iceland') || text.includes('france') || text.includes('spain') || text.includes('switzerland');
+      }
+      if (continentLower === 'americas') {
+        return text.includes('americas') || text.includes('argentina') || text.includes('patagonia') || text.includes('peru') || text.includes('machu picchu') || text.includes('united states') || text.includes('mexico') || text.includes('brazil');
+      }
+      if (continentLower === 'africa') {
+        return text.includes('africa') || text.includes('tanzania') || text.includes('serengeti') || text.includes('egypt') || text.includes('morocco') || text.includes('south africa') || text.includes('kenya');
+      }
+      if (continentLower === 'caribbean') {
+        return text.includes('caribbean') || text.includes('bahamas') || text.includes('jamaica');
+      }
+      if (continentLower === 'middle east') {
+        return text.includes('middle east') || text.includes('dubai') || text.includes('uae') || text.includes('turkey') || text.includes('jordan');
+      }
+      if (continentLower === 'oceania') {
+        return text.includes('oceania') || text.includes('australia') || text.includes('new zealand') || text.includes('fiji');
+      }
+      return text.includes(continentLower);
+    });
+
+    const countryMap = new Map<string, string>();
+    matchingArticles.forEach(a => {
+      let countryName = '';
+      if (a.country && a.country.trim()) {
+        countryName = a.country.trim();
+      } else {
+        const text = (a.title + ' ' + a.tags).toLowerCase();
+        if (text.includes('indonesia') || text.includes('bali')) countryName = 'Indonesia';
+        else if (text.includes('japan') || text.includes('kyoto')) countryName = 'Japan';
+        else if (text.includes('thailand') || text.includes('chiang mai')) countryName = 'Thailand';
+        else if (text.includes('greece') || text.includes('santorini')) countryName = 'Greece';
+        else if (text.includes('italy') || text.includes('amalfi')) countryName = 'Italy';
+        else if (text.includes('iceland')) countryName = 'Iceland';
+        else if (text.includes('argentina') || text.includes('patagonia')) countryName = 'Argentina';
+        else if (text.includes('peru') || text.includes('machu picchu')) countryName = 'Peru';
+        else if (text.includes('tanzania') || text.includes('serengeti')) countryName = 'Tanzania';
+      }
+
+      if (countryName && !countryMap.has(countryName.toLowerCase())) {
+        countryMap.set(countryName.toLowerCase(), countryName);
+      }
+    });
+
+    return Array.from(countryMap.values()).map(c => ({ name: c, tag: c }));
+  }
+
+  get activeContinentCountries() {
+    return this.getContinentCountries(this.hoveredContinent);
   }
 
   navCategories = [
