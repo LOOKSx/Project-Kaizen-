@@ -16,11 +16,6 @@ import { ArticleService } from '../../services/article.service';
       </button>
 
       <div class="reader-modal-card" (click)="$event.stopPropagation()">
-        <!-- Close Button -->
-        <button class="close-btn" (click)="onClose.emit()">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-
         <!-- Admin Bar inside Reader -->
         <div class="admin-reader-bar" *ngIf="isAdmin">
           <span class="arb-badge"><i class="fa-solid fa-user-shield"></i> Stealth Admin</span>
@@ -307,33 +302,6 @@ import { ArticleService } from '../../services/article.service';
     @keyframes modalSlideUp {
       from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
-    }
-    .close-btn {
-      position: sticky;
-      top: 14px;
-      float: right;
-      margin-right: 14px;
-      margin-top: 14px;
-      margin-bottom: -50px;
-      z-index: 1000;
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background-color: #111111;
-      color: #ffffff;
-      border: 2px solid #ffffff;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .close-btn:hover {
-      background-color: #e8472a;
-      border-color: #e8472a;
-      transform: scale(1.1);
     }
 
     .reader-bottom-exit-wrap {
@@ -792,22 +760,6 @@ import { ArticleService } from '../../services/article.service';
       .reader-header-content { padding: 18px 16px; }
       .reader-title { font-size: 20px; line-height: 1.35; }
       .reader-body { padding: 18px 16px; }
-      .close-btn {
-        position: sticky;
-        top: 10px;
-        float: right;
-        margin-right: 10px;
-        margin-top: 10px;
-        margin-bottom: -50px;
-        z-index: 1000;
-        width: 42px;
-        height: 42px;
-        font-size: 20px;
-        background: #111111;
-        color: #ffffff;
-        border: 2px solid #ffffff;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.5);
-      }
     }
   `]
 })
