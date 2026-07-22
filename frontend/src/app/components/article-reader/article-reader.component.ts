@@ -254,9 +254,12 @@ import { ArticleService } from '../../services/article.service';
       color: #333333;
       width: 100%;
       max-width: 850px;
-      border-radius: 4px;
-      overflow: hidden;
+      max-height: 90vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 8px;
       position: relative;
+      margin: auto;
       box-shadow: 0 15px 50px rgba(0,0,0,0.3);
       animation: modalSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
@@ -693,12 +696,18 @@ import { ArticleService } from '../../services/article.service';
 
     @media (max-width: 600px) {
       .reader-modal-backdrop { padding: 10px 6px; }
-      .reader-modal-card { width: 100vw; max-height: 94vh; border-radius: 8px; }
-      .reader-hero { min-height: 260px; }
+      .reader-modal-card {
+        width: 96vw;
+        max-height: 92vh;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        border-radius: 8px;
+      }
+      .reader-hero { min-height: 240px; }
       .reader-header-content { padding: 18px 16px; }
-      .reader-title { font-size: 22px; }
+      .reader-title { font-size: 20px; line-height: 1.35; }
       .reader-body { padding: 18px 16px; }
-      .close-btn { top: 12px; right: 12px; width: 34px; height: 34px; font-size: 14px; }
+      .close-btn { top: 12px; right: 12px; width: 36px; height: 36px; font-size: 16px; z-index: 20; background: rgba(0,0,0,0.7); }
     }
   `]
 })

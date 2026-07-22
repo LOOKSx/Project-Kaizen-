@@ -2371,7 +2371,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       .hero-btns { flex-direction: column; align-items: stretch; width: 100%; }
       .hero-btn-primary, .hero-btn-secondary { width: 100%; box-sizing: border-box; text-align: center; justify-content: center; }
       .intro-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-      .profile-modal-card, .img-editor-card, .admin-modal-card { width: 94vw; padding: 20px 14px; max-height: 86vh; box-sizing: border-box; }
+      .profile-modal-card, .img-editor-card, .admin-modal-card, .quick-text-editor-modal { width: 95vw; padding: 20px 14px; max-height: 90vh; overflow-y: auto !important; -webkit-overflow-scrolling: touch !important; box-sizing: border-box; }
       .profile-input, .img-editor-url-input { font-size: 15px; }
       .dest-filter-bar, .country-subfilter-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; scrollbar-width: none; flex-wrap: nowrap !important; }
       .dest-filter-bar::-webkit-scrollbar, .country-subfilter-bar::-webkit-scrollbar { display: none; }

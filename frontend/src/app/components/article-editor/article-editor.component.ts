@@ -602,7 +602,15 @@ import { Article } from '../../models/article.model';
     .btn-publish:disabled { opacity: 0.35; cursor: not-allowed; }
 
     @media (max-width: 600px) {
-      .editor-modal-card { padding: 28px 20px 22px; }
+      .editor-modal-backdrop { padding: 10px 6px; }
+      .editor-modal-card {
+        padding: 24px 16px 20px;
+        width: 96vw;
+        max-height: 92vh;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        box-sizing: border-border;
+      }
       .form-row { flex-direction: column; }
     }
 
