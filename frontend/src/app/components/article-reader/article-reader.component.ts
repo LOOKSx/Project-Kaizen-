@@ -10,6 +10,11 @@ import { ArticleService } from '../../services/article.service';
   imports: [CommonModule, FormsModule],
   template: `
     <div class="reader-modal-backdrop" *ngIf="article" (click)="onClose.emit()">
+      <!-- Fixed Floating Close Button: ALWAYS Visible at top-right of viewport, 100% unscrollable -->
+      <button class="fixed-screen-close-btn" (click)="onClose.emit(); $event.stopPropagation()" aria-label="Close Article">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
       <div class="reader-modal-card" (click)="$event.stopPropagation()">
         <!-- Close Button -->
         <button class="close-btn" (click)="onClose.emit()">
@@ -165,6 +170,35 @@ import { ArticleService } from '../../services/article.service';
     </div>
   `,
   styles: [`
+    .fixed-screen-close-btn {
+      position: fixed;
+      top: 72px;
+      right: 18px;
+      z-index: 20000;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background-color: #e8472a;
+      color: #ffffff;
+      border: 2px solid #ffffff;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: popIn 0.3s ease;
+    }
+    .fixed-screen-close-btn:hover {
+      background-color: #111111;
+      transform: scale(1.12);
+    }
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
     .reader-modal-backdrop {
       position: fixed;
       top: 0;
@@ -735,6 +769,17 @@ import { ArticleService } from '../../services/article.service';
     .btn-delete-comment:hover { background: #e8472a; color: #fff; }
 
     @media (max-width: 600px) {
+      .fixed-screen-close-btn {
+        top: 68px;
+        right: 12px;
+        width: 46px;
+        height: 46px;
+        font-size: 24px;
+        background-color: #e8472a;
+        color: #ffffff;
+        border: 2.5px solid #ffffff;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.65);
+      }
       .reader-modal-backdrop { padding: 10px 6px; }
       .reader-modal-card {
         width: 96vw;
