@@ -465,8 +465,7 @@ import { ArticleService } from '../../services/article.service';
       display: flex;
       flex-direction: column;
       gap: 2px;
-      max-height: 320px;
-      overflow-y: auto;
+      overflow-y: visible;
     }
     .cat-mega-list li a {
       display: flex;
