@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://project-kaizen-nine.vercel.app/sitemap.xml
+Sitemap: https://kaizen.vercel.app/sitemap.xml
