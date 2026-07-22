@@ -153,6 +153,13 @@ import { ArticleService } from '../../services/article.service';
               </button>
             </form>
           </div>
+
+          <!-- Bottom Exit Button -->
+          <div class="reader-bottom-exit-wrap">
+            <button class="btn-bottom-exit" (click)="onClose.emit()">
+              <i class="fa-solid fa-xmark"></i> Close Article & Return
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -268,24 +275,57 @@ import { ArticleService } from '../../services/article.service';
       to { opacity: 1; transform: translateY(0); }
     }
     .close-btn {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 10;
-      width: 36px;
-      height: 36px;
+      position: sticky;
+      top: 14px;
+      float: right;
+      margin-right: 14px;
+      margin-top: 14px;
+      margin-bottom: -50px;
+      z-index: 1000;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
-      background-color: rgba(0,0,0,0.6);
+      background-color: #111111;
       color: #ffffff;
+      border: 2px solid #ffffff;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
-      transition: all 0.2s ease;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .close-btn:hover {
       background-color: #e8472a;
-      transform: scale(1.05);
+      border-color: #e8472a;
+      transform: scale(1.1);
+    }
+
+    .reader-bottom-exit-wrap {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid #e8e8e8;
+      text-align: center;
+    }
+    .btn-bottom-exit {
+      background: #111111;
+      color: #ffffff;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      transition: all 0.2s;
+    }
+    .btn-bottom-exit:hover {
+      background: #e8472a;
+      transform: translateY(-2px);
     }
     .reader-hero {
       position: relative;
@@ -707,7 +747,22 @@ import { ArticleService } from '../../services/article.service';
       .reader-header-content { padding: 18px 16px; }
       .reader-title { font-size: 20px; line-height: 1.35; }
       .reader-body { padding: 18px 16px; }
-      .close-btn { top: 12px; right: 12px; width: 36px; height: 36px; font-size: 16px; z-index: 20; background: rgba(0,0,0,0.7); }
+      .close-btn {
+        position: sticky;
+        top: 10px;
+        float: right;
+        margin-right: 10px;
+        margin-top: 10px;
+        margin-bottom: -50px;
+        z-index: 1000;
+        width: 42px;
+        height: 42px;
+        font-size: 20px;
+        background: #111111;
+        color: #ffffff;
+        border: 2px solid #ffffff;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+      }
     }
   `]
 })
