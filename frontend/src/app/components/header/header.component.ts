@@ -47,11 +47,12 @@ import { ArticleService } from '../../services/article.service';
             <!-- DESTINATIONS -->
             <li class="nav-item has-dropdown" [class.mobile-expanded]="mobileDestOpen" (mouseenter)="openMenu('dest')" (mouseleave)="closeMenu()">
               <div class="nav-link-row">
-                <a href="#" class="nav-link" [class.active]="activePage==='destinations'" (click)="navigate('destinations', $event)">DESTINATIONS</a>
+                <a href="#" class="nav-link" [class.active]="activePage==='destinations'" (click)="navigate('destinations', $event)">
+                  DESTINATIONS <span class="caret desktop-only">›</span>
+                </a>
                 <button class="mobile-arrow-btn" (click)="toggleMobileSubmenu('dest', $event)" aria-label="Toggle Destinations Menu">
                   <i class="fa-solid" [class.fa-chevron-down]="!mobileDestOpen" [class.fa-chevron-up]="mobileDestOpen"></i>
                 </button>
-                <span class="caret desktop-only">›</span>
               </div>
 
               <!-- Desktop Megamenu -->
@@ -130,11 +131,12 @@ import { ArticleService } from '../../services/article.service';
             <!-- CATEGORIES -->
             <li class="nav-item has-dropdown" [class.mobile-expanded]="mobileCatOpen" (mouseenter)="openMenu('cat')" (mouseleave)="closeMenu()">
               <div class="nav-link-row">
-                <a href="#" class="nav-link" [class.active]="activePage==='categories'" (click)="navigate('categories', $event)">CATEGORIES</a>
+                <a href="#" class="nav-link" [class.active]="activePage==='categories'" (click)="navigate('categories', $event)">
+                  CATEGORIES <span class="caret desktop-only">›</span>
+                </a>
                 <button class="mobile-arrow-btn" (click)="toggleMobileSubmenu('cat', $event)" aria-label="Toggle Categories Menu">
                   <i class="fa-solid" [class.fa-chevron-down]="!mobileCatOpen" [class.fa-chevron-up]="mobileCatOpen"></i>
                 </button>
-                <span class="caret desktop-only">›</span>
               </div>
 
               <!-- Desktop Megamenu -->
@@ -325,6 +327,11 @@ import { ArticleService } from '../../services/article.service';
       gap: 0;
     }
     .nav-item { position: relative; }
+    .nav-link-row {
+      display: flex;
+      align-items: center;
+      height: 62px;
+    }
     .nav-link {
       display: flex;
       align-items: center;
