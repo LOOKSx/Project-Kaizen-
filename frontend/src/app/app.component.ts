@@ -88,12 +88,16 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
         <section class="home-intro">
           <div class="container">
             <div class="intro-layout">
-              <div class="intro-text" style="position: relative;">
-                <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openAboutStoryEditor()" style="position: absolute; top: 0; right: 0; font-size: 11px; padding: 4px 12px; background: #2563eb; color: #ffffff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer;" title="Edit Story Text">
-                  <i class="fa-solid fa-pen"></i> Edit Story Text
-                </button>
-                <p class="intro-eyebrow">WELCOME TO KAIZEN</p>
-                <h2 class="intro-heading">{{ aboutTexts.storyTitle }}</h2>
+              <div class="intro-text">
+                <div class="section-title-wrap">
+                  <div>
+                    <p class="intro-eyebrow">WELCOME TO KAIZEN</p>
+                    <h2 class="intro-heading" style="margin: 0;">{{ aboutTexts.storyTitle }}</h2>
+                  </div>
+                  <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openAboutStoryEditor()" style="font-size: 11px; padding: 5px 12px; background: #2563eb; color: #ffffff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;" title="Edit Story Text">
+                    <i class="fa-solid fa-pen"></i> Edit Story Text
+                  </button>
+                </div>
                 <p class="intro-body">
                   {{ aboutTexts.storyP1 }}
                 </p>
@@ -109,12 +113,16 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
               </div>
               <div class="intro-author">
                 <img [src]="authorAvatar" [alt]="authorName" class="intro-author-img" />
-                <div class="intro-author-card" style="position: relative;">
-                  <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openProfileSettingsModal()" style="position: absolute; top: 10px; right: 10px; font-size: 10px; padding: 4px 8px; background: #2563eb; color: #ffffff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; z-index: 10;" title="Edit Profile &amp; Links">
-                    <i class="fa-solid fa-user-gear"></i> Edit
-                  </button>
-                  <h3>{{ authorName }}</h3>
-                  <p>{{ authorTitle }}</p>
+                <div class="intro-author-card">
+                  <div class="section-title-wrap" style="margin-bottom: 8px;">
+                    <div>
+                      <h3 style="margin: 0;">{{ authorName }}</h3>
+                      <p style="margin: 4px 0 0; font-size: 13px; color: #777;">{{ authorTitle }}</p>
+                    </div>
+                    <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openProfileSettingsModal()" style="font-size: 10px; padding: 4px 10px; background: #2563eb; color: #ffffff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;" title="Edit Profile &amp; Links">
+                      <i class="fa-solid fa-user-gear"></i> Edit
+                    </button>
+                  </div>
                   <button class="intro-link" (click)="navTo('about')">Read Full Story →</button>
                 </div>
               </div>
@@ -364,12 +372,14 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 <div class="cat-full-img-wrap">
                   <img [src]="cat.image" [alt]="cat.name" class="cat-full-img" loading="lazy" />
                   <div class="cat-full-badge">{{ cat.name }}</div>
-                  <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openCategoryEditor(cat)" style="background: #2563eb; right: 46px;" title="Edit Category Details">
-                    <i class="fa-solid fa-pen"></i>
-                  </button>
-                  <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(cat, 'image', 'Category: ' + cat.name)" title="Change Image">
-                    <i class="fa-solid fa-camera"></i>
-                  </button>
+                  <div class="cat-card-admin-actions" *ngIf="isAdmin" (click)="$event.stopPropagation()">
+                    <button class="cat-edit-img-btn edit-text" (click)="openCategoryEditor(cat)" title="Edit Category Details">
+                      <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button class="cat-edit-img-btn edit-img" (click)="openImageEditorItem(cat, 'image', 'Category: ' + cat.name)" title="Change Image">
+                      <i class="fa-solid fa-camera"></i>
+                    </button>
+                  </div>
                 </div>
                 <div class="cat-full-body">
                   <h3>{{ cat.name }}</h3>
@@ -610,10 +620,12 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
           <div class="container">
             <div class="about-layout">
               <aside class="about-sidebar">
-                <div class="author-card" style="position: relative;">
-                  <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openProfileSettingsModal()" style="position: absolute; top: 12px; right: 12px; font-size: 11px; padding: 4px 10px;" title="Edit Profile &amp; Links">
-                    <i class="fa-solid fa-user-gear"></i> Edit Profile
-                  </button>
+                <div class="author-card">
+                  <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;" *ngIf="isAdmin">
+                    <button class="hero-edit-img-btn" (click)="openProfileSettingsModal()" style="font-size: 11px; padding: 5px 12px; background: #2563eb; color: #fff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer;" title="Edit Profile &amp; Links">
+                      <i class="fa-solid fa-user-gear"></i> Edit Profile
+                    </button>
+                  </div>
                   <img [src]="authorAvatar" [alt]="authorName" class="author-avatar-lg" />
                   <h2 class="author-name">{{ authorName }}</h2>
                   <p class="author-title">{{ authorTitle }}</p>
@@ -631,11 +643,13 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 </div>
               </aside>
               <div class="about-content">
-                <div class="about-section" style="position: relative;">
-                  <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openAboutStoryEditor()" style="position: absolute; top: 0; right: 0; font-size: 11px; padding: 4px 12px; background: #2563eb; color: #ffffff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer;" title="Edit Story Text">
-                    <i class="fa-solid fa-pen"></i> Edit Story Text
-                  </button>
-                  <h2>{{ aboutTexts.storyTitle }}</h2>
+                <div class="about-section">
+                  <div class="section-title-wrap">
+                    <h2 style="margin: 0; border: none; padding-bottom: 0;">{{ aboutTexts.storyTitle }}</h2>
+                    <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openAboutStoryEditor()" style="font-size: 11px; padding: 5px 12px; background: #2563eb; color: #ffffff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer;" title="Edit Story Text">
+                      <i class="fa-solid fa-pen"></i> Edit Story Text
+                    </button>
+                  </div>
                   <p>{{ aboutTexts.storyP1 }}</p>
                   <p>{{ aboutTexts.storyP2 }}</p>
                 </div>
@@ -651,14 +665,16 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 <div class="about-section">
                   <h2>My Journey So Far</h2>
                   <div class="timeline">
-                    <div class="timeline-item" *ngFor="let item of timeline" style="position: relative;">
-                      <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="openTimelineEditor(item)" style="position: absolute; top: 0; right: 0; font-size: 11px; background: #2563eb;" title="Edit Milestone">
-                        <i class="fa-solid fa-pen"></i>
-                      </button>
+                    <div class="timeline-item" *ngFor="let item of timeline">
                       <div class="timeline-year">{{ item.year }}</div>
-                      <div class="timeline-body">
-                        <h4>{{ item.title }}</h4>
-                        <p>{{ item.desc }}</p>
+                      <div class="timeline-body" style="flex: 1;">
+                        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                          <h4 style="margin: 0;">{{ item.title }}</h4>
+                          <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="openTimelineEditor(item)" style="position: static; font-size: 11px; background: #2563eb; padding: 3px 8px;" title="Edit Milestone">
+                            <i class="fa-solid fa-pen"></i>
+                          </button>
+                        </div>
+                        <p style="margin-top: 6px;">{{ item.desc }}</p>
                       </div>
                     </div>
                   </div>
@@ -692,11 +708,13 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
         <main class="page-body">
           <div class="container">
             <div class="contact-layout">
-              <div class="contact-info" style="position: relative;">
-                <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openProfileSettingsModal()" style="position: absolute; top: 0; right: 0; font-size: 11px; padding: 5px 14px; background: #2563eb; color: #ffffff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;" title="Edit Contact Info">
-                  <i class="fa-solid fa-pen-to-square"></i> Edit Contact Details
-                </button>
-                <h2>Let's Connect</h2>
+              <div class="contact-info">
+                <div class="section-title-wrap">
+                  <h2 style="margin: 0; border: none; padding-bottom: 0;">Let's Connect</h2>
+                  <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="openProfileSettingsModal()" style="font-size: 11px; padding: 5px 14px; background: #2563eb; color: #ffffff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;" title="Edit Contact Info">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit Contact Details
+                  </button>
+                </div>
                 <p>Whether you're a fellow traveler, a reader, a brand, or someone who just stumbled here — welcome. My inbox is always open.</p>
                 <div class="contact-items">
                   <div class="contact-item" *ngFor="let ci of contactItems">
@@ -2296,6 +2314,25 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     .img-editor-btn-save:hover:not(:disabled) { background: #e8472a; }
     .img-editor-btn-save:disabled { opacity: 0.35; cursor: not-allowed; }
 
+    /* ===== SECTION TITLE FLEX WRAP & ADMIN BTNS ===== */
+    .section-title-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .cat-card-admin-actions {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     @media (max-width: 960px) {
       .categories-full-grid { grid-template-columns: 1fr; }
       .intro-layout { grid-template-columns: 1fr; }
@@ -2315,22 +2352,35 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       .dest-teaser-imgs { height: 260px; }
     }
     @media (max-width: 600px) {
-      .page-hero { height: 320px; margin-top: 62px; }
-      .hero-admin-actions { top: 12px; right: 12px; gap: 6px; }
+      html, body { max-width: 100vw; overflow-x: hidden; }
+      .container { padding: 0 14px; }
+      .page-hero { height: 280px; margin-top: 62px; }
+      .page-hero-title { font-size: 28px; letter-spacing: -0.5px; }
+      .page-hero-sub { font-size: 13px; line-height: 1.5; }
+      .hero-admin-actions { top: 10px; right: 10px; gap: 6px; }
       .hero-edit-img-btn { padding: 5px 10px; font-size: 10px; }
       .cat-full-card { flex-direction: column; }
       .cat-full-img-wrap { width: 100%; height: 160px; }
+      .cat-full-body { padding: 16px; }
       .features-grid { grid-template-columns: 1fr; }
       .latest-grid { grid-template-columns: 1fr; }
       .posts-grid { grid-template-columns: 1fr; }
       .dest-grid { grid-template-columns: 1fr; }
       .gallery-grid { columns: 1; }
-      .footer-links-area { flex-wrap: wrap; }
-      .hero-btns { flex-direction: column; align-items: center; }
-      .intro-stats { grid-template-columns: repeat(2, 1fr); gap: 14px; }
-      .profile-modal-card { width: 95vw; padding: 20px 16px; max-height: 85vh; }
-      .dest-filter-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; scrollbar-width: none; }
-      .dest-filter-bar::-webkit-scrollbar { display: none; }
+      .footer-links-area { flex-wrap: wrap; gap: 24px; }
+      .hero-btns { flex-direction: column; align-items: stretch; width: 100%; }
+      .hero-btn-primary, .hero-btn-secondary { width: 100%; box-sizing: border-box; text-align: center; justify-content: center; }
+      .intro-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .profile-modal-card, .img-editor-card, .admin-modal-card { width: 94vw; padding: 20px 14px; max-height: 86vh; box-sizing: border-box; }
+      .profile-input, .img-editor-url-input { font-size: 15px; }
+      .dest-filter-bar, .country-subfilter-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; scrollbar-width: none; flex-wrap: nowrap !important; }
+      .dest-filter-bar::-webkit-scrollbar, .country-subfilter-bar::-webkit-scrollbar { display: none; }
+      .country-subfilter-bar { padding: 10px 14px !important; margin-bottom: 20px !important; }
+      .contact-layout { grid-template-columns: 1fr; gap: 32px; }
+      .contact-card { padding: 20px 16px; }
+      .author-card { padding: 20px 16px; }
+      .timeline-item { gap: 12px; padding-left: 18px; }
+      .timeline-year { min-width: 38px; font-size: 12px; }
     }
 
     /* ===== GALLERY LIGHTBOX MODAL ===== */
