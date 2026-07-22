@@ -318,9 +318,9 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 </span>
               </div>
             </div>
-            <div class="posts-grid" *ngIf="articles.length > 0">
+            <div class="posts-grid" *ngIf="filteredBlogArticles.length > 0">
               <app-article-card
-                *ngFor="let item of articles"
+                *ngFor="let item of filteredBlogArticles"
                 [article]="item"
                 [isAdmin]="isAdmin"
                 (onSelect)="openReader($event)"
@@ -328,13 +328,13 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 (onDelete)="deleteArticleFromReader($event)"
               ></app-article-card>
             </div>
-            <div class="empty-state" *ngIf="articles.length === 0">
+            <div class="empty-state" *ngIf="filteredBlogArticles.length === 0">
               <i class="fa-solid fa-compass empty-icon"></i>
               <h3>No Articles Found</h3>
               <p>Try searching for a different keyword or browse another category.</p>
               <button class="btn btn-secondary" (click)="resetFilters()">View All Posts</button>
             </div>
-            <div class="load-more-wrap" *ngIf="articles.length > 0">
+            <div class="load-more-wrap" *ngIf="filteredBlogArticles.length > 0">
               <button class="load-more-btn">LOAD MORE POSTS</button>
             </div>
           </div>
@@ -3109,8 +3109,26 @@ export class AppComponent implements OnInit, OnDestroy {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  get filteredBlogArticles(): Article[] {
+    let list = this.articles || [];
+    if (this.activeCategory) {
+      const catLower = this.activeCategory.toLowerCase();
+      list = list.filter(a => a.category.toLowerCase().includes(catLower));
+    }
+    if (this.searchQuery) {
+      const q = this.searchQuery.toLowerCase();
+      list = list.filter(a => 
+        (a.title && a.title.toLowerCase().includes(q)) || 
+        (a.excerpt && a.excerpt.toLowerCase().includes(q)) || 
+        (a.content && a.content.toLowerCase().includes(q)) ||
+        (a.tags && a.tags.toLowerCase().includes(q))
+      );
+    }
+    return list;
+  }
+
   loadData() {
-    this.articleService.getArticles().subscribe(data => {
+    this.articleService.getArticles('', '').subscribe(data => {
       this.articles = data;
       this.featuredArticle = data.find(a => a.featured) || data[0] || null;
     });
@@ -3118,8 +3136,11 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   loadArticles() {
-    this.articleService.getArticles(this.activeCategory, this.searchQuery).subscribe(data => {
+    this.articleService.getArticles('', '').subscribe(data => {
       this.articles = data;
+      if (!this.featuredArticle && data.length > 0) {
+        this.featuredArticle = data.find(a => a.featured) || data[0];
+      }
     });
   }
 
