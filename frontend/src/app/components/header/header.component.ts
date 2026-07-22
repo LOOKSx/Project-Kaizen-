@@ -283,7 +283,7 @@ import { ArticleService } from '../../services/article.service';
       top: 0;
       left: 0;
       right: 0;
-      z-index: 999;
+      z-index: 9990;
       background: #111111;
       transition: box-shadow 0.3s;
     }
@@ -663,7 +663,7 @@ import { ArticleService } from '../../services/article.service';
         background: rgba(0, 0, 0, 0.75);
         backdrop-filter: blur(5px);
         -webkit-backdrop-filter: blur(5px);
-        z-index: 1001;
+        z-index: 9998;
         animation: fadeIn 0.25s ease;
       }
       .mobile-drawer-close-btn {
@@ -694,7 +694,7 @@ import { ArticleService } from '../../services/article.service';
         max-width: 82vw;
         background: #ffffff;
         color: #111111;
-        z-index: 1002;
+        z-index: 9999;
         overflow-y: auto;
         box-shadow: -12px 0 40px rgba(0,0,0,0.5);
         transform: translateX(100%);

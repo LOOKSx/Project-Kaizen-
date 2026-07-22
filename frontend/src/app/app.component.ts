@@ -2095,14 +2095,14 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       position: absolute;
       top: 76px;
       right: 24px;
-      z-index: 1000;
+      z-index: 10;
       display: flex;
       align-items: center;
       gap: 10px;
     }
     .hero-edit-img-btn {
       position: static;
-      z-index: 1000;
+      z-index: 10;
       padding: 7px 14px;
       border-radius: 20px;
       background: rgba(0, 0, 0, 0.72);
