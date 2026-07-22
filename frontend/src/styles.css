@@ -329,25 +329,127 @@ body.dark-theme .add-comment-form {
   border-color: #2e2e2e !important;
 }
 
-/* --- Modals (Editor, Admin, Image Editor) in Dark Mode --- */
+/* --- Modals (Editor, Admin, Image Editor, Profile, Quick Text Editor) in Dark Mode --- */
 body.dark-theme .editor-modal-card,
 body.dark-theme .img-editor-card,
-body.dark-theme .admin-modal-card {
+body.dark-theme .admin-modal-card,
+body.dark-theme .profile-modal-card,
+body.dark-theme .quick-text-editor-modal {
   background: #1a1a1a !important;
   color: #f1f5f9 !important;
   border-color: #333333 !important;
-  box-shadow: 0 32px 90px rgba(0,0,0,0.8) !important;
+  box-shadow: 0 32px 90px rgba(0,0,0,0.85) !important;
 }
 
 body.dark-theme .editor-header h2,
 body.dark-theme .img-editor-header h2,
-body.dark-theme .admin-header h2 {
+body.dark-theme .admin-header h2,
+body.dark-theme .profile-modal-header h2,
+body.dark-theme .text-editor-header h2 {
   color: #ffffff !important;
 }
 
 body.dark-theme .admin-header p,
-body.dark-theme .img-editor-sub {
+body.dark-theme .img-editor-sub,
+body.dark-theme .profile-modal-sub,
+body.dark-theme .text-editor-sub {
   color: #94a3b8 !important;
+}
+
+body.dark-theme .profile-modal-header,
+body.dark-theme .img-editor-header,
+body.dark-theme .text-editor-header,
+body.dark-theme .profile-modal-actions,
+body.dark-theme .img-editor-actions,
+body.dark-theme .text-editor-actions {
+  border-color: #2a2a2a !important;
+}
+
+/* --- Country & Category Filters in Dark Mode --- */
+body.dark-theme .country-subfilter-bar,
+body.dark-theme .categories-header-intro {
+  background: #1e1e1e !important;
+  border-color: #2e2e2e !important;
+  color: #f8fafc !important;
+}
+
+body.dark-theme .country-subfilter-bar span {
+  color: #e8472a !important;
+}
+
+body.dark-theme .filter-pill {
+  background: #282828 !important;
+  color: #e2e8f0 !important;
+  border-color: #383838 !important;
+}
+
+body.dark-theme .filter-pill.active {
+  background: #e8472a !important;
+  color: #ffffff !important;
+  border-color: #e8472a !important;
+}
+
+/* --- About Timeline & Section Headers in Dark Mode --- */
+body.dark-theme .section-title-wrap {
+  border-bottom-color: #282828 !important;
+}
+
+body.dark-theme .timeline-item {
+  border-bottom-color: #282828 !important;
+}
+
+body.dark-theme .timeline-year {
+  background: rgba(232, 71, 42, 0.15) !important;
+  color: #e8472a !important;
+}
+
+body.dark-theme .timeline-body h4 {
+  color: #f8fafc !important;
+}
+
+body.dark-theme .timeline-body p {
+  color: #cbd5e1 !important;
+}
+
+/* --- Social Links & Buttons in Dark Mode --- */
+body.dark-theme .social-link {
+  background: #242424 !important;
+  color: #cbd5e1 !important;
+  border-color: #383838 !important;
+}
+
+body.dark-theme .social-link:hover {
+  background: #e8472a !important;
+  color: #ffffff !important;
+  border-color: #e8472a !important;
+}
+
+/* --- Empty States & Loaders in Dark Mode --- */
+body.dark-theme .empty-state,
+body.dark-theme .no-countries-box {
+  background: #1a1a1a !important;
+  border-color: #2a2a2a !important;
+  color: #cbd5e1 !important;
+}
+
+body.dark-theme .empty-icon {
+  color: #475569 !important;
+}
+
+/* --- Footer in Dark Mode --- */
+body.dark-theme .site-footer {
+  background: #0a0a0a !important;
+  color: #94a3b8 !important;
+  border-top: 1px solid #202020 !important;
+}
+
+body.dark-theme .footer-title {
+  color: #f8fafc !important;
+}
+
+body.dark-theme .footer-bottom {
+  border-top-color: #202020 !important;
+  color: #64748b !important;
 }
 
 /* --- Form Inputs, Textareas, Selects in Dark Mode --- */
@@ -360,6 +462,8 @@ body.dark-theme .form-group input,
 body.dark-theme .form-group select,
 body.dark-theme .form-group textarea,
 body.dark-theme .img-editor-url-input,
+body.dark-theme .profile-input,
+body.dark-theme .text-editor-input,
 body.dark-theme .admin-pass-input,
 body.dark-theme .add-comment-form input,
 body.dark-theme .add-comment-form textarea,
