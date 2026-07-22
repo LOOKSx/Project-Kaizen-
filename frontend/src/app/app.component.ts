@@ -2959,6 +2959,14 @@ export class AppComponent implements OnInit, OnDestroy {
     });
     window.addEventListener('kaizen:navigate', (e: any) => {
       const page = e.detail?.page || 'home';
+      this.selectedArticle = null;
+      this.showPublisherModal = false;
+      this.showProfileSettingsModal = false;
+      this.showImageEditorModal = false;
+      this.showTextEditorModal = false;
+      this.showAdminPassModal = false;
+      this.showLightbox = false;
+
       if (page === 'blog' && !e.detail?.cat) {
         this.resetFilters();
       } else if (e.detail?.cat) {
@@ -3092,6 +3100,14 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   navigateTo(page: string, catName?: string, pushState: boolean = true) {
+    this.selectedArticle = null;
+    this.showPublisherModal = false;
+    this.showProfileSettingsModal = false;
+    this.showImageEditorModal = false;
+    this.showTextEditorModal = false;
+    this.showAdminPassModal = false;
+    this.showLightbox = false;
+
     if (page === 'blog') {
       this.resetFilters();
     }
