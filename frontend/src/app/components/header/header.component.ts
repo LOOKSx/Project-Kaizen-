@@ -16,22 +16,46 @@ import { ArticleService } from '../../services/article.service';
           <span class="logo-text">KAIZEN</span>
         </a>
 
-        <!-- Primary Navigation -->
+        <!-- Mobile Drawer Overlay Backdrop -->
+        <div class="mobile-drawer-overlay" *ngIf="mobileOpen" (click)="mobileOpen = false">
+          <button class="mobile-drawer-close-btn" (click)="mobileOpen = false" aria-label="Close menu">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Primary Navigation (Desktop Megamenu & Mobile Side Drawer) -->
         <nav class="primary-nav" [class.open]="mobileOpen">
+          <div class="mobile-drawer-header">
+            <span class="mobile-drawer-logo">KAIZEN</span>
+            <button class="mobile-drawer-inner-close" (click)="mobileOpen = false">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
           <ul class="nav-list">
             <li class="nav-item">
-              <a href="#" class="nav-link" [class.active]="activePage==='home'" (click)="navigate('home', $event)">HOME</a>
+              <div class="nav-link-row">
+                <a href="#" class="nav-link" [class.active]="activePage==='home'" (click)="navigate('home', $event)">HOME</a>
+              </div>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link" [class.active]="activePage==='blog'" (click)="navigate('blog', $event)">BLOG</a>
+              <div class="nav-link-row">
+                <a href="#" class="nav-link" [class.active]="activePage==='blog'" (click)="navigate('blog', $event)">BLOG</a>
+              </div>
             </li>
 
-            <!-- DESTINATIONS 2-Level Megamenu (Ultra-Clean, Emojis Removed, Dynamic Only) -->
-            <li class="nav-item has-dropdown" (mouseenter)="openMenu('dest')" (mouseleave)="closeMenu()">
-              <a href="#" class="nav-link" [class.active]="activePage==='destinations'" (click)="navigate('destinations', $event)">
-                DESTINATIONS <span class="caret">›</span>
-              </a>
-              <div class="dest-mega-dropdown" [class.visible]="activeMenu === 'dest'">
+            <!-- DESTINATIONS -->
+            <li class="nav-item has-dropdown" [class.mobile-expanded]="mobileDestOpen" (mouseenter)="openMenu('dest')" (mouseleave)="closeMenu()">
+              <div class="nav-link-row">
+                <a href="#" class="nav-link" [class.active]="activePage==='destinations'" (click)="navigate('destinations', $event)">DESTINATIONS</a>
+                <button class="mobile-arrow-btn" (click)="toggleMobileSubmenu('dest', $event)" aria-label="Toggle Destinations Menu">
+                  <i class="fa-solid" [class.fa-chevron-down]="!mobileDestOpen" [class.fa-chevron-up]="mobileDestOpen"></i>
+                </button>
+                <span class="caret desktop-only">›</span>
+              </div>
+
+              <!-- Desktop Megamenu -->
+              <div class="dest-mega-dropdown desktop-only" [class.visible]="activeMenu === 'dest'">
                 <div class="dest-mega-layout">
                   
                   <!-- Left Column: Continents List -->
@@ -53,7 +77,7 @@ import { ArticleService } from '../../services/article.service';
                     </ul>
                   </div>
 
-                  <!-- Right Column: Subcategory Countries List (ONLY Published Countries) -->
+                  <!-- Right Column: Subcategory Countries List -->
                   <div class="dest-countries-col">
                     <div class="dest-countries-header">
                       <span class="countries-header-title">{{ hoveredContinent | uppercase }} DESTINATIONS</span>
@@ -63,7 +87,6 @@ import { ArticleService } from '../../services/article.service';
                     </div>
                     <div class="dest-countries-divider"></div>
                     
-                    <!-- Published Countries with written guides -->
                     <ul class="dest-countries-list" *ngIf="activeContinentCountries.length > 0">
                       <li *ngFor="let c of activeContinentCountries">
                         <a href="#" (click)="navigateCountry(hoveredContinent, c.tag, $event)">
@@ -73,7 +96,6 @@ import { ArticleService } from '../../services/article.service';
                       </li>
                     </ul>
 
-                    <!-- Empty State (Shown when no articles exist yet for this region) -->
                     <div class="no-countries-box" *ngIf="activeContinentCountries.length === 0">
                       <i class="fa-solid fa-compass"></i>
                       <p class="no-countries-title">No Guides Published Yet</p>
@@ -84,16 +106,40 @@ import { ArticleService } from '../../services/article.service';
 
                 </div>
               </div>
+
+              <!-- Mobile Accordion Submenu -->
+              <div class="mobile-accordion-submenu" *ngIf="mobileDestOpen">
+                <a href="#" (click)="navigateDest('All', $event)" class="mobile-sub-link main-sub">
+                  <span>ALL DESTINATIONS</span>
+                </a>
+                <a href="#" (click)="navigateDest('Asia', $event)" class="mobile-sub-link">
+                  <span>ASIA</span>
+                </a>
+                <a href="#" (click)="navigateDest('Europe', $event)" class="mobile-sub-link">
+                  <span>EUROPE</span>
+                </a>
+                <a href="#" (click)="navigateDest('Americas', $event)" class="mobile-sub-link">
+                  <span>AMERICAS</span>
+                </a>
+                <a href="#" (click)="navigateDest('Africa', $event)" class="mobile-sub-link">
+                  <span>AFRICA</span>
+                </a>
+              </div>
             </li>
 
-            <!-- CATEGORIES rich mega dropdown -->
-            <li class="nav-item has-dropdown" (mouseenter)="openMenu('cat')" (mouseleave)="closeMenu()">
-              <a href="#" class="nav-link" [class.active]="activePage==='categories'" (click)="navigate('categories', $event)">
-                CATEGORIES <span class="caret">›</span>
-              </a>
-              <div class="categories-mega-dropdown" [class.visible]="activeMenu === 'cat'">
+            <!-- CATEGORIES -->
+            <li class="nav-item has-dropdown" [class.mobile-expanded]="mobileCatOpen" (mouseenter)="openMenu('cat')" (mouseleave)="closeMenu()">
+              <div class="nav-link-row">
+                <a href="#" class="nav-link" [class.active]="activePage==='categories'" (click)="navigate('categories', $event)">CATEGORIES</a>
+                <button class="mobile-arrow-btn" (click)="toggleMobileSubmenu('cat', $event)" aria-label="Toggle Categories Menu">
+                  <i class="fa-solid" [class.fa-chevron-down]="!mobileCatOpen" [class.fa-chevron-up]="mobileCatOpen"></i>
+                </button>
+                <span class="caret desktop-only">›</span>
+              </div>
+
+              <!-- Desktop Megamenu -->
+              <div class="categories-mega-dropdown desktop-only" [class.visible]="activeMenu === 'cat'">
                 <div class="cat-mega-layout">
-                  <!-- Left: Categories List -->
                   <div class="cat-mega-list-col">
                     <a href="#" (click)="navigate('categories', $event)" class="cat-mega-all-btn">
                       <span>ALL CATEGORIES PAGE</span>
@@ -110,7 +156,6 @@ import { ArticleService } from '../../services/article.service';
                     </ul>
                   </div>
 
-                  <!-- Right: Live Working Article Sample Preview -->
                   <div class="cat-mega-preview-col" *ngIf="activeCatPreview">
                     <div class="cat-preview-card" (click)="openPreviewCategory(activeCatPreview.catName, $event)">
                       <div class="cat-preview-img-wrap">
@@ -128,16 +173,47 @@ import { ArticleService } from '../../services/article.service';
                   </div>
                 </div>
               </div>
+
+              <!-- Mobile Accordion Submenu -->
+              <div class="mobile-accordion-submenu" *ngIf="mobileCatOpen">
+                <a href="#" (click)="navigate('categories', $event)" class="mobile-sub-link main-sub">
+                  <span>ALL CATEGORIES PAGE</span>
+                </a>
+                <a href="#" *ngFor="let c of navCategories" (click)="filterByCategory(c.label, $event)" class="mobile-sub-link">
+                  <span>{{ c.label | uppercase }}</span>
+                </a>
+              </div>
+            </li>
+
+            <!-- GALLERY -->
+            <li class="nav-item has-dropdown" [class.mobile-expanded]="mobileGalleryOpen">
+              <div class="nav-link-row">
+                <a href="#" class="nav-link" [class.active]="activePage==='gallery'" (click)="navigate('gallery', $event)">GALLERY</a>
+                <button class="mobile-arrow-btn" (click)="toggleMobileSubmenu('gallery', $event)" aria-label="Toggle Gallery Menu">
+                  <i class="fa-solid" [class.fa-chevron-down]="!mobileGalleryOpen" [class.fa-chevron-up]="mobileGalleryOpen"></i>
+                </button>
+              </div>
+
+              <!-- Mobile Accordion Submenu -->
+              <div class="mobile-accordion-submenu" *ngIf="mobileGalleryOpen">
+                <a href="#" (click)="navigate('gallery', $event)" class="mobile-sub-link main-sub">
+                  <span>IMAGE GALLERY</span>
+                </a>
+                <a href="#" (click)="navigate('gallery', $event)" class="mobile-sub-link">
+                  <span>PHOTOGRAPHY &amp; GEAR</span>
+                </a>
+              </div>
             </li>
 
             <li class="nav-item">
-              <a href="#" class="nav-link" [class.active]="activePage==='gallery'" (click)="navigate('gallery', $event)">GALLERY</a>
+              <div class="nav-link-row">
+                <a href="#" class="nav-link" [class.active]="activePage==='about'" (click)="navigate('about', $event)">ABOUT</a>
+              </div>
             </li>
             <li class="nav-item">
-              <a href="#" class="nav-link" [class.active]="activePage==='about'" (click)="navigate('about', $event)">ABOUT</a>
-            </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link" [class.active]="activePage==='contact'" (click)="navigate('contact', $event)">CONTACT</a>
+              <div class="nav-link-row">
+                <a href="#" class="nav-link" [class.active]="activePage==='contact'" (click)="navigate('contact', $event)">CONTACT</a>
+              </div>
             </li>
 
             <!-- Mobile Admin Quick Panel -->
@@ -560,31 +636,170 @@ import { ArticleService } from '../../services/article.service';
       padding: 8px;
     }
 
-    /* ---- Mobile ---- */
+    .desktop-only { display: inline-block; }
+    .mobile-arrow-btn, .mobile-drawer-overlay, .mobile-drawer-header, .mobile-accordion-submenu { display: none; }
+
+    /* ---- Mobile Drawer & Accordions ---- */
     @media (max-width: 900px) {
+      .desktop-only { display: none !important; }
       .navbar-inner { padding: 0 12px; justify-content: space-between; }
       .site-logo { margin-right: 0; }
       .logo-text { font-size: 18px; letter-spacing: 2px; }
       .nav-right { display: flex; align-items: center; gap: 2px; flex-shrink: 0; }
       .nav-right .write-btn,
       .nav-right .admin-logout-btn { display: none !important; }
-      .primary-nav {
-        display: none;
-        position: absolute;
-        top: 62px;
-        left: 0; right: 0;
-        background: rgba(17, 17, 17, 0.98);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        padding: 16px 0 24px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-        border-bottom: 2px solid #e8472a;
-        max-height: 82vh;
-        overflow-y: auto;
+
+      .mobile-drawer-overlay {
+        display: block !important;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        z-index: 1001;
+        animation: fadeIn 0.25s ease;
       }
-      .primary-nav.open { display: block; animation: slideDown 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
-      .nav-list { flex-direction: column; align-items: stretch; width: 100%; }
-      .nav-link { padding: 14px 24px; height: auto; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+      .mobile-drawer-close-btn {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: #ffffff;
+        color: #111111;
+        font-size: 20px;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      }
+      .primary-nav {
+        display: block !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 300px;
+        max-width: 82vw;
+        background: #ffffff;
+        color: #111111;
+        z-index: 1002;
+        overflow-y: auto;
+        box-shadow: 12px 0 40px rgba(0,0,0,0.5);
+        transform: translateX(-100%);
+        transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        padding: 0 0 40px 0;
+        border: none;
+      }
+      .primary-nav.open { transform: translateX(0); }
+
+      .mobile-drawer-header {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 24px;
+        border-bottom: 2px solid #111111;
+        margin-bottom: 4px;
+      }
+      .mobile-drawer-logo {
+        font-family: 'Nunito', sans-serif;
+        font-size: 18px;
+        font-weight: 900;
+        letter-spacing: 3px;
+        color: #111111;
+      }
+      .mobile-drawer-inner-close {
+        background: transparent;
+        border: none;
+        font-size: 20px;
+        color: #111111;
+        cursor: pointer;
+        padding: 4px;
+      }
+      .nav-list {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+      }
+      .nav-item {
+        border-bottom: 1px solid #eeeeee;
+        width: 100%;
+      }
+      .nav-link-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        height: 52px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .nav-link {
+        padding: 0;
+        height: auto;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #111111;
+        border: none;
+      }
+      .nav-link.active {
+        color: #e8472a;
+      }
+      .mobile-arrow-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: flex-end;
+        background: transparent;
+        border: none;
+        font-size: 13px;
+        color: #666666;
+        padding: 10px 0 10px 20px;
+        cursor: pointer;
+      }
+      .mobile-accordion-submenu {
+        display: block !important;
+        background: #f8f9fa;
+        border-top: 1px solid #eeeeee;
+        padding: 4px 0 8px;
+        animation: slideDown 0.2s ease;
+      }
+      .mobile-sub-link {
+        display: flex;
+        align-items: center;
+        padding: 11px 24px 11px 36px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #444444;
+        border-bottom: 1px dashed #e9ecef;
+        transition: all 0.15s;
+      }
+      .mobile-sub-link.main-sub {
+        color: #e8472a;
+        font-weight: 800;
+        background: rgba(232,71,42,0.06);
+      }
+
+      /* Dark theme overrides for mobile side drawer */
+      body.dark-theme .primary-nav { background: #141414 !important; color: #ffffff !important; }
+      body.dark-theme .mobile-drawer-header { border-bottom-color: #e8472a; }
+      body.dark-theme .mobile-drawer-logo { color: #ffffff !important; }
+      body.dark-theme .mobile-drawer-inner-close { color: #ffffff !important; }
+      body.dark-theme .nav-item { border-bottom-color: rgba(255,255,255,0.08); }
+      body.dark-theme .nav-link { color: #dddddd !important; }
+      body.dark-theme .nav-link.active { color: #e8472a !important; }
+      body.dark-theme .mobile-arrow-btn { color: #aaaaaa !important; }
+      body.dark-theme .mobile-accordion-submenu { background: #1e1e1e !important; border-top-color: #282828 !important; }
+      body.dark-theme .mobile-sub-link { color: #cccccc !important; border-bottom-color: rgba(255,255,255,0.05) !important; }
+      body.dark-theme .mobile-sub-link.main-sub { color: #e8472a !important; }
+
       .hamburger {
         display: flex !important;
         align-items: center;
@@ -598,19 +813,6 @@ import { ArticleService } from '../../services/article.service';
         cursor: pointer;
         flex-shrink: 0;
       }
-      .dest-mega-dropdown {
-        position: static !important;
-        width: 100% !important;
-        box-shadow: none !important;
-        border: none !important;
-        background: #181818 !important;
-      }
-      .dest-mega-layout {
-        flex-direction: column !important;
-        min-height: auto !important;
-      }
-      .dest-continents-col { width: 100% !important; border-right: none !important; border-bottom: 1px solid #282828 !important; }
-      .dest-subpanel-col { width: 100% !important; padding: 14px 20px !important; }
       .search-input { width: 120px; font-size: 12px; }
       .write-btn { padding: 5px 10px; font-size: 10px; }
     }
@@ -1046,6 +1248,18 @@ export class HeaderComponent implements OnInit {
   @HostListener('window:scroll')
   onScroll() {
     this.scrolled = window.scrollY > 10;
+  }
+
+  mobileDestOpen = false;
+  mobileCatOpen = false;
+  mobileGalleryOpen = false;
+
+  toggleMobileSubmenu(menu: 'dest' | 'cat' | 'gallery', e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (menu === 'dest') this.mobileDestOpen = !this.mobileDestOpen;
+    if (menu === 'cat') this.mobileCatOpen = !this.mobileCatOpen;
+    if (menu === 'gallery') this.mobileGalleryOpen = !this.mobileGalleryOpen;
   }
 
   openMenu(key: string) { this.activeMenu = key; }
