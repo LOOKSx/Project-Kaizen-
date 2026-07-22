@@ -2981,18 +2981,20 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // Handle Browser Back & Forward Buttons
     window.addEventListener('popstate', (e: PopStateEvent) => {
+      this.selectedArticle = null;
+      this.showPublisherModal = false;
+      this.showProfileSettingsModal = false;
+      this.showImageEditorModal = false;
+      this.showTextEditorModal = false;
+      this.showAdminPassModal = false;
+      this.showLightbox = false;
+
       if (e.state && e.state.page) {
         if (e.state.catName) {
           this.selectedCatName = e.state.catName;
           this.articleService.setCategory(e.state.catName);
         }
         if (e.state.destFilter) this.destFilter = e.state.destFilter;
-        if (e.state.articleId && this.articles.length > 0) {
-          const found = this.articles.find(a => a.id === e.state.articleId);
-          if (found) this.selectedArticle = found;
-        } else {
-          this.selectedArticle = null;
-        }
         this.navigateTo(e.state.page, undefined, false);
       } else {
         this.restoreActivePageState();
@@ -3056,6 +3058,14 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private restoreActivePageState() {
     if (typeof window === 'undefined') return;
+
+    this.selectedArticle = null;
+    this.showPublisherModal = false;
+    this.showProfileSettingsModal = false;
+    this.showImageEditorModal = false;
+    this.showTextEditorModal = false;
+    this.showAdminPassModal = false;
+    this.showLightbox = false;
 
     const hash = window.location.hash;
     if (hash && hash.length > 1) {
