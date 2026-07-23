@@ -819,7 +819,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
           </div>
         </div>
         <div class="footer-bottom">
-          <p>© 2026 Kaizen Personal Blog — Powered by Golang + Angular</p>
+          <p (click)="onFooterClick()" style="cursor: pointer;" title="Kaizen Personal Journal">© 2026 Kaizen Personal Blog — Powered by Golang + Angular</p>
         </div>
       </footer>
 
@@ -3121,7 +3121,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.showProfileSettingsModal = false;
     this.showImageEditorModal = false;
     this.showTextEditorModal = false;
-    this.showAdminPassModal = false;
     this.showLightbox = false;
 
     if (page === 'blog') {
@@ -3822,6 +3821,24 @@ export class AppComponent implements OnInit, OnDestroy {
     this.imageUploading = false;
     this.imageUploadSuccess = false;
     this.showToast('Image updated and saved successfully');
+  }
+
+  footerClickCount = 0;
+  footerClickTimer: any = null;
+
+  onFooterClick() {
+    this.footerClickCount++;
+    if (this.footerClickTimer) clearTimeout(this.footerClickTimer);
+    if (this.footerClickCount >= 2) {
+      this.footerClickCount = 0;
+      this.adminPassInput = '';
+      this.adminPassError = false;
+      this.showAdminPassModal = true;
+      return;
+    }
+    this.footerClickTimer = setTimeout(() => {
+      this.footerClickCount = 0;
+    }, 800);
   }
 
   triggerAdminPassModal() {
