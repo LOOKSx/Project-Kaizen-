@@ -526,13 +526,13 @@ import { ArticleService } from '../../services/article.service';
     }
     .article-text-content ::ng-deep strong,
     .article-text-content ::ng-deep b {
-      font-weight: 900;
+      font-weight: 800;
       color: #0f172a;
     }
     .article-text-content ::ng-deep em,
     .article-text-content ::ng-deep i {
       font-style: italic;
-      color: #334155;
+      color: #475569;
     }
     .article-text-content ::ng-deep blockquote {
       border-left: 4px solid #cbd5e1;
@@ -560,27 +560,51 @@ import { ArticleService } from '../../services/article.service';
     .article-text-content ::ng-deep li {
       margin-bottom: 6px;
     }
+    .article-bullet-item {
+      margin-bottom: 8px !important;
+      line-height: 1.6;
+    }
+    .bullet-prefix {
+      font-weight: 800;
+      color: #e8472a;
+      margin-right: 6px;
+    }
 
+    body.dark-theme .article-text-content,
+    body.dark-theme .article-text-content ::ng-deep p,
+    body.dark-theme .article-text-content ::ng-deep li,
+    body.dark-theme .article-text-content ::ng-deep div,
+    body.dark-theme .article-text-content ::ng-deep span {
+      color: #e2e8f0 !important;
+    }
     body.dark-theme .article-text-content ::ng-deep h1,
     body.dark-theme .article-text-content ::ng-deep h2,
     body.dark-theme .article-text-content ::ng-deep h3 {
-      color: #f8fafc !important;
+      color: #ffffff !important;
     }
     body.dark-theme .article-text-content ::ng-deep strong,
     body.dark-theme .article-text-content ::ng-deep b {
       color: #ffffff !important;
+      font-weight: 800 !important;
     }
     body.dark-theme .article-text-content ::ng-deep em,
     body.dark-theme .article-text-content ::ng-deep i {
       color: #cbd5e1 !important;
     }
+    body.dark-theme .article-text-content ::ng-deep a {
+      color: #ff6b4a !important;
+      text-decoration: underline !important;
+    }
     body.dark-theme .article-text-content ::ng-deep blockquote {
       background: #1e1e1e !important;
-      border-color: #475569 !important;
-      color: #94a3b8 !important;
+      border-color: #e8472a !important;
+      color: #cbd5e1 !important;
     }
     body.dark-theme .article-text-content ::ng-deep code {
       background: #282828 !important;
+      color: #ff6b4a !important;
+    }
+    body.dark-theme .bullet-prefix {
       color: #ff6b4a !important;
     }
     .article-tags {
@@ -795,7 +819,7 @@ export class ArticleReaderComponent {
     const result: string[] = [];
 
     for (let line of lines) {
-      const trimmed = line.trim();
+      let trimmed = line.trim();
 
       if (/^#{1,3}\s*\S+/i.test(trimmed)) {
         if (trimmed.startsWith('###')) {
@@ -812,8 +836,38 @@ export class ArticleReaderComponent {
         const content = this.applyInlineMarkdown(trimmed.replace(/^>\s*/, ''));
         result.push(`<blockquote>${content}</blockquote>`);
       } else if (trimmed.length > 0) {
-        const content = this.applyInlineMarkdown(line);
-        result.push(content);
+        let isBullet = false;
+        let prefix = '';
+
+        if (/^[\*\-]\s+/.test(trimmed)) {
+          isBullet = true;
+          prefix = '• ';
+          trimmed = trimmed.replace(/^[\*\-]\s+/, '');
+        } else if (/^\d+\.\s+/.test(trimmed)) {
+          isBullet = true;
+          const match = trimmed.match(/^(\d+\.\s+)/);
+          prefix = match ? match[1] : '';
+          trimmed = trimmed.replace(/^\d+\.\s+/, '');
+        }
+
+        // Highlight "Key : Description" pattern if present before colon
+        if (trimmed.includes(' :') || trimmed.includes(':')) {
+          const colonIdx = trimmed.indexOf(':');
+          if (colonIdx > 0 && colonIdx < 45 && !trimmed.slice(0, colonIdx).includes('<')) {
+            const keyPart = trimmed.slice(0, colonIdx).trim();
+            const valPart = trimmed.slice(colonIdx + 1);
+            if (!keyPart.startsWith('<strong')) {
+              trimmed = `<strong>${keyPart}</strong>: ${valPart}`;
+            }
+          }
+        }
+
+        const formatted = this.applyInlineMarkdown(trimmed);
+        if (isBullet) {
+          result.push(`<p class="article-bullet-item"><span class="bullet-prefix">${prefix}</span>${formatted}</p>`);
+        } else {
+          result.push(formatted);
+        }
       } else {
         result.push('<br>');
       }
@@ -829,13 +883,13 @@ export class ArticleReaderComponent {
     if (!text) return '';
     let out = text;
 
-    // Bold (**text** or ** text ** or __text__)
+    // Bold (**text** or __text__)
     out = out.replace(/\*\*\s*(.*?)\s*\*\*/g, '<strong>$1</strong>');
     out = out.replace(/__\s*(.*?)\s*__/g, '<strong>$1</strong>');
 
-    // Italics (*text* or _text_)
-    out = out.replace(/\*\s*(.*?)\s*\*/g, '<em>$1</em>');
-    out = out.replace(/_\s*(.*?)\s*_/g, '<em>$1</em>');
+    // Italics (*text* or _text_) - avoid matching bullet asterisks
+    out = out.replace(/(^|[^\*])\*(?!\s)(.*?)(?<!\s)\*/g, '$1<em>$2</em>');
+    out = out.replace(/(^|[^_])_(?!\s)(.*?)(?<!\s)_/g, '$1<em>$2</em>');
 
     // Inline code (`code`)
     out = out.replace(/`([^`]+)`/g, '<code>$1</code>');
