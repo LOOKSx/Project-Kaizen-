@@ -3061,12 +3061,16 @@ export class AppComponent implements OnInit, OnDestroy {
   private restoreActivePageState() {
     if (typeof window === 'undefined') return;
 
+    const isAdminRoute = this.checkSecretRoute();
+
     this.selectedArticle = null;
     this.showPublisherModal = false;
     this.showProfileSettingsModal = false;
     this.showImageEditorModal = false;
     this.showTextEditorModal = false;
-    this.showAdminPassModal = false;
+    if (!isAdminRoute) {
+      this.showAdminPassModal = false;
+    }
     this.showLightbox = false;
 
     const hash = window.location.hash;
@@ -3333,16 +3337,24 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  checkSecretRoute() {
-    if (typeof window !== 'undefined') {
-      const url = window.location.href.toLowerCase();
-      if (url.includes('admin')) {
-        this.showAdminPassModal = true;
-        try {
-          history.replaceState(null, '', window.location.pathname);
-        } catch (e) {}
-      }
+  checkSecretRoute(): boolean {
+    if (typeof window === 'undefined') return false;
+
+    const url = window.location.href.toLowerCase();
+    const hash = window.location.hash.toLowerCase();
+
+    if (url.includes('admin') || hash.includes('admin')) {
+      this.adminPassInput = '';
+      this.adminPassError = false;
+      this.showAdminPassModal = true;
+      try {
+        if (window.location.hash.includes('admin')) {
+          history.replaceState(null, '', window.location.pathname + (window.location.search || ''));
+        }
+      } catch (e) {}
+      return true;
     }
+    return false;
   }
 
   // Dynamic Hero Banners
