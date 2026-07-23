@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://kaizen-blog.vercel.app/sitemap.xml
+Sitemap: https://kaizen-blogger.vercel.app/sitemap.xml
