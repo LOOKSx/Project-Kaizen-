@@ -840,8 +840,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       ></app-article-editor>
 
       <!-- Admin Access Modal (Minimal Editorial) -->
-      <div class="admin-modal-backdrop" *ngIf="showAdminPassModal" (click)="showAdminPassModal = false">
-        <div class="admin-modal-card" (click)="$event.stopPropagation()">
+      <div class="admin-modal-backdrop" *ngIf="showAdminPassModal">
+        <div class="admin-modal-card">
 
           <!-- Close button -->
           <button class="admin-modal-close" (click)="showAdminPassModal = false" aria-label="Close">
@@ -880,8 +880,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       </div>
 
       <!-- Admin Image Uploader Modal -->
-      <div class="admin-modal-backdrop" *ngIf="showImageEditorModal" (click)="showImageEditorModal = false">
-        <div class="img-editor-card" (click)="$event.stopPropagation()">
+      <div class="admin-modal-backdrop" *ngIf="showImageEditorModal">
+        <div class="img-editor-card">
 
           <div class="img-editor-header">
             <div>
@@ -1045,8 +1045,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       </div>
 
       <!-- Universal Quick Text Editor Modal -->
-      <div class="admin-modal-backdrop" *ngIf="showTextEditorModal" (click)="closeTextEditorModal()">
-        <div class="profile-modal-card" (click)="$event.stopPropagation()" style="max-width: 580px;">
+      <div class="admin-modal-backdrop" *ngIf="showTextEditorModal">
+        <div class="profile-modal-card" style="max-width: 580px;">
           <button class="admin-modal-close" (click)="closeTextEditorModal()" aria-label="Close">
             <i class="fa-solid fa-xmark"></i>
           </button>
@@ -1089,8 +1089,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       </div>
 
       <!-- Profile & Social Links Settings Modal -->
-      <div class="admin-modal-backdrop" *ngIf="showProfileSettingsModal" (click)="closeProfileSettingsModal()">
-        <div class="profile-modal-card" (click)="$event.stopPropagation()">
+      <div class="admin-modal-backdrop" *ngIf="showProfileSettingsModal">
+        <div class="profile-modal-card">
           <button class="admin-modal-close" (click)="closeProfileSettingsModal()" aria-label="Close">
             <i class="fa-solid fa-xmark"></i>
           </button>
