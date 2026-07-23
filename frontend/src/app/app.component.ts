@@ -819,7 +819,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
           </div>
         </div>
         <div class="footer-bottom">
-          <p (click)="onFooterClick()" style="cursor: pointer;" title="Kaizen Personal Journal">© 2026 Kaizen Personal Blog — Powered by Golang + Angular</p>
+          <p>© 2026 Kaizen Personal Blog — Powered by Golang + Angular</p>
         </div>
       </footer>
 
@@ -2987,7 +2987,9 @@ export class AppComponent implements OnInit, OnDestroy {
       this.showProfileSettingsModal = false;
       this.showImageEditorModal = false;
       this.showTextEditorModal = false;
-      this.showAdminPassModal = false;
+      if (!this.checkSecretRoute()) {
+        this.showAdminPassModal = false;
+      }
       this.showLightbox = false;
 
       if (e.state && e.state.page) {
@@ -3341,16 +3343,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
     const url = window.location.href.toLowerCase();
     const hash = window.location.hash.toLowerCase();
+    const path = window.location.pathname.toLowerCase();
 
-    if (url.includes('admin') || hash.includes('admin')) {
+    if (url.includes('admin') || hash.includes('admin') || path.includes('admin')) {
       this.adminPassInput = '';
       this.adminPassError = false;
       this.showAdminPassModal = true;
-      try {
-        if (window.location.hash.includes('admin')) {
-          history.replaceState(null, '', window.location.pathname + (window.location.search || ''));
-        }
-      } catch (e) {}
       return true;
     }
     return false;
@@ -3821,24 +3819,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.imageUploading = false;
     this.imageUploadSuccess = false;
     this.showToast('Image updated and saved successfully');
-  }
-
-  footerClickCount = 0;
-  footerClickTimer: any = null;
-
-  onFooterClick() {
-    this.footerClickCount++;
-    if (this.footerClickTimer) clearTimeout(this.footerClickTimer);
-    if (this.footerClickCount >= 2) {
-      this.footerClickCount = 0;
-      this.adminPassInput = '';
-      this.adminPassError = false;
-      this.showAdminPassModal = true;
-      return;
-    }
-    this.footerClickTimer = setTimeout(() => {
-      this.footerClickCount = 0;
-    }, 800);
   }
 
   triggerAdminPassModal() {

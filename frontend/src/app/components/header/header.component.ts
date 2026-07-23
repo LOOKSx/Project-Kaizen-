@@ -12,7 +12,7 @@ import { ArticleService } from '../../services/article.service';
       <div class="navbar-inner">
 
         <!-- Logo -->
-        <a class="site-logo" href="#" (click)="onLogoClick($event)">
+        <a class="site-logo" href="#" (click)="navigate('home', $event)">
           <span class="logo-text">KAIZEN</span>
         </a>
 
@@ -1301,27 +1301,6 @@ export class HeaderComponent implements OnInit {
 
   onImgError(event: any) {
     event.target.src = 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80';
-  }
-
-  logoClickCount = 0;
-  logoClickTimer: any = null;
-
-  onLogoClick(e: Event) {
-    e.preventDefault();
-    this.logoClickCount++;
-    if (this.logoClickTimer) clearTimeout(this.logoClickTimer);
-
-    if (this.logoClickCount >= 3) {
-      this.logoClickCount = 0;
-      window.dispatchEvent(new CustomEvent('kaizen:open-admin-passcode'));
-      return;
-    }
-
-    this.logoClickTimer = setTimeout(() => {
-      this.logoClickCount = 0;
-    }, 1000);
-
-    this.navigate('home', e);
   }
 
   navigate(page: string, e: Event) {
