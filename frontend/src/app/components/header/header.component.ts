@@ -219,9 +219,9 @@ import { ArticleService } from '../../services/article.service';
             </li>
 
             <!-- Mobile Admin Quick Panel -->
-            <li class="mobile-admin-panel">
+            <li class="mobile-admin-panel" *ngIf="isAdmin">
               <div class="mobile-admin-divider"><span>ADMIN CONTROLS</span></div>
-              <div class="mobile-admin-buttons" *ngIf="isAdmin">
+              <div class="mobile-admin-buttons">
                 <button class="mobile-admin-btn write" (click)="openPublisherEvent(); mobileOpen = false;">
                   <i class="fa-solid fa-pen"></i> Write Article
                 </button>
@@ -230,11 +230,6 @@ import { ArticleService } from '../../services/article.service';
                 </button>
                 <button class="mobile-admin-btn logout" (click)="logoutAdmin(); mobileOpen = false;">
                   <i class="fa-solid fa-lock"></i> Exit Admin Mode
-                </button>
-              </div>
-              <div class="mobile-admin-buttons" *ngIf="!isAdmin">
-                <button class="mobile-admin-btn login" (click)="triggerAdminPassModal(); mobileOpen = false;">
-                  <i class="fa-solid fa-key"></i> Admin Login (เข้าสู่ระบบแอดมิน)
                 </button>
               </div>
             </li>
@@ -261,9 +256,6 @@ import { ArticleService } from '../../services/article.service';
           <!-- Dark / Light Theme Toggle -->
           <button class="icon-btn theme-btn" (click)="toggleTheme()" [title]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
             <i class="fa-solid" [class.fa-sun]="isDarkMode" [class.fa-moon]="!isDarkMode"></i>
-          </button>
-          <button class="admin-login-key-btn" *ngIf="!isAdmin" (click)="triggerAdminPassModal()" title="Admin Login">
-            <i class="fa-solid fa-key"></i> Admin
           </button>
           <button class="write-btn" *ngIf="isAdmin" (click)="openPublisherEvent()">
             <i class="fa-solid fa-pen"></i> Write

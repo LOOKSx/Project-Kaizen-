@@ -814,7 +814,6 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 <li><a href="#" (click)="navTo('about'); $event.preventDefault()">About</a></li>
                 <li><a href="#" (click)="navTo('contact'); $event.preventDefault()">Contact</a></li>
                 <li><a href="#" (click)="navTo('gallery'); $event.preventDefault()">Gallery</a></li>
-                <li><a href="#" (click)="triggerAdminPassModal(); $event.preventDefault()"><i class="fa-solid fa-key" style="color:#e8472a"></i> Admin Login</a></li>
               </ul>
             </div>
           </div>
@@ -3004,6 +3003,7 @@ export class AppComponent implements OnInit, OnDestroy {
     });
 
     window.addEventListener('hashchange', () => {
+      this.checkSecretRoute();
       this.restoreActivePageState();
     });
 
