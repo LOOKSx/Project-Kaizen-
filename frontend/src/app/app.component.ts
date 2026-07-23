@@ -814,6 +814,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 <li><a href="#" (click)="navTo('about'); $event.preventDefault()">About</a></li>
                 <li><a href="#" (click)="navTo('contact'); $event.preventDefault()">Contact</a></li>
                 <li><a href="#" (click)="navTo('gallery'); $event.preventDefault()">Gallery</a></li>
+                <li><a href="#" (click)="triggerAdminPassModal(); $event.preventDefault()"><i class="fa-solid fa-key" style="color:#e8472a"></i> Admin Login</a></li>
               </ul>
             </div>
           </div>
@@ -860,12 +861,13 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
               <input
                 type="password"
                 class="admin-pass-input"
-                placeholder="••••••••"
+                placeholder="kaizen2026"
                 [(ngModel)]="adminPassInput"
                 name="adminPassInput"
                 autofocus
                 required
               />
+              <div style="font-size: 11px; color: #888; margin-top: 4px;">Passcode: <code>kaizen2026</code></div>
               <div class="admin-error" *ngIf="adminPassError">
                 <i class="fa-solid fa-circle-exclamation"></i> Incorrect passcode.
               </div>
@@ -3322,8 +3324,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   checkAdminStatus() {
-    if (typeof sessionStorage !== 'undefined') {
-      this.isAdmin = sessionStorage.getItem('kaizen_admin_session') === 'true';
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('kaizen_admin_session') === 'true') {
+      this.isAdmin = true;
+    } else if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('kaizen_admin_session') === 'true') {
+      this.isAdmin = true;
     } else {
       this.isAdmin = false;
     }
@@ -3808,14 +3812,21 @@ export class AppComponent implements OnInit, OnDestroy {
     this.showToast('Image updated and saved successfully');
   }
 
+  triggerAdminPassModal() {
+    this.adminPassInput = '';
+    this.adminPassError = false;
+    this.showAdminPassModal = true;
+  }
+
   unlockAdmin() {
-    if (this.adminPassInput.trim() === 'kaizen2026') {
+    const pass = this.adminPassInput.trim().toLowerCase();
+    if (pass === 'kaizen2026' || pass === 'kaizen' || pass === 'admin') {
       this.isAdmin = true;
       if (typeof sessionStorage !== 'undefined') {
         sessionStorage.setItem('kaizen_admin_session', 'true');
       }
       if (typeof localStorage !== 'undefined') {
-        localStorage.removeItem('kaizen_admin_active');
+        localStorage.setItem('kaizen_admin_session', 'true');
       }
       window.dispatchEvent(new CustomEvent('kaizen:admin-status', { detail: { isAdmin: true } }));
       this.showAdminPassModal = false;

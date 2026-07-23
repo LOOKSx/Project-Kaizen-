@@ -219,9 +219,9 @@ import { ArticleService } from '../../services/article.service';
             </li>
 
             <!-- Mobile Admin Quick Panel -->
-            <li class="mobile-admin-panel" *ngIf="isAdmin">
+            <li class="mobile-admin-panel">
               <div class="mobile-admin-divider"><span>ADMIN CONTROLS</span></div>
-              <div class="mobile-admin-buttons">
+              <div class="mobile-admin-buttons" *ngIf="isAdmin">
                 <button class="mobile-admin-btn write" (click)="openPublisherEvent(); mobileOpen = false;">
                   <i class="fa-solid fa-pen"></i> Write Article
                 </button>
@@ -230,6 +230,11 @@ import { ArticleService } from '../../services/article.service';
                 </button>
                 <button class="mobile-admin-btn logout" (click)="logoutAdmin(); mobileOpen = false;">
                   <i class="fa-solid fa-lock"></i> Exit Admin Mode
+                </button>
+              </div>
+              <div class="mobile-admin-buttons" *ngIf="!isAdmin">
+                <button class="mobile-admin-btn login" (click)="triggerAdminPassModal(); mobileOpen = false;">
+                  <i class="fa-solid fa-key"></i> Admin Login (เข้าสู่ระบบแอดมิน)
                 </button>
               </div>
             </li>
@@ -256,6 +261,9 @@ import { ArticleService } from '../../services/article.service';
           <!-- Dark / Light Theme Toggle -->
           <button class="icon-btn theme-btn" (click)="toggleTheme()" [title]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
             <i class="fa-solid" [class.fa-sun]="isDarkMode" [class.fa-moon]="!isDarkMode"></i>
+          </button>
+          <button class="admin-login-key-btn" *ngIf="!isAdmin" (click)="triggerAdminPassModal()" title="Admin Login">
+            <i class="fa-solid fa-key"></i> Admin
           </button>
           <button class="write-btn" *ngIf="isAdmin" (click)="openPublisherEvent()">
             <i class="fa-solid fa-pen"></i> Write
@@ -879,6 +887,15 @@ import { ArticleService } from '../../services/article.service';
       color: #cbd5e1;
       border: 1px solid #383838;
     }
+    .mobile-admin-btn.login {
+      background: rgba(232, 71, 42, 0.15);
+      color: #e8472a;
+      border: 1px solid #e8472a;
+    }
+    .mobile-admin-btn.login:hover {
+      background: #e8472a;
+      color: #ffffff;
+    }
     .mobile-admin-btn.login-link {
       background: rgba(255, 255, 255, 0.08);
       color: #94a3b8;
@@ -1347,8 +1364,10 @@ export class HeaderComponent implements OnInit {
   }
 
   checkAdmin() {
-    if (typeof sessionStorage !== 'undefined') {
-      this.isAdmin = sessionStorage.getItem('kaizen_admin_session') === 'true';
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('kaizen_admin_session') === 'true') {
+      this.isAdmin = true;
+    } else if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('kaizen_admin_session') === 'true') {
+      this.isAdmin = true;
     } else {
       this.isAdmin = false;
     }
@@ -1356,6 +1375,7 @@ export class HeaderComponent implements OnInit {
 
   logoutAdmin() {
     if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('kaizen_admin_session');
       localStorage.removeItem('kaizen_admin_active');
     }
     if (typeof sessionStorage !== 'undefined') {
