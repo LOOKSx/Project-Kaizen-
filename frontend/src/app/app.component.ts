@@ -860,13 +860,12 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
               <input
                 type="password"
                 class="admin-pass-input"
-                placeholder="kaizen2026"
+                placeholder="••••••••"
                 [(ngModel)]="adminPassInput"
                 name="adminPassInput"
                 autofocus
                 required
               />
-              <div style="font-size: 11px; color: #888; margin-top: 4px;">Passcode: <code>kaizen2026</code></div>
               <div class="admin-error" *ngIf="adminPassError">
                 <i class="fa-solid fa-circle-exclamation"></i> Incorrect passcode.
               </div>
