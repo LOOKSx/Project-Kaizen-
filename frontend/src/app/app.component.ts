@@ -1937,11 +1937,13 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       background: rgba(0,0,0,0.45);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      z-index: 10000;
+      z-index: 15000;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      padding: 20px;
+      padding: 30px 16px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
     /* ===== ADMIN MODAL — MINIMAL EDITORIAL ===== */
     .admin-modal-card {
@@ -2371,7 +2373,8 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       .hero-btns { flex-direction: column; align-items: stretch; width: 100%; }
       .hero-btn-primary, .hero-btn-secondary { width: 100%; box-sizing: border-box; text-align: center; justify-content: center; }
       .intro-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-      .profile-modal-card, .img-editor-card, .admin-modal-card, .quick-text-editor-modal { width: 95vw; padding: 20px 14px; max-height: 90vh; overflow-y: auto !important; -webkit-overflow-scrolling: touch !important; box-sizing: border-box; }
+      .admin-modal-backdrop { z-index: 15000 !important; padding: 16px 8px; align-items: flex-start; overflow-y: auto !important; -webkit-overflow-scrolling: touch !important; }
+      .profile-modal-card, .img-editor-card, .admin-modal-card, .quick-text-editor-modal, .delete-modal-card { width: 96vw; padding: 32px 18px 24px; max-height: 92vh; margin: 8px auto; overflow-y: auto !important; -webkit-overflow-scrolling: touch !important; box-sizing: border-box; }
       .profile-input, .img-editor-url-input { font-size: 15px; }
       .dest-filter-bar, .country-subfilter-bar { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 8px; scrollbar-width: none; flex-wrap: nowrap !important; }
       .dest-filter-bar::-webkit-scrollbar, .country-subfilter-bar::-webkit-scrollbar { display: none; }
@@ -2387,7 +2390,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     .lightbox-backdrop {
       position: fixed;
       inset: 0;
-      z-index: 2000;
+      z-index: 15000;
       background: rgba(0, 0, 0, 0.92);
       backdrop-filter: blur(10px);
       display: flex;

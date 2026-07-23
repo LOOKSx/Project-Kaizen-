@@ -202,7 +202,7 @@ import { ArticleService } from '../../services/article.service';
       bottom: 0;
       background-color: rgba(0,0,0,0.65);
       backdrop-filter: blur(4px);
-      z-index: 1000;
+      z-index: 15000;
       display: flex;
       justify-content: center;
       align-items: flex-start;
