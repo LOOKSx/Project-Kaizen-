@@ -22,7 +22,7 @@ export class ArticleService {
     this.initLocalStorage();
     this.syncFromCloud();
     if (typeof window !== 'undefined') {
-      setInterval(() => this.syncFromCloud(), 15000);
+      setInterval(() => this.syncFromCloud(), 5000);
     }
   }
 
@@ -32,20 +32,28 @@ export class ArticleService {
       catchError(() => of(null))
     ).subscribe(res => {
       if (res && res.success) {
-        if (res.articles && Array.isArray(res.articles) && res.articles.length > 0) {
-          localStorage.setItem('kaizen_articles', JSON.stringify(res.articles));
-          window.dispatchEvent(new CustomEvent('kaizen:articles-synced'));
+        if (res.articles !== undefined && Array.isArray(res.articles)) {
+          const current = localStorage.getItem('kaizen_articles');
+          const newStr = JSON.stringify(res.articles);
+          if (current !== newStr) {
+            localStorage.setItem('kaizen_articles', newStr);
+            window.dispatchEvent(new CustomEvent('kaizen:articles-synced'));
+          }
         }
         if (res.settings) {
-          localStorage.setItem('kaizen_site_settings', JSON.stringify(res.settings));
-          window.dispatchEvent(new CustomEvent('kaizen:settings-synced'));
+          const currentSetts = localStorage.getItem('kaizen_site_settings');
+          const newSettsStr = JSON.stringify(res.settings);
+          if (currentSetts !== newSettsStr) {
+            localStorage.setItem('kaizen_site_settings', newSettsStr);
+            window.dispatchEvent(new CustomEvent('kaizen:settings-synced'));
+          }
         }
       }
     });
   }
 
   syncToCloud(articles?: Article[], settings?: any) {
-    const list = articles || this.getPersistedArticles('', '');
+    const list = articles !== undefined ? articles : this.getPersistedArticles('', '');
     let setts = settings;
     if (!setts && typeof localStorage !== 'undefined') {
       try {
@@ -55,7 +63,12 @@ export class ArticleService {
     }
     this.http.post<any>(this.syncApiUrl, { articles: list, settings: setts }).pipe(
       catchError(() => of(null))
-    ).subscribe();
+    ).subscribe(res => {
+      if (res && res.success) {
+        window.dispatchEvent(new CustomEvent('kaizen:articles-synced'));
+        window.dispatchEvent(new CustomEvent('kaizen:settings-synced'));
+      }
+    });
   }
 
   getArticles(category: string = '', search: string = ''): Observable<Article[]> {
