@@ -2,7 +2,8 @@
 // (iPhone, Android, Windows, Mac, etc.)
 const https = require('https');
 
-const CLOUD_STORAGE_URL = 'https://jsonblob.com/api/jsonBlob/019f932b-55f6-7921-bd39-1207e80e0712';
+const ARTICLES_BLOB_URL = 'https://jsonblob.com/api/jsonBlob/019f9330-e258-7fc6-8c0f-23f9e7b781f2';
+const SETTINGS_BLOB_URL = 'https://jsonblob.com/api/jsonBlob/019f9330-e400-7bdf-9108-7edaf83958e3';
 
 let inMemoryStore = {
   articles: null,
@@ -10,47 +11,39 @@ let inMemoryStore = {
   timestamp: Date.now()
 };
 
-function fetchFromCloud() {
+function fetchBlob(url) {
   return new Promise((resolve) => {
-    const req = https.get(CLOUD_STORAGE_URL, (res) => {
+    const req = https.get(url, (res) => {
       let body = '';
       res.on('data', (chunk) => body += chunk);
       res.on('end', () => {
         try {
           const parsed = JSON.parse(body);
-          if (parsed) {
-            if (parsed.articles !== undefined) inMemoryStore.articles = parsed.articles;
-            if (parsed.settings !== undefined) inMemoryStore.settings = parsed.settings;
-            if (parsed.timestamp) inMemoryStore.timestamp = parsed.timestamp;
-            return resolve(parsed);
-          }
+          return resolve(parsed);
         } catch (e) {}
-        resolve(inMemoryStore);
+        resolve(null);
       });
     });
-    req.on('error', () => resolve(inMemoryStore));
+    req.on('error', () => resolve(null));
     req.setTimeout(3500, () => {
       req.destroy();
-      resolve(inMemoryStore);
+      resolve(null);
     });
   });
 }
 
-function saveToCloud(data) {
+function saveBlob(url, data) {
   return new Promise((resolve) => {
     const payload = JSON.stringify(data);
-    const req = https.request(CLOUD_STORAGE_URL, {
+    const req = https.request(url, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Content-Length': Buffer.byteLength(payload)
       }
     }, (res) => {
-      let body = '';
-      res.on('data', chunk => body += chunk);
-      res.on('end', () => {
-        resolve(true);
-      });
+      resolve(res.statusCode === 200 || res.statusCode === 201);
     });
     req.on('error', () => resolve(false));
     req.setTimeout(3500, () => {
@@ -79,18 +72,13 @@ module.exports = async (req, res) => {
 
       if (body.articles !== undefined && Array.isArray(body.articles)) {
         inMemoryStore.articles = body.articles;
+        saveBlob(ARTICLES_BLOB_URL, { articles: body.articles, timestamp: now }).catch(() => {});
       }
       if (body.settings !== undefined) {
         inMemoryStore.settings = body.settings;
+        saveBlob(SETTINGS_BLOB_URL, { settings: body.settings, timestamp: now }).catch(() => {});
       }
       inMemoryStore.timestamp = now;
-
-      // Save to persistent cloud storage
-      await saveToCloud({
-        articles: inMemoryStore.articles,
-        settings: inMemoryStore.settings,
-        timestamp: now
-      });
 
       return res.status(200).json({
         success: true,
@@ -103,12 +91,23 @@ module.exports = async (req, res) => {
     }
   }
 
-  // GET request - retrieve latest data from persistent cloud storage
-  const cloudData = await fetchFromCloud();
+  // GET request - retrieve latest data from dual cloud blobs
+  const [artData, settData] = await Promise.all([
+    fetchBlob(ARTICLES_BLOB_URL),
+    fetchBlob(SETTINGS_BLOB_URL)
+  ]);
+
+  if (artData && artData.articles !== undefined) {
+    inMemoryStore.articles = artData.articles;
+  }
+  if (settData && settData.settings !== undefined) {
+    inMemoryStore.settings = settData.settings;
+  }
+
   return res.status(200).json({
     success: true,
-    timestamp: cloudData.timestamp || inMemoryStore.timestamp,
-    articles: cloudData.articles !== undefined ? cloudData.articles : inMemoryStore.articles,
-    settings: cloudData.settings !== undefined ? cloudData.settings : inMemoryStore.settings
+    timestamp: Date.now(),
+    articles: inMemoryStore.articles,
+    settings: inMemoryStore.settings
   });
 };
