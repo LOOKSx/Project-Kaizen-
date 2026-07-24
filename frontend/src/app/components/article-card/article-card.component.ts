@@ -82,6 +82,36 @@ import { ArticleService } from '../../services/article.service';
       transform: translateY(-4px);
     }
 
+    /* Dark Mode Styles */
+    :host-context(body.dark-theme) .post-card {
+      background: #1e1e1e;
+      border-color: #2e2e2e;
+    }
+    :host-context(body.dark-theme) .post-title {
+      color: #ffffff;
+    }
+    :host-context(body.dark-theme) .post-excerpt {
+      color: #cbd5e1;
+    }
+    :host-context(body.dark-theme) .post-footer {
+      border-top-color: #2e2e2e;
+    }
+    :host-context(body.dark-theme) .post-meta {
+      color: #94a3b8;
+    }
+    :host-context(body.dark-theme) .btn-like-pill {
+      background: #2a2a2a;
+      border-color: #383838;
+      color: #cbd5e1;
+    }
+    :host-context(body.dark-theme) .card-admin-actions {
+      border-top-color: #333333;
+    }
+    :host-context(body.dark-theme) .btn-card-edit {
+      background: #333333;
+      color: #ffffff;
+    }
+
     /* Image */
     .post-img-wrap {
       position: relative;

@@ -3001,6 +3001,24 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     .diag-row { display: flex; justify-content: space-between; }
     .diag-key { color: #94a3b8; }
     .diag-val { color: #38bdf8; font-weight: 700; }
+
+    /* Global Dark Mode Overrides for Article Cards */
+    body.dark-theme .post-card {
+      background: #181818 !important;
+      border-color: #2e2e2e !important;
+    }
+    body.dark-theme .post-title {
+      color: #ffffff !important;
+    }
+    body.dark-theme .post-excerpt {
+      color: #cbd5e1 !important;
+    }
+    body.dark-theme .post-footer {
+      border-top-color: #2e2e2e !important;
+    }
+    body.dark-theme .post-meta {
+      color: #94a3b8 !important;
+    }
   `]
 })
 export class AppComponent implements OnInit, OnDestroy {
