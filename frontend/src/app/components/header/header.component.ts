@@ -260,18 +260,22 @@ import { ArticleService } from '../../services/article.service';
           <button class="icon-btn theme-btn" (click)="toggleTheme()" [title]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
             <i class="fa-solid" [class.fa-sun]="isDarkMode" [class.fa-moon]="!isDarkMode"></i>
           </button>
-          <button class="write-btn" *ngIf="isAdmin" (click)="openPublisherEvent()">
-            <i class="fa-solid fa-pen"></i> Write
-          </button>
-          <button class="write-btn profile-btn" *ngIf="isAdmin" (click)="openProfileSettingsEvent()" style="background: #2563eb;" title="Edit Author Profile &amp; Social Links">
-            <i class="fa-solid fa-user-gear"></i> Profile
-          </button>
-          <button class="write-btn status-btn" *ngIf="isAdmin" (click)="openSystemLogsEvent()" style="background: #059669;" title="View System Updates, Cloud Sync &amp; Diagnostics">
-            <i class="fa-solid fa-server"></i> System Logs
-          </button>
-          <button class="admin-logout-btn" *ngIf="isAdmin" (click)="logoutAdmin()" title="Exit Admin Mode">
-            <i class="fa-solid fa-lock"></i> Exit Admin
-          </button>
+          <!-- Admin Compact Action Group -->
+          <div class="admin-action-group" *ngIf="isAdmin">
+            <button class="admin-pill-btn write" (click)="openPublisherEvent()" title="Write New Article">
+              <i class="fa-solid fa-pen"></i> <span>Write</span>
+            </button>
+            <button class="admin-pill-btn profile" (click)="openProfileSettingsEvent()" title="Edit Author Profile &amp; Social Links">
+              <i class="fa-solid fa-user-gear"></i> <span>Profile</span>
+            </button>
+            <button class="admin-pill-btn logs" (click)="openSystemLogsEvent()" title="Real-Time System Updates, Activity Logs &amp; Cloud Diagnostics">
+              <i class="fa-solid fa-server"></i> <span>Logs</span>
+            </button>
+            <button class="admin-pill-btn exit" (click)="logoutAdmin()" title="Exit Admin Mode">
+              <i class="fa-solid fa-lock"></i>
+            </button>
+          </div>
+
           <!-- Mobile hamburger -->
           <button class="hamburger" (click)="mobileOpen = !mobileOpen">
             <i class="fa-solid" [class.fa-bars]="!mobileOpen" [class.fa-xmark]="mobileOpen"></i>
@@ -646,6 +650,42 @@ import { ArticleService } from '../../services/article.service';
       color: #ffffff;
       font-size: 18px;
       padding: 8px;
+    }
+
+    /* ---- Compact Admin Action Group ---- */
+    .admin-action-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 6px;
+    }
+    .admin-pill-btn {
+      padding: 6px 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .admin-pill-btn.write { background: #e8472a; color: #ffffff; }
+    .admin-pill-btn.write:hover { background: #d03b20; }
+    .admin-pill-btn.profile { background: #2563eb; color: #ffffff; }
+    .admin-pill-btn.profile:hover { background: #1d4ed8; }
+    .admin-pill-btn.logs { background: #059669; color: #ffffff; }
+    .admin-pill-btn.logs:hover { background: #047857; }
+    .admin-pill-btn.exit { background: #334155; color: #cbd5e1; padding: 6px 10px; }
+    .admin-pill-btn.exit:hover { background: #e8472a; color: #ffffff; }
+
+    @media (max-width: 1150px) {
+      .admin-pill-btn span { display: none; }
+      .admin-pill-btn { padding: 8px 10px; border-radius: 50%; width: 34px; height: 34px; justify-content: center; }
     }
 
     .desktop-only { display: inline-block; }

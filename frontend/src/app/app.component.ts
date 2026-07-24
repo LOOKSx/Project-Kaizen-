@@ -1248,14 +1248,24 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
           </div>
 
           <!-- Daily Updates Log Section -->
-          <div class="sys-section-title">
-            <i class="fa-solid fa-list-check"></i> DAILY SYSTEM ACTIVITY LOGS (บันทึกการอัปเดตระบบประจำวัน)
+          <div class="sys-section-title" style="display: flex; justify-content: space-between; align-items: center;">
+            <span><i class="fa-solid fa-list-check"></i> REAL-TIME SYSTEM ACTIVITY LOGS (บันทึกกิจกรรมระบบรายชิ้นเรียลไทม์)</span>
+            <button class="btn-clear-logs" (click)="clearSystemLogs()" *ngIf="systemActivityLogs.length > 0" title="Clear Activity Logs">
+              <i class="fa-solid fa-trash-can"></i> ล้างประวัติ
+            </button>
           </div>
 
           <div class="sys-log-feed">
             <div class="sys-log-item" *ngFor="let log of systemActivityLogs">
-              <div class="sys-log-icon" [class.log-success]="log.type === 'SUCCESS'" [class.log-info]="log.type === 'INFO'">
-                <i class="fa-solid" [class.fa-check]="log.type === 'SUCCESS'" [class.fa-info]="log.type === 'INFO'"></i>
+              <div class="sys-log-badge" 
+                   [class.badge-create]="log.type === 'CREATE'"
+                   [class.badge-edit]="log.type === 'EDIT'"
+                   [class.badge-delete]="log.type === 'DELETE'"
+                   [class.badge-avatar]="log.type === 'AVATAR'"
+                   [class.badge-sync]="log.type === 'SYNC'"
+                   [class.badge-settings]="log.type === 'SETTINGS'"
+                   [class.badge-info]="log.type === 'INFO'">
+                {{ log.type }}
               </div>
               <div class="sys-log-content">
                 <div class="sys-log-row">
@@ -1264,6 +1274,10 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
                 </div>
                 <p class="sys-log-desc">{{ log.desc }}</p>
               </div>
+            </div>
+            <div class="no-logs-msg" *ngIf="systemActivityLogs.length === 0">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+              <span>ยังไม่มีบันทึกกิจกรรมใหม่เพิ่มเติม (ระบบพร้อมใช้งาน)</span>
             </div>
           </div>
 
@@ -2920,6 +2934,49 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     .log-success { background: rgba(16, 185, 129, 0.15); color: #10b981; }
     .log-info { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
 
+    .btn-clear-logs {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-clear-logs:hover { background: #ef4444; color: #fff; }
+
+    .sys-log-badge {
+      font-size: 9px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      padding: 3px 6px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .badge-create { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+    .badge-edit { background: rgba(59, 130, 246, 0.15); color: #3b82f6; }
+    .badge-delete { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+    .badge-avatar { background: rgba(168, 85, 247, 0.15); color: #a855f7; }
+    .badge-sync { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+    .badge-settings { background: rgba(14, 165, 233, 0.15); color: #0ea5e9; }
+    .badge-info { background: rgba(100, 116, 139, 0.15); color: #64748b; }
+
+    .no-logs-msg {
+      padding: 24px;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
     .sys-log-content { flex: 1; }
     .sys-log-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
     .sys-log-title { font-size: 12px; font-weight: 800; color: #1e293b; }
@@ -3564,9 +3621,11 @@ export class AppComponent implements OnInit, OnDestroy {
     if (idx !== -1) {
       this.articles[idx] = newArticle;
       this.showToast('Article updated successfully');
+      this.addSystemLog('EDIT', '✏️ แก้ไขบทความสำเร็จ', 'บทความ: "' + newArticle.title + '" | หมวดหมู่: ' + newArticle.category);
     } else {
       this.articles.unshift(newArticle);
       this.showToast('New article created successfully');
+      this.addSystemLog('CREATE', '📝 สร้างบทความใหม่สำเร็จ', 'บทความ: "' + newArticle.title + '" | หมวดหมู่: ' + newArticle.category);
     }
     this.editingArticle = null;
     this.openReader(newArticle);
@@ -3987,11 +4046,11 @@ export class AppComponent implements OnInit, OnDestroy {
   isSyncingNow = false;
   syncSuccessMessage = '';
 
-  systemActivityLogs = [
-    { time: 'Today 15:46:15', type: 'SUCCESS', title: 'Profile Avatar Compression & Timestamp Protection', desc: 'Avatar micro-compressed to 100px 0.50 JPEG (~2KB data URL). Lock timestamp active.' },
-    { time: 'Today 15:30:28', type: 'SUCCESS', title: 'Master Articles Database Synced', desc: '9 full articles populated on Articles Cloud Storage Blob (019f9330-e258-7fc6-8c0f-23f9e7b781f2).' },
-    { time: 'Today 15:22:24', type: 'SUCCESS', title: 'Dual Independent Cloud Blobs Initialized', desc: 'Split Articles Blob and Settings Blob to ensure 0 size limit errors.' },
-    { time: 'Today 15:10:00', type: 'INFO', title: 'Admin Stealth Mode Active', desc: 'Passcode hint removed & secret hash route /#admin active.' }
+  systemActivityLogs: Array<{ id: number; time: string; type: string; title: string; desc: string }> = [
+    { id: 1, time: 'Today 15:46:15', type: 'AVATAR', title: 'Profile Avatar Compression & Timestamp Protection', desc: 'Avatar micro-compressed to 100px 0.50 JPEG (~2KB data URL). Lock timestamp active.' },
+    { id: 2, time: 'Today 15:30:28', type: 'SYNC', title: 'Master Articles Database Synced', desc: '9 full articles populated on Articles Cloud Storage Blob (019f9330-e258-7fc6-8c0f-23f9e7b781f2).' },
+    { id: 3, time: 'Today 15:22:24', type: 'SYNC', title: 'Dual Independent Cloud Blobs Initialized', desc: 'Split Articles Blob and Settings Blob to ensure 0 size limit errors.' },
+    { id: 4, time: 'Today 15:10:00', type: 'INFO', title: 'Admin Stealth Mode Active', desc: 'Passcode hint removed & secret hash route /#admin active.' }
   ];
 
   systemDiagnostics = {
@@ -4002,6 +4061,33 @@ export class AppComponent implements OnInit, OnDestroy {
     syncInterval: '5 seconds (Real-time)',
     errorCount: 0
   };
+
+  addSystemLog(type: 'CREATE' | 'EDIT' | 'DELETE' | 'AVATAR' | 'SYNC' | 'SETTINGS' | 'INFO', title: string, desc: string) {
+    const timeStr = 'Today ' + new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const newLog = {
+      id: Date.now(),
+      time: timeStr,
+      type,
+      title,
+      desc
+    };
+    this.systemActivityLogs.unshift(newLog);
+    if (this.systemActivityLogs.length > 60) {
+      this.systemActivityLogs = this.systemActivityLogs.slice(0, 60);
+    }
+    if (typeof localStorage !== 'undefined') {
+      try {
+        localStorage.setItem('kaizen_realtime_system_logs', JSON.stringify(this.systemActivityLogs));
+      } catch (e) {}
+    }
+  }
+
+  clearSystemLogs() {
+    this.systemActivityLogs = [];
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('kaizen_realtime_system_logs');
+    }
+  }
 
   forceManualCloudSync() {
     this.isSyncingNow = true;
@@ -4041,12 +4127,7 @@ export class AppComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.isSyncingNow = false;
       this.syncSuccessMessage = '✅ บังคับซิงก์ข้อมูลสำเร็จ! ข้อมูลบทความและโปรไฟล์ล่าสุดถูกส่งขึ้น Cloud Storage เรียบร้อยแล้ว';
-      this.systemActivityLogs.unshift({
-        time: 'Just now (' + new Date().toLocaleTimeString('th-TH') + ')',
-        type: 'SUCCESS',
-        title: 'Manual Forced Cloud Push Executed',
-        desc: 'All articles & site settings pushed to Cloud Database successfully.'
-      });
+      this.addSystemLog('SYNC', '🌐 บังคับซิงก์ข้อมูลขึ้นคลาวด์สำเร็จ (Force Cloud Push)', 'อัปเดตบทความทั้งหมด (' + this.articles.length + ' บทความ) และการตั้งค่าเข้าสู่ Cloud Storage (200 OK)');
     }, 1200);
   }
 
@@ -4088,6 +4169,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.saveSiteSettings();
     this.showProfileSettingsModal = false;
     this.showToast('Profile & Contact Details updated successfully!');
+    this.addSystemLog('SETTINGS', '👤 อัปเดตข้อมูลผู้เขียน & Social Links', 'ชื่อผู้เขียน: ' + this.authorName + ' | ตำแหน่ง: ' + this.authorTitle);
   }
 
   onAvatarDragOver(e: DragEvent) {
@@ -4122,6 +4204,7 @@ export class AppComponent implements OnInit, OnDestroy {
   processAvatarFile(file: File) {
     this.compressImage(file, 100, 0.50).then(compressed => {
       this.tempAuthorAvatar = compressed;
+      this.addSystemLog('AVATAR', '🖼️ อัปเดตรูปโปรไฟล์ผู้เขียนจากไฟล์สำเร็จ', 'บีบอัดภาพ Micro-JPEG (100px) ~2KB ซิงก์เข้าคลาวด์');
     });
   }
 
@@ -4217,6 +4300,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.isDeleting = false;
         this.deleteProgress = 0;
         this.showToast(`"${target.title}" was deleted permanently.`);
+        this.addSystemLog('DELETE', '🗑️ ลบบทความถาวรสำเร็จ', 'ลบบทความ: "' + target.title + '" (ID #' + target.id + ')');
       }, 150);
     });
   }
