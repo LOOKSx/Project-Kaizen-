@@ -100,7 +100,7 @@ module.exports = async (req, res) => {
   if (artData && artData.articles !== undefined) {
     inMemoryStore.articles = artData.articles;
   }
-  if (settData && settData.settings !== undefined) {
+  if (settData && settData.settings !== undefined && (settData.timestamp || 0) >= inMemoryStore.timestamp - 1000) {
     inMemoryStore.settings = settData.settings;
   }
 
