@@ -228,6 +228,9 @@ import { ArticleService } from '../../services/article.service';
                 <button class="mobile-admin-btn profile" (click)="openProfileSettingsEvent(); mobileOpen = false;">
                   <i class="fa-solid fa-user-gear"></i> Edit Profile &amp; Social Links
                 </button>
+                <button class="mobile-admin-btn status" (click)="openSystemLogsEvent(); mobileOpen = false;" style="background: #059669; color: #fff;">
+                  <i class="fa-solid fa-server"></i> System Updates &amp; Diagnostics
+                </button>
                 <button class="mobile-admin-btn logout" (click)="logoutAdmin(); mobileOpen = false;">
                   <i class="fa-solid fa-lock"></i> Exit Admin Mode
                 </button>
@@ -262,6 +265,9 @@ import { ArticleService } from '../../services/article.service';
           </button>
           <button class="write-btn profile-btn" *ngIf="isAdmin" (click)="openProfileSettingsEvent()" style="background: #2563eb;" title="Edit Author Profile &amp; Social Links">
             <i class="fa-solid fa-user-gear"></i> Profile
+          </button>
+          <button class="write-btn status-btn" *ngIf="isAdmin" (click)="openSystemLogsEvent()" style="background: #059669;" title="View System Updates, Cloud Sync &amp; Diagnostics">
+            <i class="fa-solid fa-server"></i> System Logs
           </button>
           <button class="admin-logout-btn" *ngIf="isAdmin" (click)="logoutAdmin()" title="Exit Admin Mode">
             <i class="fa-solid fa-lock"></i> Exit Admin
@@ -1383,6 +1389,10 @@ export class HeaderComponent implements OnInit {
 
   openProfileSettingsEvent() {
     window.dispatchEvent(new CustomEvent('kaizen:open-profile-settings'));
+  }
+
+  openSystemLogsEvent() {
+    window.dispatchEvent(new CustomEvent('kaizen:open-system-logs'));
   }
 
   triggerAdminPassModal() {
