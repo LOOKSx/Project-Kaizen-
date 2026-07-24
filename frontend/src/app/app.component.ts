@@ -1523,6 +1523,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       object-fit: cover;
       border-radius: 10px;
       box-shadow: 16px 16px 0 #e8472a22;
+      image-rendering: -webkit-optimize-contrast;
     }
     .intro-author-card {
       position: absolute;
@@ -4205,9 +4206,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   processAvatarFile(file: File) {
-    this.compressImage(file, 300, 0.85).then(compressed => {
+    this.compressImage(file, 600, 0.88).then(compressed => {
       this.tempAuthorAvatar = compressed;
-      this.addSystemLog('AVATAR', '🖼️ อัปเดตรูปโปรไฟล์ผู้เขียนคมชัดสูง (HD 300px 0.85 Quality)', 'บีบอัดภาพ HD Sharpness ซิงก์เข้าคลาวด์');
+      this.addSystemLog('AVATAR', '🖼️ อัปเดตรูปภาพโปรไฟล์คมชัดระดับ Ultra HD (600px 0.88 Quality)', 'บีบอัดภาพ Ultra-HD Studio Sharpness ซิงก์เข้าคลาวด์');
     });
   }
 
