@@ -3795,7 +3795,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   processAvatarFile(file: File) {
-    this.compressImage(file, 250, 0.75).then(compressed => {
+    this.compressImage(file, 150, 0.60).then(compressed => {
       this.tempAuthorAvatar = compressed;
     });
   }
