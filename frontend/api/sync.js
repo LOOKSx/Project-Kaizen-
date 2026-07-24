@@ -72,11 +72,11 @@ module.exports = async (req, res) => {
 
       if (body.articles !== undefined && Array.isArray(body.articles)) {
         inMemoryStore.articles = body.articles;
-        saveBlob(ARTICLES_BLOB_URL, { articles: body.articles, timestamp: now }).catch(() => {});
+        await saveBlob(ARTICLES_BLOB_URL, { articles: body.articles, timestamp: now }).catch(() => {});
       }
       if (body.settings !== undefined) {
         inMemoryStore.settings = body.settings;
-        saveBlob(SETTINGS_BLOB_URL, { settings: body.settings, timestamp: now }).catch(() => {});
+        await saveBlob(SETTINGS_BLOB_URL, { settings: body.settings, timestamp: now }).catch(() => {});
       }
       inMemoryStore.timestamp = now;
 
@@ -106,7 +106,7 @@ module.exports = async (req, res) => {
 
   return res.status(200).json({
     success: true,
-    timestamp: Date.now(),
+    timestamp: inMemoryStore.timestamp,
     articles: inMemoryStore.articles,
     settings: inMemoryStore.settings
   });

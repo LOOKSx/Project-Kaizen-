@@ -47,11 +47,14 @@ export class ArticleService {
         }
 
         if (res.settings && Object.keys(res.settings).length > 0) {
-          const currentSetts = localStorage.getItem('kaizen_site_settings');
-          const newSettsStr = JSON.stringify(res.settings);
-          if (currentSetts !== newSettsStr) {
-            localStorage.setItem('kaizen_site_settings', newSettsStr);
-            window.dispatchEvent(new CustomEvent('kaizen:settings-synced'));
+          const lastModified = parseInt(localStorage.getItem('kaizen_settings_last_modified') || '0', 10);
+          if (!lastModified || (res.timestamp && res.timestamp >= lastModified - 1000)) {
+            const currentSetts = localStorage.getItem('kaizen_site_settings');
+            const newSettsStr = JSON.stringify(res.settings);
+            if (currentSetts !== newSettsStr) {
+              localStorage.setItem('kaizen_site_settings', newSettsStr);
+              window.dispatchEvent(new CustomEvent('kaizen:settings-synced'));
+            }
           }
         }
       }
@@ -59,6 +62,9 @@ export class ArticleService {
   }
 
   syncToCloud(articles?: Article[], settings?: any) {
+    if (typeof localStorage !== 'undefined' && settings) {
+      localStorage.setItem('kaizen_settings_last_modified', Date.now().toString());
+    }
     const list = articles !== undefined ? articles : this.getPersistedArticles('', '');
     let setts = settings;
     if (!setts && typeof localStorage !== 'undefined') {
@@ -71,6 +77,9 @@ export class ArticleService {
       catchError(() => of(null))
     ).subscribe(res => {
       if (res && res.success) {
+        if (res.timestamp && typeof localStorage !== 'undefined') {
+          localStorage.setItem('kaizen_settings_last_modified', res.timestamp.toString());
+        }
         window.dispatchEvent(new CustomEvent('kaizen:articles-synced'));
         window.dispatchEvent(new CustomEvent('kaizen:settings-synced'));
       }
