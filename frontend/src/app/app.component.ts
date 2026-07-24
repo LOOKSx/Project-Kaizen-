@@ -1928,7 +1928,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     /* ===== ABOUT ===== */
     .about-layout { display: grid; grid-template-columns: 300px 1fr; gap: 60px; align-items: flex-start; }
     .author-card { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 28px 24px; text-align: center; position: sticky; top: 90px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-    .author-avatar-lg { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 4px solid #e8472a; margin-bottom: 14px; }
+    .author-avatar-lg { width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 4px solid #e8472a; margin-bottom: 14px; image-rendering: -webkit-optimize-contrast; }
     .author-name { font-family: 'Lato', sans-serif; font-size: 20px; font-weight: 800; color: #111; margin: 0 0 4px; }
     .author-title { font-size: 13px; color: #888; margin: 0 0 20px; }
     .author-stats { display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; padding: 16px 0; border-top: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; }
@@ -2730,6 +2730,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       object-fit: cover;
       border: 3px solid #e8472a;
       flex-shrink: 0;
+      image-rendering: -webkit-optimize-contrast;
     }
     .avatar-actions-col { flex: 1; display: flex; flex-direction: column; gap: 8px; }
     .drag-upload-box {
@@ -3773,6 +3774,8 @@ export class AppComponent implements OnInit, OnDestroy {
           canvas.height = height;
           const ctx = canvas.getContext('2d');
           if (ctx) {
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
             ctx.drawImage(img, 0, 0, width, height);
             resolve(canvas.toDataURL('image/jpeg', quality));
           } else {
@@ -4202,9 +4205,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   processAvatarFile(file: File) {
-    this.compressImage(file, 100, 0.50).then(compressed => {
+    this.compressImage(file, 300, 0.85).then(compressed => {
       this.tempAuthorAvatar = compressed;
-      this.addSystemLog('AVATAR', '🖼️ อัปเดตรูปโปรไฟล์ผู้เขียนจากไฟล์สำเร็จ', 'บีบอัดภาพ Micro-JPEG (100px) ~2KB ซิงก์เข้าคลาวด์');
+      this.addSystemLog('AVATAR', '🖼️ อัปเดตรูปโปรไฟล์ผู้เขียนคมชัดสูง (HD 300px 0.85 Quality)', 'บีบอัดภาพ HD Sharpness ซิงก์เข้าคลาวด์');
     });
   }
 
