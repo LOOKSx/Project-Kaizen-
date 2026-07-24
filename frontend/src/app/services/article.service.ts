@@ -32,15 +32,21 @@ export class ArticleService {
       catchError(() => of(null))
     ).subscribe(res => {
       if (res && res.success) {
-        if (res.articles !== undefined && Array.isArray(res.articles)) {
+        if (res.articles && Array.isArray(res.articles) && res.articles.length > 0) {
           const current = localStorage.getItem('kaizen_articles');
           const newStr = JSON.stringify(res.articles);
           if (current !== newStr) {
             localStorage.setItem('kaizen_articles', newStr);
             window.dispatchEvent(new CustomEvent('kaizen:articles-synced'));
           }
+        } else if (res.articles === null || (Array.isArray(res.articles) && res.articles.length === 0)) {
+          const local = this.getPersistedArticles('', '');
+          if (local && local.length > 0) {
+            this.syncToCloud(local);
+          }
         }
-        if (res.settings) {
+
+        if (res.settings && Object.keys(res.settings).length > 0) {
           const currentSetts = localStorage.getItem('kaizen_site_settings');
           const newSettsStr = JSON.stringify(res.settings);
           if (currentSetts !== newSettsStr) {
@@ -740,8 +746,20 @@ For travel, the best camera is the one you have with you. A Sony A7C II for seri
   }
 
   public getPersistedArticles(category: string = '', search: string = ''): Article[] {
-    const dataStr = localStorage.getItem('kaizen_articles') || '[]';
-    const list: Article[] = JSON.parse(dataStr);
+    const dataStr = typeof localStorage !== 'undefined' ? localStorage.getItem('kaizen_articles') : null;
+    let list: Article[] = [];
+    try {
+      if (dataStr) list = JSON.parse(dataStr);
+    } catch (e) {}
+
+    if (!list || list.length === 0) {
+      this.initLocalStorage();
+      const retryStr = typeof localStorage !== 'undefined' ? localStorage.getItem('kaizen_articles') : null;
+      try {
+        if (retryStr) list = JSON.parse(retryStr);
+      } catch (e) {}
+    }
+
     return list.filter(a => {
       const matchCat = !category || a.category.toLowerCase() === category.toLowerCase();
       const matchSearch = !search || 
