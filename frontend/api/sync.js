@@ -7,8 +7,9 @@ const SETTINGS_BLOB_URL = 'https://jsonblob.com/api/jsonBlob/019f9330-e400-7bdf-
 
 let inMemoryStore = {
   articles: null,
+  articlesTimestamp: 0,
   settings: null,
-  timestamp: Date.now()
+  settingsTimestamp: 0
 };
 
 function fetchBlob(url) {
@@ -70,15 +71,16 @@ module.exports = async (req, res) => {
       const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
       const now = Date.now();
 
-      if (body.articles !== undefined && Array.isArray(body.articles)) {
+      if (body.articles !== undefined && Array.isArray(body.articles) && body.articles.length >= 5) {
         inMemoryStore.articles = body.articles;
+        inMemoryStore.articlesTimestamp = now;
         await saveBlob(ARTICLES_BLOB_URL, { articles: body.articles, timestamp: now }).catch(() => {});
       }
       if (body.settings !== undefined) {
         inMemoryStore.settings = body.settings;
+        inMemoryStore.settingsTimestamp = now;
         await saveBlob(SETTINGS_BLOB_URL, { settings: body.settings, timestamp: now }).catch(() => {});
       }
-      inMemoryStore.timestamp = now;
 
       return res.status(200).json({
         success: true,
@@ -97,16 +99,25 @@ module.exports = async (req, res) => {
     fetchBlob(SETTINGS_BLOB_URL)
   ]);
 
-  if (artData && artData.articles !== undefined) {
-    inMemoryStore.articles = artData.articles;
+  if (artData && artData.articles !== undefined && Array.isArray(artData.articles) && artData.articles.length >= 5) {
+    const blobTs = artData.timestamp || 0;
+    if (blobTs >= inMemoryStore.articlesTimestamp || !inMemoryStore.articles) {
+      inMemoryStore.articles = artData.articles;
+      inMemoryStore.articlesTimestamp = blobTs;
+    }
   }
-  if (settData && settData.settings !== undefined && (settData.timestamp || 0) >= inMemoryStore.timestamp - 1000) {
-    inMemoryStore.settings = settData.settings;
+
+  if (settData && settData.settings !== undefined) {
+    const blobTs = settData.timestamp || 0;
+    if (blobTs >= inMemoryStore.settingsTimestamp || !inMemoryStore.settings) {
+      inMemoryStore.settings = settData.settings;
+      inMemoryStore.settingsTimestamp = blobTs;
+    }
   }
 
   return res.status(200).json({
     success: true,
-    timestamp: inMemoryStore.timestamp,
+    timestamp: Math.max(inMemoryStore.articlesTimestamp, inMemoryStore.settingsTimestamp),
     articles: inMemoryStore.articles,
     settings: inMemoryStore.settings
   });
