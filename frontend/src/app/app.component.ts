@@ -2933,16 +2933,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.loadData();
     this.restoreActivePageState();
 
-    // Immediately push local settings to cloud so any device's latest profile avatar/settings upload globally
-    if (typeof localStorage !== 'undefined') {
-      try {
-        const saved = localStorage.getItem('kaizen_site_settings');
-        if (saved) {
-          const settings = JSON.parse(saved);
-          this.articleService.syncToCloud(undefined, settings);
-        }
-      } catch (e) {}
-    }
 
     this.articleService.selectedCategory$.subscribe(cat => {
       this.activeCategory = cat;
