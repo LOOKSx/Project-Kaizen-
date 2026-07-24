@@ -32,16 +32,16 @@ export class ArticleService {
       catchError(() => of(null))
     ).subscribe(res => {
       if (res && res.success) {
-        if (res.articles && Array.isArray(res.articles) && res.articles.length > 0) {
+        if (res.articles && Array.isArray(res.articles) && res.articles.length >= 5) {
           const current = localStorage.getItem('kaizen_articles');
           const newStr = JSON.stringify(res.articles);
           if (current !== newStr) {
             localStorage.setItem('kaizen_articles', newStr);
             window.dispatchEvent(new CustomEvent('kaizen:articles-synced'));
           }
-        } else if (res.articles === null || (Array.isArray(res.articles) && res.articles.length === 0)) {
+        } else if (!res.articles || (Array.isArray(res.articles) && res.articles.length < 5)) {
           const local = this.getPersistedArticles('', '');
-          if (local && local.length > 0) {
+          if (local && local.length >= 5) {
             this.syncToCloud(local);
           }
         }
@@ -761,7 +761,7 @@ For travel, the best camera is the one you have with you. A Sony A7C II for seri
       if (dataStr) list = JSON.parse(dataStr);
     } catch (e) {}
 
-    if (!list || list.length === 0) {
+    if (!list || list.length < 5) {
       this.initLocalStorage();
       const retryStr = typeof localStorage !== 'undefined' ? localStorage.getItem('kaizen_articles') : null;
       try {
