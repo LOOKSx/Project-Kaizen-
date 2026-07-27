@@ -3639,16 +3639,27 @@ export class AppComponent implements OnInit, OnDestroy {
   handleArticlePublished(newArticle: Article) {
     const idx = this.articles.findIndex(a => a.id === newArticle.id);
     if (idx !== -1) {
-      this.articles[idx] = newArticle;
+      const updated = [...this.articles];
+      updated[idx] = newArticle;
+      this.articles = updated;
       this.showToast('Article updated successfully');
       this.addSystemLog('EDIT', '✏️ แก้ไขบทความสำเร็จ', 'บทความ: "' + newArticle.title + '" | หมวดหมู่: ' + newArticle.category);
     } else {
-      this.articles.unshift(newArticle);
+      this.articles = [newArticle, ...this.articles];
       this.showToast('New article created successfully');
       this.addSystemLog('CREATE', '📝 สร้างบทความใหม่สำเร็จ', 'บทความ: "' + newArticle.title + '" | หมวดหมู่: ' + newArticle.category);
     }
     this.editingArticle = null;
     this.openReader(newArticle);
+
+    if (typeof localStorage !== 'undefined') {
+      try {
+        localStorage.setItem('kaizen_articles', JSON.stringify(this.articles));
+      } catch (e) {}
+    }
+    setTimeout(() => {
+      this.articleService.syncToCloud(this.articles);
+    }, 50);
   }
 
   initTheme() {
@@ -4007,7 +4018,9 @@ export class AppComponent implements OnInit, OnDestroy {
         timeline: this.timeline
       };
       localStorage.setItem('kaizen_site_settings', JSON.stringify(settings));
-      this.articleService.syncToCloud(this.articles, settings);
+      setTimeout(() => {
+        this.articleService.syncToCloud(this.articles, settings);
+      }, 50);
     } catch (e) {
       console.warn('LocalStorage save warning:', e);
     }
