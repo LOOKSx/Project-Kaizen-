@@ -825,7 +825,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
           </div>
         </div>
         <div class="footer-bottom">
-          <p>© 2026 Kaizen Personal Blog — Powered by Golang + Angular</p>
+          <p>© 2026 Kaizen Personal Blog — All Rights Reserved</p>
         </div>
       </footer>
 

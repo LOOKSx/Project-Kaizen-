@@ -71,7 +71,7 @@ module.exports = async (req, res) => {
       const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
       const now = Date.now();
 
-      if (body.articles !== undefined && Array.isArray(body.articles) && body.articles.length >= 5) {
+      if (body.articles !== undefined && Array.isArray(body.articles)) {
         inMemoryStore.articles = body.articles;
         inMemoryStore.articlesTimestamp = now;
         await saveBlob(ARTICLES_BLOB_URL, { articles: body.articles, timestamp: now }).catch(() => {});
