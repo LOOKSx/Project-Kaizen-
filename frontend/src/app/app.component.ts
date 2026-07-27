@@ -580,17 +580,23 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
             <div class="dest-filter-bar">
               <button class="dest-pill" *ngFor="let g of galleryTags" [class.active]="galleryFilter===g" (click)="galleryFilter=g">{{ g }}</button>
             </div>
-            <div class="gallery-grid">
+            <div class="gallery-grid" *ngIf="filteredPhotos.length > 0">
               <div class="gallery-item" *ngFor="let p of filteredPhotos; let idx = index" [class.tall]="p.tall" (click)="openLightbox(idx)" style="cursor: pointer;">
                 <img [src]="p.url" [alt]="p.caption" class="gallery-img" loading="lazy" />
-                <button class="cat-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(p, 'url', 'Gallery Photo: ' + p.caption)">
-                  <i class="fa-solid fa-camera"></i>
-                </button>
                 <div class="gallery-overlay">
                   <p class="gallery-caption">{{ p.caption }}</p>
                   <span class="gallery-tag">{{ p.tag }}</span>
+                  <span class="gallery-read-btn" (click)="$event.stopPropagation(); openArticleFromGalleryPhoto(p)" style="margin-top: 6px; font-size: 11px; font-weight: 700; color: #ffffff; background: rgba(16, 185, 129, 0.9); padding: 3px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">
+                    <i class="fa-solid fa-book-open"></i> อ่านบทความ
+                  </span>
                 </div>
               </div>
+            </div>
+            <div class="empty-state" *ngIf="filteredPhotos.length === 0" style="padding: 60px 20px; text-align: center; background: var(--color-light); border-radius: 12px; margin-top: 20px;">
+              <i class="fa-solid fa-images" style="font-size: 44px; color: var(--color-accent); margin-bottom: 14px;"></i>
+              <h3 style="margin-bottom: 8px;">ยังไม่มีรูปภาพใน GALLERY</h3>
+              <p style="color: var(--color-muted); margin-bottom: 20px;">รูปภาพใน GALLERY จะแสดงเฉพาะภาพที่อยู่ในบทความต่างๆ โดยอัตโนมัติ</p>
+              <button class="btn btn-primary" (click)="navTo('blog')" style="cursor: pointer;">สำรวจบทความทั้งหมด</button>
             </div>
           </div>
         </main>
@@ -1032,9 +1038,9 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
 
           <!-- Caption & Tag Footer -->
           <div class="lightbox-footer" *ngIf="activeLightboxPhoto">
-            <div class="lightbox-caption-group" style="position: relative; padding-right: 70px;">
-              <button class="hero-edit-img-btn" *ngIf="isAdmin" (click)="$event.stopPropagation(); openImageEditorItem(activeLightboxPhoto, 'url', 'Gallery Photo: ' + activeLightboxPhoto.caption)" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); font-size: 10px; padding: 4px 10px; background: #2563eb; color: #ffffff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer;" title="Edit Photo &amp; Caption">
-                <i class="fa-solid fa-pen"></i> Edit
+            <div class="lightbox-caption-group" style="position: relative; padding-right: 140px;">
+              <button (click)="$event.stopPropagation(); openArticleFromGalleryPhoto(activeLightboxPhoto)" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); font-size: 11px; padding: 6px 14px; background: #10b981; color: #ffffff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;" title="อ่านบทความที่มาของภาพนี้">
+                <i class="fa-solid fa-book-open"></i> อ่านบทความ
               </button>
               <span class="lightbox-tag">{{ activeLightboxPhoto.tag }}</span>
               <h3 class="lightbox-caption">{{ activeLightboxPhoto.caption }}</h3>
@@ -3135,26 +3141,77 @@ export class AppComponent implements OnInit, OnDestroy {
     return this.allDestinations.filter(d => d.region === this.destFilter);
   }
 
-  // Gallery
+  // Dynamic Gallery extracted exclusively from Published Articles
   galleryFilter = 'All';
-  galleryTags = ['All', 'Travel', 'Nature', 'Architecture', 'Street', 'Golden Hour'];
-  photos = [
-    { url: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=600&q=80', caption: 'Tegallalang Rice Terraces, Bali', tag: 'Travel', tall: true },
-    { url: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=600&q=80', caption: 'Fushimi Inari, Kyoto', tag: 'Travel', tall: false },
-    { url: 'https://images.unsplash.com/photo-1504893524553-b855bce32c67?auto=format&fit=crop&w=600&q=80', caption: 'Vatnajökull Glacier, Iceland', tag: 'Nature', tall: false },
-    { url: 'https://images.unsplash.com/photo-1452587925148-ce544e77e70d?auto=format&fit=crop&w=600&q=80', caption: 'Golden Hour, Santorini', tag: 'Golden Hour', tall: true },
-    { url: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=600&q=80', caption: 'Oia Village, Santorini', tag: 'Architecture', tall: false },
-    { url: 'https://images.unsplash.com/photo-1516802273409-68526ee1bdd6?auto=format&fit=crop&w=600&q=80', caption: 'Doi Suthep Temple, Chiang Mai', tag: 'Travel', tall: false },
-    { url: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&w=600&q=80', caption: 'Serengeti Sunrise, Tanzania', tag: 'Golden Hour', tall: true },
-    { url: 'https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=600&q=80', caption: 'Machu Picchu at Dawn, Peru', tag: 'Travel', tall: false },
-    { url: 'https://images.unsplash.com/photo-1533587851505-d119e13fa0d7?auto=format&fit=crop&w=600&q=80', caption: 'Positano, Amalfi Coast', tag: 'Architecture', tall: false },
-    { url: 'https://images.unsplash.com/photo-1531761535209-180857e963b9?auto=format&fit=crop&w=600&q=80', caption: 'Torres del Paine, Patagonia', tag: 'Nature', tall: true },
-    { url: 'https://images.unsplash.com/photo-1499678329028-101435549a4e?auto=format&fit=crop&w=600&q=80', caption: 'Street Life, Bangkok', tag: 'Street', tall: false },
-    { url: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=600&q=80', caption: 'Morning Run, Singapore', tag: 'Street', tall: false },
-  ];
+
+  get photos(): Array<{ url: string; caption: string; tag: string; tall: boolean; articleId?: number }> {
+    const list: Array<{ url: string; caption: string; tag: string; tall: boolean; articleId?: number }> = [];
+    const seenUrls = new Set<string>();
+
+    (this.articles || []).forEach((a, idx) => {
+      // 1. Cover Image from published article
+      if (a.cover_image && !seenUrls.has(a.cover_image)) {
+        seenUrls.add(a.cover_image);
+        list.push({
+          url: a.cover_image,
+          caption: a.title,
+          tag: a.category || 'Travel',
+          tall: idx % 3 === 0,
+          articleId: a.id
+        });
+      }
+
+      // 2. Embedded images inside published article content
+      if (a.content) {
+        const imgRegex = /(?:!\[.*?\]\((https?:\/\/[^\s\)]+)\)|<img[^>]+src=["'](https?:\/\/[^"']+)["'])/gi;
+        let match: RegExpExecArray | null;
+        while ((match = imgRegex.exec(a.content)) !== null) {
+          const imgUrl = match[1] || match[2];
+          if (imgUrl && !seenUrls.has(imgUrl)) {
+            seenUrls.add(imgUrl);
+            list.push({
+              url: imgUrl,
+              caption: a.title,
+              tag: a.category || 'Travel',
+              tall: list.length % 3 === 0,
+              articleId: a.id
+            });
+          }
+        }
+      }
+    });
+
+    return list;
+  }
+
+  get galleryTags(): string[] {
+    const tags = new Set<string>(['All']);
+    this.photos.forEach(p => {
+      if (p.tag) tags.add(p.tag);
+    });
+    return Array.from(tags);
+  }
+
   get filteredPhotos() {
     if (this.galleryFilter === 'All') return this.photos;
-    return this.photos.filter(p => p.tag === this.galleryFilter);
+    const filterLower = this.galleryFilter.toLowerCase();
+    return this.photos.filter(p => p.tag.toLowerCase().includes(filterLower));
+  }
+
+  openArticleFromGalleryPhoto(photo: any) {
+    if (!photo) return;
+    this.closeLightbox();
+    if (photo.articleId) {
+      const art = (this.articles || []).find(a => a.id === photo.articleId);
+      if (art) {
+        this.openReader(art);
+        return;
+      }
+    }
+    const artByTitle = (this.articles || []).find(a => a.title === photo.caption);
+    if (artByTitle) {
+      this.openReader(artByTitle);
+    }
   }
 
   // Gallery Lightbox State & Navigation
@@ -4041,7 +4098,6 @@ export class AppComponent implements OnInit, OnDestroy {
         if (parsed.heroSlides && parsed.heroSlides.length) this.heroSlides = parsed.heroSlides;
         if (parsed.categoryPageItems && parsed.categoryPageItems.length) this.categoryPageItems = parsed.categoryPageItems;
         if (parsed.allDestinations && parsed.allDestinations.length) this.allDestinations = parsed.allDestinations;
-        if (parsed.photos && parsed.photos.length) this.photos = parsed.photos;
         if (parsed.authorName) this.authorName = parsed.authorName;
         if (parsed.authorTitle) this.authorTitle = parsed.authorTitle;
         if (parsed.authorAvatar) this.authorAvatar = parsed.authorAvatar;
