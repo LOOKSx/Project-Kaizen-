@@ -3,7 +3,7 @@
 const https = require('https');
 
 const ARTICLES_BLOB_URL = 'https://jsonblob.com/api/jsonBlob/019fb5ce-d3ba-718f-b55b-4600cd0e95b7';
-const SETTINGS_BLOB_URL = 'https://jsonblob.com/api/jsonBlob/019f9330-e400-7bdf-9108-7edaf83958e3';
+const SETTINGS_BLOB_URL = 'https://jsonblob.com/api/jsonBlob/019fb5da-bb67-77a8-80db-4cd8099ac0bd';
 
 let inMemoryStore = {
   articles: null,

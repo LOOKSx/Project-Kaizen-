@@ -291,7 +291,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
       <!-- ================================================ -->
       <ng-container *ngIf="currentPage === 'blog'">
         <!-- Blog Page Hero -->
-        <div class="page-hero" [style.background-image]="'url(' + blogHeroImg + ')'">
+        <div class="page-hero" [style.background-image]="'url(' + (blogHeroImg || 'https://images.unsplash.com/photo-1499750310107-5fef28a66936?auto=format&fit=crop&w=1400&q=80') + ')'">
           <div class="hero-admin-actions" *ngIf="isAdmin">
             <button class="hero-edit-img-btn" (click)="openImageEditor('blogHeroImg', 'Blog Hero Banner')" title="Change hero image">
               <i class="fa-solid fa-camera"></i> Change Image
@@ -2479,7 +2479,7 @@ import { ArticleEditorComponent } from './components/article-editor/article-edit
     @media (max-width: 600px) {
       html, body { max-width: 100vw; overflow-x: hidden; }
       .container { padding: 0 14px; }
-      .page-hero { height: 280px; margin-top: 62px; }
+      .page-hero { height: 280px; margin-top: 62px; background-size: cover !important; background-position: center center !important; }
       .page-hero-title { font-size: 28px; letter-spacing: -0.5px; }
       .page-hero-sub { font-size: 13px; line-height: 1.5; }
       .hero-admin-actions { top: 10px; right: 10px; gap: 6px; }
