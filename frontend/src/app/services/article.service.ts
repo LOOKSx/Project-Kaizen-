@@ -271,14 +271,9 @@ export class ArticleService {
   private initLocalStorage() {
     if (typeof localStorage === 'undefined') return;
     const stored = localStorage.getItem('kaizen_articles');
-    const version = localStorage.getItem('kaizen_articles_version');
-    
-    let parsed: any[] = [];
-    try {
-      if (stored) parsed = JSON.parse(stored);
-    } catch (e) {}
+    const initialized = localStorage.getItem('kaizen_articles_initialized');
 
-    if (!stored || version !== 'v8_master_sync' || !Array.isArray(parsed) || parsed.length === 0) {
+    if (stored === null && !initialized) {
       const masterArticles: Article[] = [
         {
           id: 4,
@@ -359,7 +354,7 @@ export class ArticleService {
         }
       ];
       localStorage.setItem('kaizen_articles', JSON.stringify(masterArticles));
-      localStorage.setItem('kaizen_articles_version', 'v8_master_sync');
+      localStorage.setItem('kaizen_articles_initialized', 'true');
     }
   }
 
@@ -369,14 +364,6 @@ export class ArticleService {
     try {
       if (dataStr) list = JSON.parse(dataStr);
     } catch (e) {}
-
-    if (!list || list.length === 0) {
-      this.initLocalStorage();
-      const retryStr = typeof localStorage !== 'undefined' ? localStorage.getItem('kaizen_articles') : null;
-      try {
-        if (retryStr) list = JSON.parse(retryStr);
-      } catch (e) {}
-    }
 
     return list.filter(a => {
       const matchCat = !category || a.category.toLowerCase() === category.toLowerCase();
