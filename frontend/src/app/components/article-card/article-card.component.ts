@@ -309,6 +309,8 @@ import { ArticleService } from '../../services/article.service';
 export class ArticleCardComponent {
   @Input() article!: Article;
   @Input() isAdmin: boolean = false;
+  @Input() authorAvatar: string = '';
+  @Input() authorName: string = '';
   @Output() onSelect = new EventEmitter<Article>();
   @Output() onEdit = new EventEmitter<Article>();
   @Output() onDelete = new EventEmitter<Article>();

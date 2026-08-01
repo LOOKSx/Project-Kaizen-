@@ -34,9 +34,9 @@ import { ArticleService } from '../../services/article.service';
 
             <div class="reader-meta">
               <div class="author-meta">
-                <img [src]="article.author_avatar" [alt]="article.author_name" class="author-avatar-lg">
+                <img [src]="authorAvatar || article.author_avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'" [alt]="authorName || article.author_name || 'Kaizen'" class="author-avatar-lg">
                 <div>
-                  <span class="author-name-lg">{{ article.author_name }}</span>
+                  <span class="author-name-lg">{{ authorName || article.author_name || 'Kaizen' }}</span>
                   <span class="meta-sub">{{ article.created_at | date:'MMM d, yyyy' }}</span>
                 </div>
               </div>
@@ -790,6 +790,8 @@ import { ArticleService } from '../../services/article.service';
 export class ArticleReaderComponent {
   @Input() article: Article | null = null;
   @Input() isAdmin: boolean = false;
+  @Input() authorAvatar: string = '';
+  @Input() authorName: string = '';
   @Output() onClose = new EventEmitter<void>();
   @Output() onDelete = new EventEmitter<Article>();
 
