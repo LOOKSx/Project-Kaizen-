@@ -3694,6 +3694,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   handleArticlePublished(newArticle: Article) {
+    newArticle.author_name = this.authorName || newArticle.author_name || 'Kaizen Explorer';
+    newArticle.author_avatar = this.authorAvatar || newArticle.author_avatar;
     const idx = this.articles.findIndex(a => a.id === newArticle.id);
     if (idx !== -1) {
       const updated = [...this.articles];
@@ -4257,10 +4259,23 @@ export class AppComponent implements OnInit, OnDestroy {
     this.youtubeUrl = this.tempYoutubeUrl;
     this.githubUrl = this.tempGithubUrl;
 
+    // Synchronize author_name and author_avatar across ALL published blog posts
+    this.articles = this.articles.map(a => ({
+      ...a,
+      author_name: this.authorName,
+      author_avatar: this.authorAvatar
+    }));
+
+    if (typeof localStorage !== 'undefined') {
+      try {
+        localStorage.setItem('kaizen_articles', JSON.stringify(this.articles));
+      } catch (e) {}
+    }
+
     this.saveSiteSettings();
     this.showProfileSettingsModal = false;
-    this.showToast('Profile & Contact Details updated successfully!');
-    this.addSystemLog('SETTINGS', '👤 อัปเดตข้อมูลผู้เขียน & Social Links', 'ชื่อผู้เขียน: ' + this.authorName + ' | ตำแหน่ง: ' + this.authorTitle);
+    this.showToast('Profile & Contact Details updated successfully across all blog posts!');
+    this.addSystemLog('SETTINGS', '👤 อัปเดตข้อมูลผู้เขียน & ซิงก์ทุกบทความ', 'ชื่อผู้เขียน: ' + this.authorName + ' | ซิงก์โปรไฟล์เข้าสู่ทุกบทความเรียบร้อย');
   }
 
   onAvatarDragOver(e: DragEvent) {

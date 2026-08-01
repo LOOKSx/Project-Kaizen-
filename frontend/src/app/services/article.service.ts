@@ -33,8 +33,19 @@ export class ArticleService {
     ).subscribe(res => {
       if (res && res.success) {
         if (res.articles && Array.isArray(res.articles)) {
+          let likedIds: number[] = [];
+          try {
+            const raw = localStorage.getItem('kaizen_liked_ids');
+            if (raw) likedIds = JSON.parse(raw);
+          } catch(e) {}
+
+          const articlesWithLocalLikes = res.articles.map((a: Article) => ({
+            ...a,
+            liked: likedIds.includes(a.id)
+          }));
+
           const current = localStorage.getItem('kaizen_articles');
-          const newStr = JSON.stringify(res.articles);
+          const newStr = JSON.stringify(articlesWithLocalLikes);
           if (current !== newStr) {
             localStorage.setItem('kaizen_articles', newStr);
             window.dispatchEvent(new CustomEvent('kaizen:articles-synced'));
@@ -61,6 +72,12 @@ export class ArticleService {
       localStorage.setItem('kaizen_settings_last_modified', Date.now().toString());
     }
     const list = articles !== undefined ? articles : this.getPersistedArticles('', '');
+    const sanitizedList = list.map(a => {
+      const copy = { ...a };
+      delete (copy as any).liked;
+      return copy;
+    });
+
     let setts = settings;
     if (!setts && typeof localStorage !== 'undefined') {
       try {
@@ -68,7 +85,7 @@ export class ArticleService {
         if (saved) setts = JSON.parse(saved);
       } catch (e) {}
     }
-    this.http.post<any>(this.syncApiUrl, { articles: list, settings: setts }).pipe(
+    this.http.post<any>(this.syncApiUrl, { articles: sanitizedList, settings: setts }).pipe(
       catchError(() => of(null))
     ).subscribe(res => {
       if (res && res.success) {
@@ -365,7 +382,18 @@ export class ArticleService {
       if (dataStr) list = JSON.parse(dataStr);
     } catch (e) {}
 
-    return list.filter(a => {
+    let likedIds: number[] = [];
+    if (typeof localStorage !== 'undefined') {
+      try {
+        const raw = localStorage.getItem('kaizen_liked_ids');
+        if (raw) likedIds = JSON.parse(raw);
+      } catch(e) {}
+    }
+
+    return list.map(a => ({
+      ...a,
+      liked: likedIds.includes(a.id)
+    })).filter(a => {
       const matchCat = !category || a.category.toLowerCase() === category.toLowerCase();
       const matchSearch = !search || 
         a.title.toLowerCase().includes(search.toLowerCase()) || 
@@ -373,6 +401,29 @@ export class ArticleService {
         (a.tags && a.tags.toLowerCase().includes(search.toLowerCase()));
       return matchCat && matchSearch;
     });
+  }
+
+  toggleArticleLike(article: Article): Article {
+    if (typeof localStorage === 'undefined' || !article) return article;
+    let likedIds: number[] = [];
+    try {
+      const raw = localStorage.getItem('kaizen_liked_ids');
+      if (raw) likedIds = JSON.parse(raw);
+    } catch(e) {}
+
+    const idx = likedIds.indexOf(article.id);
+    if (idx !== -1) {
+      likedIds.splice(idx, 1);
+      article.liked = false;
+      article.likes = Math.max(0, (article.likes || 1) - 1);
+    } else {
+      likedIds.push(article.id);
+      article.liked = true;
+      article.likes = (article.likes || 0) + 1;
+    }
+    localStorage.setItem('kaizen_liked_ids', JSON.stringify(likedIds));
+    this.updatePersistedArticle(article);
+    return article;
   }
 
   updatePersistedArticle(updated: Article) {

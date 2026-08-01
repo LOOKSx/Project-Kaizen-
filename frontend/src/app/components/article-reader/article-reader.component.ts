@@ -903,14 +903,7 @@ export class ArticleReaderComponent {
 
   toggleLike() {
     if (!this.article) return;
-    if (this.article.liked) {
-      this.article.liked = false;
-      this.article.likes = Math.max(0, (this.article.likes || 1) - 1);
-    } else {
-      this.article.liked = true;
-      this.article.likes = (this.article.likes || 0) + 1;
-    }
-    this.articleService.updatePersistedArticle(this.article);
+    this.articleService.toggleArticleLike(this.article);
   }
 
   deleteComment(index: number) {
